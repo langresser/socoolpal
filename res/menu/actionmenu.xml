@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+<item android:visible="true" android:id="@+id/item01" android:title="重复攻击" android:enabled="true"></item>
+<item android:id="@+id/item02" android:visible="true" android:title="最强法术" android:enabled="true"></item>
+<item android:visible="true" android:id="@+id/item03" android:title="自动战斗" android:enabled="true"></item>
+</menu>
