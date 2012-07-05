@@ -3,3 +3,10 @@ project/bin
 project/gen
 project/libs
 
+
+.svn/
+.settings/
+bin/
+gen/
+obj/
+libs/

@@ -1,4 +1,4 @@
-package cn.adouming.apal;
+package org.socool.pal;
 
 import android.app.Activity;
 import android.content.Context;
