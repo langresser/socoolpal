@@ -1,25 +1,26 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2009 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2012 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
 #include "SDL_config.h"
+
+#if SDL_VIDEO_DRIVER_COCOA
 #include "SDL_timer.h"
 
 #include "SDL_cocoavideo.h"
@@ -36,17 +37,8 @@
 #endif
 
 /* setAppleMenu disappeared from the headers in 10.4 */
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4
 @interface NSApplication(NSAppleMenu)
 - (void)setAppleMenu:(NSMenu *)menu;
-@end
-#endif
-
-@implementation NSApplication(SDL)
-- (void)setRunning
-{
-    _running = 1;
-}
 @end
 
 @interface SDLAppDelegate : NSObject
@@ -58,6 +50,11 @@
 {
     SDL_SendQuit();
     return NSTerminateCancel;
+}
+
+- (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename
+{
+    return (BOOL)SDL_SendDropFile([filename UTF8String]);
 }
 @end
 
@@ -97,6 +94,10 @@ CreateApplicationMenus(void)
     /* Add menu items */
     title = [@"About " stringByAppendingString:appName];
     [appleMenu addItemWithTitle:title action:@selector(orderFrontStandardAboutPanel:) keyEquivalent:@""];
+
+    [appleMenu addItem:[NSMenuItem separatorItem]];
+
+    [appleMenu addItemWithTitle:@"Preferences" action:nil keyEquivalent:@""];
 
     [appleMenu addItem:[NSMenuItem separatorItem]];
 
@@ -166,7 +167,6 @@ Cocoa_RegisterApp(void)
     if ([NSApp delegate] == nil) {
         [NSApp setDelegate:[[SDLAppDelegate alloc] init]];
     }
-    [NSApp setRunning];
     [pool release];
 }
 
@@ -187,11 +187,12 @@ Cocoa_PumpEvents(_THIS)
     }
 
     pool = [[NSAutoreleasePool alloc] init];
-    while ([NSApp isRunning]) {
+    for ( ; ; ) {
         NSEvent *event = [NSApp nextEventMatchingMask:NSAnyEventMask untilDate:[NSDate distantPast] inMode:NSDefaultRunLoopMode dequeue:YES ];
         if ( event == nil ) {
             break;
         }
+		
         switch ([event type]) {
         case NSLeftMouseDown:
         case NSOtherMouseDown:
@@ -203,6 +204,7 @@ Cocoa_PumpEvents(_THIS)
         case NSRightMouseDragged:
         case NSOtherMouseDragged: /* usually middle mouse dragged */
         case NSMouseMoved:
+        case NSScrollWheel:
             Cocoa_HandleMouseEvent(_this, event);
             /* Pass through to NSApp to make sure everything stays in sync */
             [NSApp sendEvent:event];
@@ -224,5 +226,7 @@ Cocoa_PumpEvents(_THIS)
     }
     [pool release];
 }
+
+#endif /* SDL_VIDEO_DRIVER_COCOA */
 
 /* vi: set ts=4 sw=4 expandtab: */

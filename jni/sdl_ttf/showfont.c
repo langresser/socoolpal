@@ -1,26 +1,23 @@
 /*
-    showfont:  An example of using the SDL_ttf library with 2D graphics.
-    Copyright (C) 1997-2004 Sam Lantinga
+  showfont:  An example of using the SDL_ttf library with 2D graphics.
+  Copyright (C) 2001-2012 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Library General Public
-    License as published by the Free Software Foundation; either
-    version 2 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Library General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Library General Public
-    License along with this library; if not, write to the Free
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-
-/* $Id: showfont.c 2429 2006-05-14 21:03:44Z slouken $ */
 
 /* A simple program to test the text rendering feature of the TTF library */
 
@@ -40,7 +37,7 @@
 #define NUM_COLORS      256
 
 static char *Usage =
-"Usage: %s [-solid] [-utf8|-unicode] [-b] [-i] [-u] [-fgcol r,g,b] [-bgcol r,g,b] <font>.ttf [ptsize] [text]\n";
+"Usage: %s [-solid] [-utf8|-unicode] [-b] [-i] [-u] [-s] [-outline size] [-hintlight|-hintmono|-hintnone] [-nokerning] [-fgcol r,g,b] [-bgcol r,g,b] <font>.ttf [ptsize] [text]\n";
 
 static void cleanup(int exitcode)
 {
@@ -67,6 +64,9 @@ int main(int argc, char *argv[])
 	SDL_Event event;
 	int rendersolid;
 	int renderstyle;
+	int outline;
+	int hinting;
+	int kerning;
 	int dump;
 	enum {
 		RENDER_LATIN1,
@@ -81,6 +81,9 @@ int main(int argc, char *argv[])
 	rendersolid = 0;
 	renderstyle = TTF_STYLE_NORMAL;
 	rendertype = RENDER_LATIN1;
+	outline = 0;
+	hinting = TTF_HINTING_NORMAL;
+	kerning = 1;
 	/* Default is black and white */
 	forecol = &black;
 	backcol = &white;
@@ -102,6 +105,27 @@ int main(int argc, char *argv[])
 		} else
 		if ( strcmp(argv[i], "-u") == 0 ) {
 			renderstyle |= TTF_STYLE_UNDERLINE;
+		} else
+		if ( strcmp(argv[i], "-s") == 0 ) {
+			renderstyle |= TTF_STYLE_STRIKETHROUGH;
+		} else
+		if ( strcmp(argv[i], "-outline") == 0 ) {
+			if ( sscanf (argv[++i], "%d", &outline) != 1 ) {
+				fprintf(stderr, Usage, argv0);
+				return(1);
+			}
+		} else
+		if ( strcmp(argv[i], "-hintlight") == 0 ) {
+			hinting = TTF_HINTING_LIGHT;
+		} else
+		if ( strcmp(argv[i], "-hintmono") == 0 ) {
+			hinting = TTF_HINTING_MONO;
+		} else
+		if ( strcmp(argv[i], "-hintnone") == 0 ) {
+			hinting = TTF_HINTING_NONE;
+		} else
+		if ( strcmp(argv[i], "-nokerning") == 0 ) {
+			kerning = 0;
 		} else
 		if ( strcmp(argv[i], "-dump") == 0 ) {
 			dump = 1;
@@ -170,6 +194,9 @@ int main(int argc, char *argv[])
 		cleanup(2);
 	}
 	TTF_SetFontStyle(font, renderstyle);
+	TTF_SetFontOutline(font, outline);
+	TTF_SetFontKerning(font, kerning);
+	TTF_SetFontHinting(font, hinting);
 
 	if( dump ) {
 		for( i = 48; i < 123; i++ ) {

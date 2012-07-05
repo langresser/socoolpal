@@ -1,23 +1,22 @@
 /*
-    SDL_image:  An example image loading library for use with SDL
-    Copyright (C) 1997-2009 Sam Lantinga
+  SDL_image:  An example image loading library for use with SDL
+  Copyright (C) 1997-2012 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
 
 /* This is a ILBM image file loading framework
@@ -55,7 +54,7 @@ typedef struct
     Uint8 pad1;			/* dummy value, for padding */
     Uint16 tcolor;		/* transparent color */
     Uint8 xAspect,		/* pixel aspect ratio */
-         yAspect;
+          yAspect;
     Sint16  Lpage;		/* width of the screen in pixels */
     Sint16  Hpage;		/* height of the screen in pixels */
 } BMHD;
@@ -89,7 +88,7 @@ SDL_Surface *IMG_LoadLBM_RW( SDL_RWops *src )
 	SDL_Surface *Image;
 	Uint8       id[4], pbm, colormap[MAXCOLORS*3], *MiniBuf, *ptr, count, color, msk;
 	Uint32      size, bytesloaded, nbcolors;
-	Uint32      i, j, bytesperline, nbplanes, plane, h;
+	Uint32      i, j, bytesperline, nbplanes, stencil, plane, h;
 	Uint32      remainingbytes;
 	Uint32      width;
 	BMHD	      bmhd;
@@ -238,12 +237,13 @@ SDL_Surface *IMG_LoadLBM_RW( SDL_RWops *src )
 		nbplanes = 1;
 	}
 
-	if ( bmhd.mask & 1 ) ++nbplanes;   /* There is a mask ( 'stencil' ) */
+	stencil = (bmhd.mask & 1);   /* There is a mask ( 'stencil' ) */
 
 	/* Allocate memory for a temporary buffer ( used for
            decompression/deinterleaving ) */
 
-	if ( ( MiniBuf = (void *)malloc( bytesperline * nbplanes ) ) == NULL )
+	MiniBuf = (void *)malloc( bytesperline * (nbplanes + stencil) );
+	if ( MiniBuf == NULL )
 	{
 		error="no enough memory for temporary buffer";
 		goto done;
@@ -260,7 +260,8 @@ SDL_Surface *IMG_LoadLBM_RW( SDL_RWops *src )
 	/* There is no palette in 24 bits ILBM file */
 	if ( nbcolors>0 && flagHAM==0 )
 	{
-		int nbrcolorsfinal = 1 << nbplanes;
+		/* FIXME: Should this include the stencil? See comment below */
+		int nbrcolorsfinal = 1 << (nbplanes + stencil);
 		ptr = &colormap[0];
 
 		for ( i=0; i<nbcolors; i++ )
@@ -308,7 +309,7 @@ SDL_Surface *IMG_LoadLBM_RW( SDL_RWops *src )
 	{
 		/* uncompress the datas of each planes */
 
-		for ( plane=0; plane < nbplanes; plane++ )
+		for ( plane=0; plane < (nbplanes+stencil); plane++ )
 		{
 			ptr = MiniBuf + ( plane * bytesperline );
 
@@ -331,7 +332,7 @@ SDL_Surface *IMG_LoadLBM_RW( SDL_RWops *src )
 
 						if ( ( count > remainingbytes ) || !SDL_RWread( src, &color, 1, 1 ) )
 						{
-						   error="error reading BODY chunk";
+							error="error reading BODY chunk";
 							goto done;
 						}
 						memset( ptr, color, count );
@@ -384,7 +385,7 @@ SDL_Surface *IMG_LoadLBM_RW( SDL_RWops *src )
 				{
 					memset( ptr, 0, 8 );
 
-					for ( plane=0; plane < nbplanes; plane++ )
+					for ( plane=0; plane < (nbplanes + stencil); plane++ )
 					{
 						color = *( MiniBuf + i + ( plane * bytesperline ) );
 						msk = 0x80;

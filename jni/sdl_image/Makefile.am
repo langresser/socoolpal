@@ -6,7 +6,11 @@ libSDL_imageincludedir = $(includedir)/SDL
 libSDL_imageinclude_HEADERS =	\
 	SDL_image.h
 
-libSDL_image_la_SOURCES =		\
+if USE_IMAGEIO
+IMAGEIO_SOURCE = IMG_ImageIO.m
+endif
+
+libSDL_image_la_SOURCES =	\
 	IMG.c			\
 	IMG_bmp.c		\
 	IMG_gif.c		\
@@ -20,15 +24,17 @@ libSDL_image_la_SOURCES =		\
 	IMG_xcf.c		\
 	IMG_xpm.c		\
 	IMG_xv.c		\
-	IMG_ImageIO.c
+	IMG_webp.c		\
+	$(IMAGEIO_SOURCE)
 
 EXTRA_DIST =			\
+	Android.mk		\
 	CHANGES			\
 	version.rc		\
-	VisualC.zip		\
-	VisualCE.zip		\
-	Xcode.tar.gz		\
-	Xcode_iPhone.tar.gz	\
+	VisualC			\
+	VisualCE		\
+	Xcode			\
+	Xcode-iOS		\
 	MPWmake.sea.bin		\
 	Watcom-OS2.zip		\
 	IMG_xxx.c		\

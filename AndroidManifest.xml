@@ -7,12 +7,17 @@
                   android:label="@string/app_name"
                   android:screenOrientation="landscape"
         >
+        </activity>
+        <activity android:name="org.libsdl.app.SDLActivity"
+                  android:label="@string/app_name"
+                  android:screenOrientation="landscape"
+        >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="org.socool.pal.TransparentActivity" android:theme="@style/Transparent">  
+        <activity android:name="org.libsdl.app.TransparentActivity" android:theme="@style/Transparent">  
 		</activity>  
     </application>
     <uses-sdk android:minSdkVersion="4" />

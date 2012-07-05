@@ -1,23 +1,22 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2010 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2012 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
 
 /**
@@ -30,7 +29,6 @@
 #define _SDL_version_h
 
 #include "SDL_stdinc.h"
-#include "SDL_revision.h"
 
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
@@ -112,12 +110,11 @@ typedef struct SDL_version
 
 /**
  *  \brief Get the version of SDL that is linked against your program.
- *  
- *  If you are using a shared library (DLL) version of SDL, then it is
- *  possible that it will be different than the version you compiled against.
  *
- *  This is a real function; the macro SDL_VERSION() tells you what version
- *  of SDL you compiled against:
+ *  If you are linking to SDL dynamically, then it is possible that the
+ *  current version will be different than the version you compiled against.
+ *  This function returns the current version, while SDL_VERSION() is a
+ *  macro that tells you what version you compiled with.
  *  
  *  \code
  *  SDL_version compiled;
@@ -140,10 +137,21 @@ extern DECLSPEC void SDLCALL SDL_GetVersion(SDL_version * ver);
 /**
  *  \brief Get the code revision of SDL that is linked against your program.
  *
- *  This is an arbitrary string (a hash value, actually), and is only useful
- *  in comparing against other revisions. It is NOT an incrementing number.
+ *  Returns an arbitrary string (a hash value) uniquely identifying the
+ *  exact revision of the SDL library in use, and is only useful in comparing
+ *  against other revisions. It is NOT an incrementing number.
  */
 extern DECLSPEC const char *SDLCALL SDL_GetRevision(void);
+
+/**
+ *  \brief Get the revision number of SDL that is linked against your program.
+ *
+ *  Returns a number uniquely identifying the exact revision of the SDL
+ *  library in use. It is an incrementing number based on commits to
+ *  hg.libsdl.org.
+ */
+extern DECLSPEC int SDLCALL SDL_GetRevisionNumber(void);
+
 
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus

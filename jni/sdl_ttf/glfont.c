@@ -1,28 +1,23 @@
 /*
-    glfont:  An example of using the SDL_ttf library with OpenGL.
-    Copyright (C) 1997-2004 Sam Lantinga
+  glfont:  An example of using the SDL_ttf library with OpenGL.
+  Copyright (C) 2001-2012 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Library General Public
-    License as published by the Free Software Foundation; either
-    version 2 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Library General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Library General Public
-    License along with this library; if not, write to the Free
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-    The SDL_GL_* functions in this file are available in the public domain.
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-
-/* $Id: glfont.c 2429 2006-05-14 21:03:44Z slouken $ */
 
 /* A simple program to test the text rendering feature of the TTF library */
 
@@ -137,10 +132,15 @@ GLuint SDL_GL_LoadTexture(SDL_Surface *surface, GLfloat *texcoord)
 
 	/* Save the alpha blending attributes */
 	saved_flags = surface->flags&(SDL_SRCALPHA|SDL_RLEACCELOK);
+#if SDL_VERSION_ATLEAST(1, 3, 0)
+	SDL_GetSurfaceAlphaMod(surface, &saved_alpha);
+	SDL_SetSurfaceAlphaMod(surface, 0xFF);
+#else
 	saved_alpha = surface->format->alpha;
 	if ( (saved_flags & SDL_SRCALPHA) == SDL_SRCALPHA ) {
 		SDL_SetAlpha(surface, 0, 0);
 	}
+#endif
 
 	/* Copy the surface into the GL texture image */
 	area.x = 0;
@@ -150,9 +150,13 @@ GLuint SDL_GL_LoadTexture(SDL_Surface *surface, GLfloat *texcoord)
 	SDL_BlitSurface(surface, &area, image, &area);
 
 	/* Restore the alpha blending attributes */
+#if SDL_VERSION_ATLEAST(1, 3, 0)
+	SDL_SetSurfaceAlphaMod(surface, saved_alpha);
+#else
 	if ( (saved_flags & SDL_SRCALPHA) == SDL_SRCALPHA ) {
 		SDL_SetAlpha(surface, saved_flags, saved_alpha);
 	}
+#endif
 
 	/* Create an OpenGL texture for the image */
 	glGenTextures(1, &texture);

@@ -1,45 +1,35 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2010 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2012 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
 #include "SDL_config.h"
 
 /* Initialization code for SDL */
 
 #include "SDL.h"
+#include "SDL_revision.h"
 #include "SDL_fatal.h"
-#include "SDL_assert.h"
-
-#if !SDL_VIDEO_DISABLED
-#include "video/SDL_leaks.h"
-#endif
+#include "SDL_assert_c.h"
+#include "haptic/SDL_haptic_c.h"
+#include "joystick/SDL_joystick_c.h"
 
 /* Initialization/Cleanup routines */
-#if !SDL_JOYSTICK_DISABLED
-extern int SDL_JoystickInit(void);
-extern void SDL_JoystickQuit(void);
-#endif
-#if !SDL_HAPTIC_DISABLED
-extern int SDL_HapticInit(void);
-extern int SDL_HapticQuit(void);
-#endif
 #if !SDL_TIMERS_DISABLED
 extern void SDL_StartTicks(void);
 extern int SDL_TimerInit(void);
@@ -50,24 +40,38 @@ extern int SDL_HelperWindowCreate(void);
 extern int SDL_HelperWindowDestroy(void);
 #endif
 
-extern int SDL_AssertionsInit(void);
-extern void SDL_AssertionsQuit(void);
 
 /* The initialized subsystems */
 static Uint32 SDL_initialized = 0;
 static Uint32 ticks_started = 0;
 
-#ifdef CHECK_LEAKS
-int surfaces_allocated = 0;
-#endif
 
 int
 SDL_InitSubSystem(Uint32 flags)
 {
+#if !SDL_TIMERS_DISABLED
+    /* Initialize the timer subsystem */
+    if (!ticks_started) {
+        SDL_StartTicks();
+        ticks_started = 1;
+    }
+    if ((flags & SDL_INIT_TIMER) && !(SDL_initialized & SDL_INIT_TIMER)) {
+        if (SDL_TimerInit() < 0) {
+            return (-1);
+        }
+        SDL_initialized |= SDL_INIT_TIMER;
+    }
+#else
+    if (flags & SDL_INIT_TIMER) {
+        SDL_SetError("SDL not built with timer support");
+        return (-1);
+    }
+#endif
+
 #if !SDL_VIDEO_DISABLED
     /* Initialize the video/event subsystem */
     if ((flags & SDL_INIT_VIDEO) && !(SDL_initialized & SDL_INIT_VIDEO)) {
-        if (SDL_VideoInit(NULL, (flags & SDL_INIT_EVENTTHREAD)) < 0) {
+        if (SDL_VideoInit(NULL) < 0) {
             return (-1);
         }
         SDL_initialized |= SDL_INIT_VIDEO;
@@ -90,25 +94,6 @@ SDL_InitSubSystem(Uint32 flags)
 #else
     if (flags & SDL_INIT_AUDIO) {
         SDL_SetError("SDL not built with audio support");
-        return (-1);
-    }
-#endif
-
-#if !SDL_TIMERS_DISABLED
-    /* Initialize the timer subsystem */
-    if (!ticks_started) {
-        SDL_StartTicks();
-        ticks_started = 1;
-    }
-    if ((flags & SDL_INIT_TIMER) && !(SDL_initialized & SDL_INIT_TIMER)) {
-        if (SDL_TimerInit() < 0) {
-            return (-1);
-        }
-        SDL_initialized |= SDL_INIT_TIMER;
-    }
-#else
-    if (flags & SDL_INIT_TIMER) {
-        SDL_SetError("SDL not built with timer support");
         return (-1);
     }
 #endif
@@ -190,12 +175,6 @@ SDL_QuitSubSystem(Uint32 flags)
         SDL_initialized &= ~SDL_INIT_HAPTIC;
     }
 #endif
-#if !SDL_TIMERS_DISABLED
-    if ((flags & SDL_initialized & SDL_INIT_TIMER)) {
-        SDL_TimerQuit();
-        SDL_initialized &= ~SDL_INIT_TIMER;
-    }
-#endif
 #if !SDL_AUDIO_DISABLED
     if ((flags & SDL_initialized & SDL_INIT_AUDIO)) {
         SDL_AudioQuit();
@@ -206,6 +185,12 @@ SDL_QuitSubSystem(Uint32 flags)
     if ((flags & SDL_initialized & SDL_INIT_VIDEO)) {
         SDL_VideoQuit();
         SDL_initialized &= ~SDL_INIT_VIDEO;
+    }
+#endif
+#if !SDL_TIMERS_DISABLED
+    if ((flags & SDL_initialized & SDL_INIT_TIMER)) {
+        SDL_TimerQuit();
+        SDL_initialized &= ~SDL_INIT_TIMER;
     }
 #endif
 }
@@ -223,44 +208,17 @@ void
 SDL_Quit(void)
 {
     /* Quit all subsystems */
-#ifdef DEBUG_BUILD
-    printf("[SDL_Quit] : Enter! Calling QuitSubSystem()\n");
-    fflush(stdout);
-#endif
-
 #if defined(__WIN32__)
     SDL_HelperWindowDestroy();
 #endif
     SDL_QuitSubSystem(SDL_INIT_EVERYTHING);
 
-#ifdef CHECK_LEAKS
-#ifdef DEBUG_BUILD
-    printf("[SDL_Quit] : CHECK_LEAKS\n");
-    fflush(stdout);
-#endif
-
-    /* !!! FIXME: make this an assertion. */
-    /* Print the number of surfaces not freed */
-    if (surfaces_allocated != 0) {
-        fprintf(stderr, "SDL Warning: %d SDL surfaces extant\n",
-                surfaces_allocated);
-    }
-#endif
-#ifdef DEBUG_BUILD
-    printf("[SDL_Quit] : SDL_UninstallParachute()\n");
-    fflush(stdout);
-#endif
-
     /* Uninstall any parachute signal handlers */
     SDL_UninstallParachute();
 
+    SDL_ClearHints();
     SDL_AssertionsQuit();
-
-#ifdef DEBUG_BUILD
-    printf("[SDL_Quit] : Returning!\n");
-    fflush(stdout);
-#endif
-
+    SDL_LogResetPriorities();
 }
 
 /* Get the library version number */
@@ -275,6 +233,13 @@ const char *
 SDL_GetRevision(void)
 {
     return SDL_REVISION;
+}
+
+/* Get the library source revision number */
+int
+SDL_GetRevisionNumber(void)
+{
+    return SDL_REVISION_NUMBER;
 }
 
 /* Get the name of the platform */
@@ -308,6 +273,8 @@ SDL_GetPlatform()
     return "Mac OS X";
 #elif __NETBSD__
     return "NetBSD";
+#elif __NDS__
+    return "Nintendo DS";
 #elif __OPENBSD__
     return "OpenBSD";
 #elif __OS2__
@@ -337,8 +304,7 @@ SDL_GetPlatform()
 
 #if !defined(HAVE_LIBC) || (defined(__WATCOMC__) && defined(BUILD_DLL))
 /* Need to include DllMain() on Watcom C for some reason.. */
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#include "core/windows/SDL_windows.h"
 
 BOOL APIENTRY
 _DllMainCRTStartup(HANDLE hModule,

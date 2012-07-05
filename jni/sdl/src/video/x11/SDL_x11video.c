@@ -1,25 +1,28 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2010 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2012 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
 #include "SDL_config.h"
+
+#if SDL_VIDEO_DRIVER_X11
+
+#include <unistd.h> /* For getpid() and readlink() */
 
 #include "SDL_video.h"
 #include "SDL_mouse.h"
@@ -27,9 +30,11 @@
 #include "../SDL_pixels_c.h"
 
 #include "SDL_x11video.h"
-#include "SDL_x11render.h"
+#include "SDL_x11framebuffer.h"
+#include "SDL_x11shape.h"
+#include "SDL_x11touch.h" 
 
-#if SDL_VIDEO_DRIVER_PANDORA
+#if SDL_VIDEO_OPENGL_ES || SDL_VIDEO_OPENGL_ES2
 #include "SDL_x11opengles.h"
 #endif
 
@@ -105,7 +110,7 @@ X11_DeleteDevice(SDL_VideoDevice * device)
     }
     SDL_free(data->windowlist);
     SDL_free(device->driverdata);
-#if SDL_VIDEO_DRIVER_PANDORA
+#if SDL_VIDEO_OPENGL_ES || SDL_VIDEO_OPENGL_ES2
     SDL_free(device->gles_data);
 #endif
     SDL_free(device);
@@ -138,7 +143,7 @@ X11_CreateDevice(int devindex)
     }
     device->driverdata = data;
 
-#if SDL_VIDEO_DRIVER_PANDORA
+#if SDL_VIDEO_OPENGL_ES || SDL_VIDEO_OPENGL_ES2
     device->gles_data = (struct SDL_PrivateGLESData *) SDL_calloc(1, sizeof(SDL_PrivateGLESData));
     if (!device->gles_data) {
         SDL_OutOfMemory();
@@ -182,8 +187,6 @@ X11_CreateDevice(int devindex)
     device->VideoQuit = X11_VideoQuit;
     device->GetDisplayModes = X11_GetDisplayModes;
     device->SetDisplayMode = X11_SetDisplayMode;
-    device->SetDisplayGammaRamp = X11_SetDisplayGammaRamp;
-    device->GetDisplayGammaRamp = X11_GetDisplayGammaRamp;
     device->SuspendScreenSaver = X11_SuspendScreenSaver;
     device->PumpEvents = X11_PumpEvents;
 
@@ -199,10 +202,20 @@ X11_CreateDevice(int devindex)
     device->MaximizeWindow = X11_MaximizeWindow;
     device->MinimizeWindow = X11_MinimizeWindow;
     device->RestoreWindow = X11_RestoreWindow;
+    device->SetWindowFullscreen = X11_SetWindowFullscreen;
+    device->SetWindowGammaRamp = X11_SetWindowGammaRamp;
     device->SetWindowGrab = X11_SetWindowGrab;
     device->DestroyWindow = X11_DestroyWindow;
+    device->CreateWindowFramebuffer = X11_CreateWindowFramebuffer;
+    device->UpdateWindowFramebuffer = X11_UpdateWindowFramebuffer;
+    device->DestroyWindowFramebuffer = X11_DestroyWindowFramebuffer;
     device->GetWindowWMInfo = X11_GetWindowWMInfo;
-#ifdef SDL_VIDEO_OPENGL_GLX
+
+    device->shape_driver.CreateShaper = X11_CreateShaper;
+    device->shape_driver.SetWindowShape = X11_SetWindowShape;
+    device->shape_driver.ResizeWindowShape = X11_ResizeWindowShape;
+
+#if SDL_VIDEO_OPENGL_GLX
     device->GL_LoadLibrary = X11_GL_LoadLibrary;
     device->GL_GetProcAddress = X11_GL_GetProcAddress;
     device->GL_UnloadLibrary = X11_GL_UnloadLibrary;
@@ -213,7 +226,7 @@ X11_CreateDevice(int devindex)
     device->GL_SwapWindow = X11_GL_SwapWindow;
     device->GL_DeleteContext = X11_GL_DeleteContext;
 #endif
-#if SDL_VIDEO_DRIVER_PANDORA
+#if SDL_VIDEO_OPENGL_ES || SDL_VIDEO_OPENGL_ES2
     device->GL_LoadLibrary = X11_GLES_LoadLibrary;
     device->GL_GetProcAddress = X11_GLES_GetProcAddress;
     device->GL_UnloadLibrary = X11_GLES_UnloadLibrary;
@@ -225,6 +238,10 @@ X11_CreateDevice(int devindex)
     device->GL_DeleteContext = X11_GLES_DeleteContext;
 #endif
 
+    device->SetClipboardText = X11_SetClipboardText;
+    device->GetClipboardText = X11_GetClipboardText;
+    device->HasClipboardText = X11_HasClipboardText;
+
     device->free = X11_DeleteDevice;
 
     return device;
@@ -235,6 +252,73 @@ VideoBootStrap X11_bootstrap = {
     X11_Available, X11_CreateDevice
 };
 
+static int (*handler) (Display *, XErrorEvent *) = NULL;
+static int
+X11_CheckWindowManagerErrorHandler(Display * d, XErrorEvent * e)
+{
+    if (e->error_code == BadWindow) {
+        return (0);
+    } else {
+        return (handler(d, e));
+    }
+}
+
+static void
+X11_CheckWindowManager(_THIS)
+{
+    SDL_VideoData *data = (SDL_VideoData *) _this->driverdata;
+    Display *display = data->display;
+    Atom _NET_SUPPORTING_WM_CHECK;
+    int status, real_format;
+    Atom real_type;
+    unsigned long items_read, items_left;
+    unsigned char *propdata;
+    Window wm_window = 0;
+#ifdef DEBUG_WINDOW_MANAGER
+    char *wm_name;
+#endif
+
+    /* Set up a handler to gracefully catch errors */
+    XSync(display, False);
+    handler = XSetErrorHandler(X11_CheckWindowManagerErrorHandler);
+
+    _NET_SUPPORTING_WM_CHECK = XInternAtom(display, "_NET_SUPPORTING_WM_CHECK", False);
+    status = XGetWindowProperty(display, DefaultRootWindow(display), _NET_SUPPORTING_WM_CHECK, 0L, 1L, False, XA_WINDOW, &real_type, &real_format, &items_read, &items_left, &propdata);
+    if (status == Success && items_read) {
+        wm_window = ((Window*)propdata)[0];
+    }
+    if (propdata) {
+        XFree(propdata);
+    }
+
+    if (wm_window) {
+        status = XGetWindowProperty(display, wm_window, _NET_SUPPORTING_WM_CHECK, 0L, 1L, False, XA_WINDOW, &real_type, &real_format, &items_read, &items_left, &propdata);
+        if (status != Success || !items_read || wm_window != ((Window*)propdata)[0]) {
+            wm_window = None;
+        }
+        if (propdata) {
+            XFree(propdata);
+        }
+    }
+
+    /* Reset the error handler, we're done checking */
+    XSync(display, False);
+    XSetErrorHandler(handler);
+
+    if (!wm_window) {
+#ifdef DEBUG_WINDOW_MANAGER
+        printf("Couldn't get _NET_SUPPORTING_WM_CHECK property\n");
+#endif
+        return;
+    }
+    data->net_wm = SDL_TRUE;
+
+#ifdef DEBUG_WINDOW_MANAGER
+    wm_name = X11_GetWindowTitle(_this, wm_window);
+    printf("Window manager: %s\n", wm_name);
+    SDL_free(wm_name);
+#endif
+}
 
 int
 X11_VideoInit(_THIS)
@@ -243,6 +327,9 @@ X11_VideoInit(_THIS)
 
     /* Get the window class name, usually the name of the application */
     data->classname = get_classname();
+
+    /* Get the process PID to be associated to the window */
+    data->pid = getpid();
 
     /* Open a connection to the X input manager */
 #ifdef X_HAVE_UTF8_STRING
@@ -253,22 +340,31 @@ X11_VideoInit(_THIS)
 #endif
 
     /* Look up some useful Atoms */
-    data->WM_DELETE_WINDOW =
-        XInternAtom(data->display, "WM_DELETE_WINDOW", False);
+#define GET_ATOM(X) data->X = XInternAtom(data->display, #X, False)
+    GET_ATOM(WM_DELETE_WINDOW);
+    GET_ATOM(_NET_WM_STATE);
+    GET_ATOM(_NET_WM_STATE_HIDDEN);
+    GET_ATOM(_NET_WM_STATE_MAXIMIZED_VERT);
+    GET_ATOM(_NET_WM_STATE_MAXIMIZED_HORZ);
+    GET_ATOM(_NET_WM_STATE_FULLSCREEN);
+    GET_ATOM(_NET_WM_NAME);
+    GET_ATOM(_NET_WM_ICON_NAME);
+    GET_ATOM(_NET_WM_ICON);
+    GET_ATOM(UTF8_STRING);
+
+    /* Detect the window manager */
+    X11_CheckWindowManager(_this);
 
     if (X11_InitModes(_this) < 0) {
         return -1;
     }
-
-#if SDL_VIDEO_RENDER_X11
-    X11_AddRenderDriver(_this);
-#endif
 
     if (X11_InitKeyboard(_this) != 0) {
         return -1;
     }
     X11_InitMouse(_this);
 
+    X11_InitTouch(_this);
     return 0;
 }
 
@@ -289,15 +385,15 @@ X11_VideoQuit(_THIS)
     X11_QuitModes(_this);
     X11_QuitKeyboard(_this);
     X11_QuitMouse(_this);
+    X11_QuitTouch(_this);
 }
 
 SDL_bool
-X11_UseDirectColorVisuals()
+X11_UseDirectColorVisuals(void)
 {
-    /* Once we implement DirectColor colormaps and gamma ramp support...
-       return SDL_getenv("SDL_VIDEO_X11_NODIRECTCOLOR") ? SDL_FALSE : SDL_TRUE;
-     */
-    return SDL_FALSE;
+    return SDL_getenv("SDL_VIDEO_X11_NODIRECTCOLOR") ? SDL_FALSE : SDL_TRUE;
 }
+
+#endif /* SDL_VIDEO_DRIVER_X11 */
 
 /* vim: set ts=4 sw=4 expandtab: */

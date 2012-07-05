@@ -13,9 +13,9 @@ dnl Set various version strings - taken gratefully from the GTk sources
 
 MAJOR_VERSION=1
 MINOR_VERSION=2
-MICRO_VERSION=10
-INTERFACE_AGE=2
-BINARY_AGE=10
+MICRO_VERSION=12
+INTERFACE_AGE=4
+BINARY_AGE=12
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION
 
 AC_SUBST(MAJOR_VERSION)
@@ -47,6 +47,7 @@ AM_INIT_AUTOMAKE(SDL_image, $VERSION)
 dnl Check for tools
 AC_PROG_LIBTOOL
 AC_PROG_CC
+AC_PROG_OBJC
 AC_C_INLINE
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
@@ -85,6 +86,7 @@ case "$host" in
         fi
         ;;
 esac
+AM_CONDITIONAL(USE_IMAGEIO, test x$enable_imageio = xyes)
 AM_CONDITIONAL(USE_VERSION_RC, test x$use_version_rc = xtrue)
 
 dnl set this to use on systems that use lib64 instead of lib
@@ -152,6 +154,10 @@ AC_ARG_ENABLE([xpm], [AC_HELP_STRING([--enable-xpm], [support loading XPM images
  [], [enable_xpm=yes])
 AC_ARG_ENABLE([xv], [AC_HELP_STRING([--enable-xv], [support loading XV images [default=yes]])],
  [], [enable_xv=yes])
+AC_ARG_ENABLE([webp], [AC_HELP_STRING([--enable-webp], [support loading WEBP images [default=yes]])],
+ [], [enable_webp=yes])
+AC_ARG_ENABLE([webp-shared], AC_HELP_STRING([--enable-webp-shared], [dynamically load WEBP support [[default=yes]]]),
+ [], [enable_webp_shared=yes])
 
 if test x$enable_jpg = xyes || test x$enable_tif = xyes; then
     AC_CHECK_HEADER([jpeglib.h], [have_jpg_hdr=yes])
@@ -167,7 +173,7 @@ if test x$enable_jpg = xyes || test x$enable_tif = xyes; then
                 jpg_lib=[`find_lib libjpeg.dylib`]
                 ;;
             *-*-cygwin* | *-*-mingw32*)
-                jpg_lib=[`find_lib "jpeg.dll"`]
+                jpg_lib=[`find_lib "libjpeg*.dll"`]
                 ;;
             *)
                 jpg_lib=[`find_lib "libjpeg.so.[0-9]"`]
@@ -249,6 +255,44 @@ if test x$enable_tif = xyes; then
     fi
 fi
 
+if test x$enable_webp = xyes; then
+    PKG_CHECK_MODULES([LIBWEBP], [libwebp], [dnl
+        have_webp_hdr=yes
+        CFLAGS="$LIBWEBP_CFLAGS $CFLAGS"
+        have_webp_lib=yes
+      ], [dnl
+        AC_CHECK_HEADER([webp/decode.h], [have_webp_hdr=yes])
+        AC_CHECK_LIB([webp], [WebPGetDecoderVersion], [have_webp_lib=yes], [], [-lm])
+      ])
+    if test x$have_webp_hdr = xyes -a x$have_webp_lib = xyes; then
+        AC_DEFINE([LOAD_WEBP])
+
+        case "$host" in
+            *-*-darwin*)
+                webp_lib=[`find_lib libwebp.dylib`]
+                ;;
+            *-*-cygwin* | *-*-mingw32*)
+                webp_lib=[`find_lib "libwebp*.dll"`]
+                ;;
+            *)
+                webp_lib=[`find_lib "libwebp.so.[0-9]"`]
+                if test x$webp_lib = x; then
+                    webp_lib=[`find_lib "libwebp.so.[0-9]*"`]
+                fi
+                if test x$webp_lib = x; then
+                    webp_lib=[`find_lib "libwebp*.so.[0-9]"`]
+                fi
+                if test x$webp_lib = x; then
+                    webp_lib=[`find_lib "libwebp*.so.[0-9]*"`]
+                fi
+                ;;
+        esac
+    else
+        AC_MSG_WARN([*** Unable to find WEBP library (http://code.google.com/intl/en-US/speed/webp/index.html)])
+        AC_MSG_WARN([WEBP Pimage loading disabled])
+    fi
+fi
+
 if test x$enable_bmp = xyes; then
     AC_DEFINE([LOAD_BMP])
 fi
@@ -285,6 +329,15 @@ if test x$enable_xv = xyes; then
     AC_DEFINE([LOAD_XV])
 fi
 
+if test x$enable_webp = xyes -a x$have_webp_hdr = xyes -a x$have_webp_lib = xyes; then
+    if test x$enable_webp_shared = xyes && test x$webp_lib != x; then
+        echo "-- dynamic libwebp -> $webp_lib"
+        AC_DEFINE_UNQUOTED(LOAD_WEBP_DYNAMIC, "$webp_lib")
+    else
+        IMG_LIBS="-lwebp $IMG_LIBS"
+    fi
+fi
+
 if test x$enable_tif = xyes -a x$have_tif_hdr = xyes -a x$have_tif_lib = xyes; then
     if test x$enable_tif_shared = xyes && test x$tif_lib != x; then
         echo "-- dynamic libtiff -> $tif_lib"
@@ -318,6 +371,8 @@ LIBS="$saved_LIBS"
 
 AC_SUBST([WINDRES])
 AC_SUBST([IMG_LIBS])
+
+OBJCFLAGS=$CFLAGS
 
 # Finally create all the generated files
 AC_OUTPUT([

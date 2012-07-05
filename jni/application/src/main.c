@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-
+#include "log.h"
 #include "main.h"
 #include "getopt.h"
 
@@ -61,7 +61,7 @@ PAL_Init(
 #ifdef NDS
    fatInitDefault();
 #endif
-
+    LOGI("fuck1");
    //
    // Initialize defaults, video and audio
    //
@@ -81,6 +81,8 @@ PAL_Init(
 #endif
    }
 
+    LOGI("fuck2");
+
    //
    // Initialize subsystems.
    //
@@ -90,6 +92,8 @@ PAL_Init(
       TerminateOnError("Could not initialize Video: %d.\n", e);
    }
 
+
+    LOGI("fuck3");
    SDL_WM_SetCaption("Loading...", NULL);
 
    e = PAL_InitGlobals();
@@ -120,6 +124,8 @@ PAL_Init(
    PAL_InitResources();
    SOUND_OpenAudio();
 
+
+    LOGI("fuck4");
 #ifdef _DEBUG
    SDL_WM_SetCaption("Pal (Debug Build)", NULL);
 #else
@@ -435,11 +441,12 @@ PAL_SplashScreen(
    PAL_FadeOut(1);
 }
 
-int
+C_LINKAGE int
 main(
    int      argc,
    char    *argv[]
 )
+
 /*++
   Purpose:
 
@@ -462,16 +469,20 @@ main(
    int			 m;
    BOOL          fFullScreen = FALSE;
 
+   LOGI("fuck1");
    UTIL_OpenLog();
 
+   LOGI("fuck2");
 #ifdef _WIN32
    putenv("SDL_VIDEODRIVER=directx");
 #endif
 
+   LOGI("fuck3");
 #ifndef __SYMBIAN32__
    //
    // Parse parameters.
    //
+   LOGI("fuck4");
    while ((c = getopt(argc, argv, "m:w:h:fj")) != -1)
    {
       switch (c)
@@ -545,6 +556,7 @@ main(
    }
 #endif
 
+   LOGI("fuck5");
    //
    // Default resolution is 640x400 (windowed) or 640x480 (fullscreen).
    //
@@ -567,11 +579,13 @@ main(
 #endif
    }
 
+   LOGI("fuck6");
    //
    // Initialize everything
    //
    PAL_Init(wScreenWidth, wScreenHeight, fFullScreen);
 
+   LOGI("fuck7");
    //
    // Show the trademark screen and splash screen
    //
@@ -581,6 +595,7 @@ main(
    //
    // Run the main game routine
    //
+   LOGI("fuck8");
    PAL_GameMain();
 
    //

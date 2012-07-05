@@ -10,10 +10,12 @@ libSDL_ttf_la_SOURCES =		\
 	SDL_ttf.c
 
 EXTRA_DIST =			\
+	Android.mk		\
 	CHANGES			\
 	version.rc		\
-	VisualC.zip		\
-	Xcode.tar.gz		\
+	VisualC			\
+	Xcode			\
+	Xcode-iOS		\
 	MPWmake.sea.bin		\
 	Watcom-Win32.zip	\
 	SDL_ttf.spec		\
@@ -33,6 +35,9 @@ libSDL_ttf_la_LDFLAGS = 	\
 	-release $(LT_RELEASE)	\
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 endif
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = SDL_ttf.pc
 
 %.o : %.rc
 	$(WINDRES) $< $@

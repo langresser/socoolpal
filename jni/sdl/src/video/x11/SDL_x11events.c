@@ -1,48 +1,111 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2010 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2012 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
 #include "SDL_config.h"
+
+#if SDL_VIDEO_DRIVER_X11
 
 #include <sys/types.h>
 #include <sys/time.h>
 #include <signal.h>
 #include <unistd.h>
+#include <limits.h> /* For INT_MAX */
 
 #include "SDL_x11video.h"
+#include "SDL_x11touch.h"
 #include "../../events/SDL_events_c.h"
 #include "../../events/SDL_mouse_c.h"
+#include "../../events/SDL_touch_c.h"
 
 #include "SDL_timer.h"
 #include "SDL_syswm.h"
+
+#include <stdio.h>
+
+#ifdef SDL_INPUT_LINUXEV
+//Touch Input/event* includes
+#include <linux/input.h>
+#include <fcntl.h>
+#endif
+/*#define DEBUG_XEVENTS*/
+
+/* Check to see if this is a repeated key.
+   (idea shamelessly lifted from GII -- thanks guys! :)
+ */
+static SDL_bool X11_KeyRepeat(Display *display, XEvent *event)
+{
+    XEvent peekevent;
+
+    if (XPending(display)) {
+        XPeekEvent(display, &peekevent);
+        if ((peekevent.type == KeyPress) &&
+            (peekevent.xkey.keycode == event->xkey.keycode) &&
+            ((peekevent.xkey.time-event->xkey.time) < 2)) {
+            return SDL_TRUE;
+        }
+    }
+    return SDL_FALSE;
+}
+
+static SDL_bool X11_IsWheelEvent(Display * display,XEvent * event,int * ticks)
+{
+    XEvent peekevent;
+    if (XPending(display)) {
+        /* according to the xlib docs, no specific mouse wheel events exist.
+           however, mouse wheel events trigger a button press and a button release
+           immediately. thus, checking if the same button was released at the same
+           time as it was pressed, should be an adequate hack to derive a mouse 
+           wheel event. */
+        XPeekEvent(display,&peekevent);
+        if ((peekevent.type           == ButtonRelease) &&
+            (peekevent.xbutton.button == event->xbutton.button) &&
+            (peekevent.xbutton.time   == event->xbutton.time)) {
+
+            /* by default, X11 only knows 5 buttons. on most 3 button + wheel mouse,
+               Button4 maps to wheel up, Button5 maps to wheel down. */
+            if (event->xbutton.button == Button4) {
+                *ticks = 1;
+            }
+            else if (event->xbutton.button == Button5) {
+                *ticks = -1;
+            }
+
+            /* remove the following release event, as this is now a wheel event */
+            XNextEvent(display,&peekevent);
+            return SDL_TRUE;
+        }
+    }
+    return SDL_FALSE;
+}
 
 static void
 X11_DispatchEvent(_THIS)
 {
     SDL_VideoData *videodata = (SDL_VideoData *) _this->driverdata;
+    Display *display = videodata->display;
     SDL_WindowData *data;
     XEvent xevent;
     int i;
 
     SDL_zero(xevent);           /* valgrind fix. --ryan. */
-    XNextEvent(videodata->display, &xevent);
+    XNextEvent(display, &xevent);
 
     /* filter events catchs XIM events and sends them to the correct
        handler */
@@ -60,7 +123,7 @@ X11_DispatchEvent(_THIS)
 
         SDL_VERSION(&wmmsg.version);
         wmmsg.subsystem = SDL_SYSWM_X11;
-        wmmsg.event.xevent = xevent;
+        wmmsg.msg.x11.event = xevent;
         SDL_SendSysWMEvent(&wmmsg);
     }
 
@@ -77,6 +140,7 @@ X11_DispatchEvent(_THIS)
     if (!data) {
         return;
     }
+
 #if 0
     printf("type = %d display = %d window = %d\n",
            xevent.type, xevent.xany.display, xevent.xany.window);
@@ -87,8 +151,8 @@ X11_DispatchEvent(_THIS)
     case EnterNotify:{
 #ifdef DEBUG_XEVENTS
             printf("EnterNotify! (%d,%d,%d)\n", 
-	           xevent.xcrossing.x,
- 	           xevent.xcrossing.y,
+                   xevent.xcrossing.x,
+                   xevent.xcrossing.y,
                    xevent.xcrossing.mode);
             if (xevent.xcrossing.mode == NotifyGrab)
                 printf("Mode: NotifyGrab\n");
@@ -98,20 +162,21 @@ X11_DispatchEvent(_THIS)
             SDL_SetMouseFocus(data->window);
         }
         break;
-
         /* Losing mouse coverage? */
     case LeaveNotify:{
 #ifdef DEBUG_XEVENTS
             printf("LeaveNotify! (%d,%d,%d)\n", 
-	           xevent.xcrossing.x,
- 	           xevent.xcrossing.y,
+                   xevent.xcrossing.x,
+                   xevent.xcrossing.y,
                    xevent.xcrossing.mode);
             if (xevent.xcrossing.mode == NotifyGrab)
                 printf("Mode: NotifyGrab\n");
             if (xevent.xcrossing.mode == NotifyUngrab)
                 printf("Mode: NotifyUngrab\n");
 #endif
-            if (xevent.xcrossing.detail != NotifyInferior) {
+            if (xevent.xcrossing.mode != NotifyGrab &&
+                xevent.xcrossing.mode != NotifyUngrab &&
+                xevent.xcrossing.detail != NotifyInferior) {
                 SDL_SetMouseFocus(NULL);
             }
         }
@@ -176,14 +241,13 @@ X11_DispatchEvent(_THIS)
             printf("KeyPress (X11 keycode = 0x%X)\n", xevent.xkey.keycode);
 #endif
             SDL_SendKeyboardKey(SDL_PRESSED, videodata->key_layout[keycode]);
-#if 0
-            if (videodata->key_layout[keycode] == SDLK_UNKNOWN) {
+#if 1
+            if (videodata->key_layout[keycode] == SDL_SCANCODE_UNKNOWN) {
                 int min_keycode, max_keycode;
-                XDisplayKeycodes(videodata->display, &min_keycode,
-                                 &max_keycode);
-                keysym = XKeycodeToKeysym(videodata->display, keycode, 0);
+                XDisplayKeycodes(display, &min_keycode, &max_keycode);
+                keysym = XKeycodeToKeysym(display, keycode, 0);
                 fprintf(stderr,
-                        "The key you just pressed is not recognized by SDL. To help get this fixed, please report this to the SDL mailing list <sdl@libsdl.org> X11 KeyCode %d (%d), X11 KeySym 0x%X (%s).\n",
+                        "The key you just pressed is not recognized by SDL. To help get this fixed, please report this to the SDL mailing list <sdl@libsdl.org> X11 KeyCode %d (%d), X11 KeySym 0x%lX (%s).\n",
                         keycode, keycode - min_keycode, keysym,
                         XKeysymToString(keysym));
             }
@@ -211,6 +275,10 @@ X11_DispatchEvent(_THIS)
 #ifdef DEBUG_XEVENTS
             printf("KeyRelease (X11 keycode = 0x%X)\n", xevent.xkey.keycode);
 #endif
+            if (X11_KeyRepeat(display, &xevent)) {
+                /* We're about to get a repeated key down, ignore the key up */
+                break;
+            }
             SDL_SendKeyboardKey(SDL_RELEASED, videodata->key_layout[keycode]);
         }
         break;
@@ -272,17 +340,147 @@ X11_DispatchEvent(_THIS)
 #ifdef DEBUG_MOTION
             printf("X11 motion: %d,%d\n", xevent.xmotion.x, xevent.xmotion.y);
 #endif
-            SDL_SendMouseMotion(0, xevent.xmotion.x, xevent.xmotion.y);
+            SDL_SendMouseMotion(data->window, 0, xevent.xmotion.x, xevent.xmotion.y);
         }
         break;
 
     case ButtonPress:{
-            SDL_SendMouseButton(SDL_PRESSED, xevent.xbutton.button);
+            int ticks = 0;
+            if (X11_IsWheelEvent(display,&xevent,&ticks) == SDL_TRUE) {
+                SDL_SendMouseWheel(data->window, 0, ticks);
+            }
+            else {
+                SDL_SendMouseButton(data->window, SDL_PRESSED, xevent.xbutton.button);
+            }
         }
         break;
 
     case ButtonRelease:{
-            SDL_SendMouseButton(SDL_RELEASED, xevent.xbutton.button);
+            SDL_SendMouseButton(data->window, SDL_RELEASED, xevent.xbutton.button);
+        }
+        break;
+
+    case PropertyNotify:{
+#ifdef DEBUG_XEVENTS
+            unsigned char *propdata;
+            int status, real_format;
+            Atom real_type;
+            unsigned long items_read, items_left, i;
+
+            char *name = XGetAtomName(display, xevent.xproperty.atom);
+            if (name) {
+                printf("PropertyNotify: %s %s\n", name, (xevent.xproperty.state == PropertyDelete) ? "deleted" : "changed");
+                XFree(name);
+            }
+
+            status = XGetWindowProperty(display, data->xwindow, xevent.xproperty.atom, 0L, 8192L, False, AnyPropertyType, &real_type, &real_format, &items_read, &items_left, &propdata);
+            if (status == Success && items_read > 0) {
+                if (real_type == XA_INTEGER) {
+                    int *values = (int *)propdata;
+
+                    printf("{");
+                    for (i = 0; i < items_read; i++) {
+                        printf(" %d", values[i]);
+                    }
+                    printf(" }\n");
+                } else if (real_type == XA_CARDINAL) {
+                    if (real_format == 32) {
+                        Uint32 *values = (Uint32 *)propdata;
+
+                        printf("{");
+                        for (i = 0; i < items_read; i++) {
+                            printf(" %d", values[i]);
+                        }
+                        printf(" }\n");
+                    } else if (real_format == 16) {
+                        Uint16 *values = (Uint16 *)propdata;
+
+                        printf("{");
+                        for (i = 0; i < items_read; i++) {
+                            printf(" %d", values[i]);
+                        }
+                        printf(" }\n");
+                    } else if (real_format == 8) {
+                        Uint8 *values = (Uint8 *)propdata;
+
+                        printf("{");
+                        for (i = 0; i < items_read; i++) {
+                            printf(" %d", values[i]);
+                        }
+                        printf(" }\n");
+                    }
+                } else if (real_type == XA_STRING ||
+                           real_type == videodata->UTF8_STRING) {
+                    printf("{ \"%s\" }\n", propdata);
+                } else if (real_type == XA_ATOM) {
+                    Atom *atoms = (Atom *)propdata;
+
+                    printf("{");
+                    for (i = 0; i < items_read; i++) {
+                        char *name = XGetAtomName(display, atoms[i]);
+                        if (name) {
+                            printf(" %s", name);
+                            XFree(name);
+                        }
+                    }
+                    printf(" }\n");
+                } else {
+                    char *name = XGetAtomName(display, real_type);
+                    printf("Unknown type: %ld (%s)\n", real_type, name ? name : "UNKNOWN");
+                    if (name) {
+                        XFree(name);
+                    }
+                }
+            }
+#endif
+        }
+        break;
+
+    /* Copy the selection from XA_CUT_BUFFER0 to the requested property */
+    case SelectionRequest: {
+            XSelectionRequestEvent *req;
+            XEvent sevent;
+            int seln_format;
+            unsigned long nbytes;
+            unsigned long overflow;
+            unsigned char *seln_data;
+
+            req = &xevent.xselectionrequest;
+#ifdef DEBUG_XEVENTS
+            printf("SelectionRequest (requestor = %ld, target = %ld)\n",
+                req->requestor, req->target);
+#endif
+
+            SDL_zero(sevent);
+            sevent.xany.type = SelectionNotify;
+            sevent.xselection.selection = req->selection;
+            sevent.xselection.target = None;
+            sevent.xselection.property = None;
+            sevent.xselection.requestor = req->requestor;
+            sevent.xselection.time = req->time;
+            if (XGetWindowProperty(display, DefaultRootWindow(display),
+                    XA_CUT_BUFFER0, 0, INT_MAX/4, False, req->target,
+                    &sevent.xselection.target, &seln_format, &nbytes,
+                    &overflow, &seln_data) == Success) {
+                if (sevent.xselection.target == req->target) {
+                    XChangeProperty(display, req->requestor, req->property,
+                        sevent.xselection.target, seln_format, PropModeReplace,
+                        seln_data, nbytes);
+                    sevent.xselection.property = req->property;
+                }
+                XFree(seln_data);
+            }
+            XSendEvent(display, req->requestor, False, 0, &sevent);
+            XSync(display, False);
+        }
+        break;
+
+    case SelectionNotify: {
+#ifdef DEBUG_XEVENTS
+            printf("SelectionNotify (requestor = %ld, target = %ld)\n",
+                xevent.xselection.requestor, xevent.xselection.target);
+#endif
+            videodata->selection_waiting = SDL_FALSE;
         }
         break;
 
@@ -296,7 +494,7 @@ X11_DispatchEvent(_THIS)
 }
 
 /* Ack!  XPending() actually performs a blocking read if no events available */
-int
+static int
 X11_Pending(Display * display)
 {
     /* Flush the display connection and look to see if events are queued */
@@ -323,6 +521,11 @@ X11_Pending(Display * display)
     return (0);
 }
 
+
+/* !!! FIXME: this should be exposed in a header, or something. */
+int SDL_GetNumTouch(void);
+
+
 void
 X11_PumpEvents(_THIS)
 {
@@ -342,6 +545,85 @@ X11_PumpEvents(_THIS)
     while (X11_Pending(data->display)) {
         X11_DispatchEvent(_this);
     }
+
+#ifdef SDL_INPUT_LINUXEV
+    /* Process Touch events - TODO When X gets touch support, use that instead*/
+    int i = 0,rd;
+    struct input_event ev[64];
+    int size = sizeof (struct input_event);
+
+/* !!! FIXME: clean the tabstops out of here. */
+    for(i = 0;i < SDL_GetNumTouch();++i) {
+	SDL_Touch* touch = SDL_GetTouchIndex(i);
+	if(!touch) printf("Touch %i/%i DNE\n",i,SDL_GetNumTouch());
+	EventTouchData* data;
+	data = (EventTouchData*)(touch->driverdata);
+	if(data == NULL) {
+	  printf("No driver data\n");
+	  continue;
+	}
+	if(data->eventStream <= 0) 
+	    printf("Error: Couldn't open stream\n");
+	rd = read(data->eventStream, ev, size * 64);
+	if(rd >= size) {
+	    for (i = 0; i < rd / sizeof(struct input_event); i++) {
+		switch (ev[i].type) {
+		case EV_ABS:
+		    switch (ev[i].code) {
+			case ABS_X:
+			    data->x = ev[i].value;
+			    break;
+			case ABS_Y:
+			    data->y = ev[i].value;
+			    break;
+			case ABS_PRESSURE:
+			    data->pressure = ev[i].value;
+			    if(data->pressure < 0) data->pressure = 0;
+			    break;
+			case ABS_MISC:
+			    if(ev[i].value == 0)
+			        data->up = SDL_TRUE;			    
+			    break;
+			}
+		    break;
+		case EV_MSC:
+			if(ev[i].code == MSC_SERIAL)
+				data->finger = ev[i].value;
+			break;
+		case EV_KEY:
+			if(ev[i].code == BTN_TOUCH)
+			    if(ev[i].value == 0)
+			        data->up = SDL_TRUE;
+			break;
+		case EV_SYN:
+		  if(!data->down) {
+		      data->down = SDL_TRUE;
+		      SDL_SendFingerDown(touch->id,data->finger,
+		    		  data->down, data->x, data->y,
+		    		  data->pressure);
+		  }
+		  else if(!data->up)
+		    SDL_SendTouchMotion(touch->id,data->finger, 
+					SDL_FALSE, data->x,data->y,
+					data->pressure);
+		  else
+		  {
+		      data->down = SDL_FALSE;
+			  SDL_SendFingerDown(touch->id,data->finger,
+					  data->down, data->x,data->y,
+					  data->pressure);
+			  data->x = -1;
+			  data->y = -1;
+			  data->pressure = -1;
+			  data->finger = 0;
+			  data->up = SDL_FALSE;
+		  }
+		  break;		
+		}
+	    }
+	}
+    }
+#endif
 }
 
 /* This is so wrong it hurts */
@@ -375,7 +657,7 @@ gnome_screensaver_enable()
 void
 X11_SuspendScreenSaver(_THIS)
 {
-#if SDL_VIDEO_DRIVER_X11_SCRNSAVER
+#if SDL_VIDEO_DRIVER_X11_XSCRNSAVER
     SDL_VideoData *data = (SDL_VideoData *) _this->driverdata;
     int dummy;
     int major_version, minor_version;
@@ -402,5 +684,7 @@ X11_SuspendScreenSaver(_THIS)
     }
 #endif
 }
+
+#endif /* SDL_VIDEO_DRIVER_X11 */
 
 /* vi: set ts=4 sw=4 expandtab: */

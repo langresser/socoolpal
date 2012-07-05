@@ -2,17 +2,17 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := sdl_mixer
+LOCAL_MODULE := SDL_mixer
 
-LOCAL_CFLAGS := -I$(LOCAL_PATH) -I$(LOCAL_PATH)/.. -I$(LOCAL_PATH)/../sdl/include \
-					-DWAV_MUSIC -DOGG_USE_TREMOR -DOGG_MUSIC
+LOCAL_C_INCLUDES := \
+	$(LOCAL_PATH)/.. \
+	$(LOCAL_PATH)/../SDL/include \
 
-LOCAL_CPP_EXTENSION := .cpp
+LOCAL_CFLAGS := -DWAV_MUSIC -DOGG_MUSIC -DOGG_USE_TREMOR -DMOD_MUSIC
 
-# Note this simple makefile var substitution, you can find even simpler examples in different Android projects
-LOCAL_SRC_FILES := $(notdir $(wildcard $(LOCAL_PATH)/*.c))
+LOCAL_SRC_FILES := $(notdir $(filter-out %/playmus.c %/playwave.c, $(wildcard $(LOCAL_PATH)/*.c)))
 
-LOCAL_SHARED_LIBRARIES := sdl tremor
+LOCAL_SHARED_LIBRARIES := SDL
+LOCAL_STATIC_LIBRARIES := tremor
 
 include $(BUILD_SHARED_LIBRARY)
-

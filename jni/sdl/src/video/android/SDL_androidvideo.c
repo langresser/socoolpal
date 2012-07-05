@@ -1,251 +1,173 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2009 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2012 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-
-#include <jni.h>
-#include <android/log.h>
-#include <GLES/gl.h>
-#include <GLES/glext.h>
-#include <sys/time.h>
-#include <time.h>
-#include <stdint.h>
-#include <math.h>
-#include <string.h> // for memset()
-
 #include "SDL_config.h"
+
+#if SDL_VIDEO_DRIVER_ANDROID
+
+/* Android SDL video driver implementation
+*/
 
 #include "SDL_video.h"
 #include "SDL_mouse.h"
-#include "SDL_mutex.h"
-#include "SDL_thread.h"
 #include "../SDL_sysvideo.h"
 #include "../SDL_pixels_c.h"
 #include "../../events/SDL_events_c.h"
+#include "../../events/SDL_windowevents_c.h"
 
 #include "SDL_androidvideo.h"
+#include "SDL_androidevents.h"
+#include "SDL_androidkeyboard.h"
+#include "SDL_androidwindow.h"
 
+#define ANDROID_VID_DRIVER_NAME "Android"
 
 /* Initialization/Query functions */
-static int ANDROID_VideoInit(_THIS);
-static int ANDROID_GetDisplayBounds(_THIS, SDL_VideoDisplay * display, SDL_Rect * rect);
-static void ANDROID_GetDisplayModes(_THIS, SDL_VideoDisplay * display);
-static int ANDROID_SetDisplayMode(_THIS, SDL_VideoDisplay * display, SDL_DisplayMode * mode);
-static void ANDROID_VideoQuit(_THIS);
+static int Android_VideoInit(_THIS);
+static void Android_VideoQuit(_THIS);
 
-static void ANDROID_GL_SwapBuffers(_THIS, SDL_Window * window);
-// Stubs
-static SDL_GLContext ANDROID_GL_CreateContext(_THIS, SDL_Window * window);
-static int ANDROID_GL_MakeCurrent (_THIS, SDL_Window * window, SDL_GLContext context);
-static void ANDROID_GL_DeleteContext (_THIS, SDL_GLContext context);
+/* GL functions (SDL_androidgl.c) */
+extern int Android_GL_LoadLibrary(_THIS, const char *path);
+extern void *Android_GL_GetProcAddress(_THIS, const char *proc);
+extern void Android_GL_UnloadLibrary(_THIS);
+//extern int *Android_GL_GetVisual(_THIS, Display * display, int screen);
+extern SDL_GLContext Android_GL_CreateContext(_THIS, SDL_Window * window);
+extern int Android_GL_MakeCurrent(_THIS, SDL_Window * window,
+                              SDL_GLContext context);
+extern int Android_GL_SetSwapInterval(_THIS, int interval);
+extern int Android_GL_GetSwapInterval(_THIS);
+extern void Android_GL_SwapWindow(_THIS, SDL_Window * window);
+extern void Android_GL_DeleteContext(_THIS, SDL_GLContext context);
+
+/* Android driver bootstrap functions */
 
 
-// The device screen dimensions to draw on
-static int sWindowWidth  = 320;
-static int sWindowHeight = 480;
+// These are filled in with real values in Android_SetScreenResolution on 
+// init (before SDL_main())
+int Android_ScreenWidth = 0;
+int Android_ScreenHeight = 0;
+Uint32 Android_ScreenFormat = SDL_PIXELFORMAT_UNKNOWN;
 
-// Extremely wicked JNI environment to call Java functions from C code
-static JNIEnv* JavaEnv = NULL;
-static jclass JavaRendererClass = NULL;
-static jobject JavaRenderer = NULL;
-static jmethodID JavaSwapBuffers = NULL;
+/* Currently only one window */
+SDL_Window *Android_Window = NULL;
 
-static void SdlGlRenderInit();
-
-/* ANDROID driver bootstrap functions */
-
-static int ANDROID_Available(void)
+static int
+Android_Available(void)
 {
-	return 1;
+    return 1;
 }
 
-static void ANDROID_DeleteDevice(SDL_VideoDevice *device)
+static void
+Android_DeleteDevice(SDL_VideoDevice * device)
 {
-	SDL_free(device);
+    SDL_free(device);
 }
 
-static SDL_VideoDevice *ANDROID_CreateDevice(int devindex)
+static SDL_VideoDevice *
+Android_CreateDevice(int devindex)
 {
-	SDL_VideoDevice *device;
+    printf("Creating video device\n");
+    SDL_VideoDevice *device;
 
-	/* Initialize all variables that we clean on shutdown */
-	device = (SDL_VideoDevice *)SDL_malloc(sizeof(SDL_VideoDevice));
-	if ( device ) {
-		SDL_memset(device, 0, sizeof (*device));
-	}
-	if ( (device == NULL) ) {
-		SDL_OutOfMemory();
-		if ( device ) {
-			SDL_free(device);
-		}
-		return(0);
-	}
+    /* Initialize all variables that we clean on shutdown */
+    device = (SDL_VideoDevice *) SDL_calloc(1, sizeof(SDL_VideoDevice));
+    if (!device) {
+        SDL_OutOfMemory();
+        if (device) {
+            SDL_free(device);
+        }
+        return (0);
+    }
 
-	/* Set the function pointers */
-	device->VideoInit = ANDROID_VideoInit;
-	device->GetDisplayBounds = ANDROID_GetDisplayBounds;
-	device->GetDisplayModes = ANDROID_GetDisplayModes;
-	device->SetDisplayMode = ANDROID_SetDisplayMode;
-	device->PumpEvents = ANDROID_PumpEvents;
-	device->VideoQuit = ANDROID_VideoQuit;
-	device->free = ANDROID_DeleteDevice;
-	
-	device->GL_SwapWindow = ANDROID_GL_SwapBuffers;
-	device->GL_CreateContext = ANDROID_GL_CreateContext;
-	device->GL_MakeCurrent = ANDROID_GL_MakeCurrent;
-	device->GL_DeleteContext = ANDROID_GL_DeleteContext;
+    /* Set the function pointers */
+    device->VideoInit = Android_VideoInit;
+    device->VideoQuit = Android_VideoQuit;
+    device->PumpEvents = Android_PumpEvents;
 
-	return device;
+    device->CreateWindow = Android_CreateWindow;
+    device->SetWindowTitle = Android_SetWindowTitle;
+    device->DestroyWindow = Android_DestroyWindow;
+
+    device->free = Android_DeleteDevice;
+
+    /* GL pointers */
+    device->GL_LoadLibrary = Android_GL_LoadLibrary;
+    device->GL_GetProcAddress = Android_GL_GetProcAddress;
+    device->GL_UnloadLibrary = Android_GL_UnloadLibrary;
+    device->GL_CreateContext = Android_GL_CreateContext;
+    device->GL_MakeCurrent = Android_GL_MakeCurrent;
+    device->GL_SetSwapInterval = Android_GL_SetSwapInterval;
+    device->GL_GetSwapInterval = Android_GL_GetSwapInterval;
+    device->GL_SwapWindow = Android_GL_SwapWindow;
+    device->GL_DeleteContext = Android_GL_DeleteContext;
+
+    return device;
 }
 
-VideoBootStrap ANDROID_bootstrap = {
-	"android", "SDL Android video driver",
-	ANDROID_Available, ANDROID_CreateDevice
+VideoBootStrap Android_bootstrap = {
+    ANDROID_VID_DRIVER_NAME, "SDL Android video driver",
+    Android_Available, Android_CreateDevice
 };
 
 
-int ANDROID_VideoInit(_THIS)
+int
+Android_VideoInit(_THIS)
 {
-	SDL_VideoDisplay display;
-	SDL_DisplayMode mode;
+    SDL_DisplayMode mode;
 
-	mode.w = sWindowWidth;
-	mode.h = sWindowHeight;
-	mode.refresh_rate = 0;
-	mode.format = SDL_PIXELFORMAT_RGB565;
-	mode.driverdata = NULL;
+    mode.format = Android_ScreenFormat;
+    mode.w = Android_ScreenWidth;
+    mode.h = Android_ScreenHeight;
+    mode.refresh_rate = 0;
+    mode.driverdata = NULL;
+    if (SDL_AddBasicVideoDisplay(&mode) < 0) {
+        return -1;
+    }
 
-	SDL_zero(display);
-	display.desktop_mode = mode;
-	display.current_mode = mode;
-	display.driverdata = NULL;
-	SDL_AddVideoDisplay(&display);
+    SDL_zero(mode);
+    SDL_AddDisplayMode(&_this->displays[0], &mode);
 
-	return 1;
+    Android_InitKeyboard();
+
+    /* We're done! */
+    return 0;
 }
 
-
-void ANDROID_GetDisplayModes(_THIS, SDL_VideoDisplay * display)
-{
-	SDL_DisplayMode mode;
-	mode.w = sWindowWidth;
-	mode.h = sWindowHeight;
-	mode.refresh_rate = 0;
-	mode.format = SDL_PIXELFORMAT_RGB565;
-	mode.driverdata = NULL;
-	SDL_AddDisplayMode(display, &mode);
-
-	/*
-	struct compatModes_t { int x, int y } compatModes[] =
-	{ {800, 600}, {640, 480}, {320, 240}, {320, 200} };
-	
-	for(int i = 0; i < sizeof(compatModes) / sizeof(compatModes[0]); i++)
-		if( sWindowWidth >= compatModes[i].x && sWindowHeight >= compatModes[i].y )
-		{
-			mode.w = compatModes[i].x;
-			mode.h = compatModes[i].y;
-			SDL_AddDisplayMode(display, &mode);
-		}
-	*/
-}
-
-int ANDROID_GetDisplayBounds(_THIS, SDL_VideoDisplay * display, SDL_Rect * rect)
-{
-	rect->w = sWindowWidth;
-	rect->h = sWindowHeight;
-	return 1;
-};
-
-int ANDROID_SetDisplayMode(_THIS, SDL_VideoDisplay * display, SDL_DisplayMode * mode)
-{
-	return 1;
-};
-
-
-/* Note:  If we are terminated, this could be called in the middle of
-   another SDL video routine -- notably UpdateRects.
-*/
-void ANDROID_VideoQuit(_THIS)
+void
+Android_VideoQuit(_THIS)
 {
 }
 
-void ANDROID_PumpEvents(_THIS)
+/* This function gets called before VideoInit() */
+void
+Android_SetScreenResolution(int width, int height, Uint32 format)
 {
+    Android_ScreenWidth = width;
+    Android_ScreenHeight = height;   
+    Android_ScreenFormat = format;
+
+    if (Android_Window) {
+        SDL_SendWindowEvent(Android_Window, SDL_WINDOWEVENT_RESIZED, width, height);
+    }
 }
 
-static inline int CallJavaSwapBuffers()
-{
-	return (*JavaEnv)->CallIntMethod( JavaEnv, JavaRenderer, JavaSwapBuffers );
-}
+#endif /* SDL_VIDEO_DRIVER_ANDROID */
 
-void ANDROID_GL_SwapBuffers(_THIS, SDL_Window * window)
-{
-	CallJavaSwapBuffers();
-};
-
-SDL_GLContext ANDROID_GL_CreateContext(_THIS, SDL_Window * window)
-{
-	return (SDL_GLContext)1;
-};
-int ANDROID_GL_MakeCurrent (_THIS, SDL_Window * window, SDL_GLContext context)
-{
-	return 1;
-};
-void ANDROID_GL_DeleteContext (_THIS, SDL_GLContext context)
-{
-};
-
-/* JNI-C++ wrapper stuff */
-
-#ifndef SDL_JAVA_PACKAGE_PATH
-#error You have to define SDL_JAVA_PACKAGE_PATH to your package path with dots replaced with underscores, for example "com_example_SanAngeles"
-#endif
-#define JAVA_EXPORT_NAME2(name,package) Java_##package##_##name
-#define JAVA_EXPORT_NAME1(name,package) JAVA_EXPORT_NAME2(name,package)
-#define JAVA_EXPORT_NAME(name) JAVA_EXPORT_NAME1(name,SDL_JAVA_PACKAGE_PATH)
-
-JNIEXPORT void JNICALL 
-JAVA_EXPORT_NAME(DemoRenderer_nativeResize) ( JNIEnv*  env, jobject  thiz, jint w, jint h )
-{
-    sWindowWidth  = w;
-    sWindowHeight = h;
-    __android_log_print(ANDROID_LOG_INFO, "libSDL", "Physical screen resolution is %dx%d", w, h);
-}
-
-JNIEXPORT void JNICALL 
-JAVA_EXPORT_NAME(DemoRenderer_nativeDone) ( JNIEnv*  env, jobject  thiz )
-{
-	__android_log_print(ANDROID_LOG_INFO, "libSDL", "quitting...");
-	SDL_SendQuit();
-	__android_log_print(ANDROID_LOG_INFO, "libSDL", "quit OK");
-}
-
-JNIEXPORT void JNICALL 
-JAVA_EXPORT_NAME(DemoRenderer_nativeInitJavaCallbacks) ( JNIEnv*  env, jobject thiz )
-{
-	JavaEnv = env;
-	JavaRenderer = thiz;
-	
-	JavaRendererClass = (*JavaEnv)->GetObjectClass(JavaEnv, thiz);
-	JavaSwapBuffers = (*JavaEnv)->GetMethodID(JavaEnv, JavaRendererClass, "swapBuffers", "()I");
-	
-	ANDROID_InitOSKeymap();
-	
-}
+/* vi: set ts=4 sw=4 expandtab: */

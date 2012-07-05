@@ -1,31 +1,30 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2009 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2012 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
 #include "SDL_config.h"
-
-#include "SDL_cocoavideo.h"
 
 /* NSOpenGL implementation of SDL OpenGL support */
 
 #if SDL_VIDEO_OPENGL_CGL
+#include "SDL_cocoavideo.h"
+
 #include <OpenGL/CGLTypes.h>
 #include <OpenGL/OpenGL.h>
 #include <OpenGL/CGLRenderers.h>
@@ -35,16 +34,6 @@
 
 
 #define DEFAULT_OPENGL  "/System/Library/Frameworks/OpenGL.framework/Libraries/libGL.dylib"
-
-/* This is implemented in Mac OS X 10.3 and above */
-#if MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_3
-@implementation NSOpenGLContext(CGLContextAccess)
-- (CGLContextObj)CGLContextObj;
-{
-    return _contextAuxiliary;
-}
-@end
-#endif /* < 10.3 */
 
 int
 Cocoa_GL_LoadLibrary(_THIS, const char *path)
@@ -82,7 +71,7 @@ SDL_GLContext
 Cocoa_GL_CreateContext(_THIS, SDL_Window * window)
 {
     NSAutoreleasePool *pool;
-    SDL_VideoDisplay *display = window->display;
+    SDL_VideoDisplay *display = SDL_GetDisplayForWindow(window);
     SDL_DisplayData *displaydata = (SDL_DisplayData *)display->driverdata;
     NSOpenGLPixelFormatAttribute attr[32];
     NSOpenGLPixelFormat *fmt;
@@ -91,9 +80,11 @@ Cocoa_GL_CreateContext(_THIS, SDL_Window * window)
 
     pool = [[NSAutoreleasePool alloc] init];
 
+#ifndef FULLSCREEN_TOGGLEABLE
     if (window->flags & SDL_WINDOW_FULLSCREEN) {
         attr[i++] = NSOpenGLPFAFullScreen;
     }
+#endif
 
     attr[i++] = NSOpenGLPFAColorSize;
     attr[i++] = SDL_BYTESPERPIXEL(display->current_mode.format)*8;
@@ -180,7 +171,7 @@ Cocoa_GL_CreateContext(_THIS, SDL_Window * window)
     #endif
 
     {
-        long cache_max = 64;
+        GLint cache_max = 64;
         CGLContextObj ctx = [context CGLContextObj];
         CGLSetParameter (ctx, GLI_SUBMIT_FUNC_CACHE_MAX, &cache_max);
         CGLSetParameter (ctx, GLI_ARRAY_FUNC_CACHE_MAX, &cache_max);
@@ -209,9 +200,12 @@ Cocoa_GL_MakeCurrent(_THIS, SDL_Window * window, SDL_GLContext context)
         SDL_WindowData *windowdata = (SDL_WindowData *)window->driverdata;
         NSOpenGLContext *nscontext = (NSOpenGLContext *)context;
 
+#ifndef FULLSCREEN_TOGGLEABLE
         if (window->flags & SDL_WINDOW_FULLSCREEN) {
             [nscontext setFullScreen];
-        } else {
+        } else
+#endif
+        {
             [nscontext setView:[windowdata->nswindow contentView]];
             [nscontext update];
         }

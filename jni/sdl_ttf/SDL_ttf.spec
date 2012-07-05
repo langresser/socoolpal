@@ -1,5 +1,5 @@
 %define name SDL_ttf
-%define version 2.0.9
+%define version 2.0.11
 %define release 1
 
 Summary: Simple DirectMedia Layer - Sample TrueType Font Library
@@ -56,6 +56,7 @@ rm -rf $RPM_BUILD_ROOT
 %{prefix}/lib/lib*.la
 %{prefix}/lib/lib*.so
 %{prefix}/include/SDL/
+%{prefix}/lib/pkgconfig/*.pc
 
 %changelog
 * Wed Jan 19 2000 Sam Lantinga 

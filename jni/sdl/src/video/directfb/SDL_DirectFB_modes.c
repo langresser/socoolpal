@@ -1,31 +1,33 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2010 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2012 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
 #include "SDL_config.h"
 
+#if SDL_VIDEO_DRIVER_DIRECTFB
+
 #include "SDL_DirectFB_video.h"
+#include "SDL_DirectFB_modes.h"
 
 #define DFB_MAX_MODES 200
 
-struct scn_callback_t
+struct screen_callback_t
 {
     int numscreens;
     DFBScreenID screenid[DFB_MAX_SCREENS];
@@ -39,114 +41,6 @@ struct modes_callback_t
     int nummodes;
     SDL_DisplayMode *modelist;
 };
-
-static int
-DFBToSDLPixelFormat(DFBSurfacePixelFormat pixelformat, Uint32 * fmt)
-{
-    switch (pixelformat) {
-    case DSPF_ALUT44:
-        *fmt = SDL_PIXELFORMAT_INDEX4LSB;
-        break;
-    case DSPF_LUT8:
-        *fmt = SDL_PIXELFORMAT_INDEX8;
-        break;
-    case DSPF_RGB332:
-        *fmt = SDL_PIXELFORMAT_RGB332;
-        break;
-    case DSPF_ARGB4444:
-        *fmt = SDL_PIXELFORMAT_ARGB4444;
-        break;
-    case SDL_PIXELFORMAT_ARGB1555:
-        *fmt = SDL_PIXELFORMAT_ARGB1555;
-        break;
-    case DSPF_RGB16:
-        *fmt = SDL_PIXELFORMAT_RGB565;
-        break;
-    case DSPF_RGB24:
-        *fmt = SDL_PIXELFORMAT_RGB24;
-        break;
-    case DSPF_RGB32:
-        *fmt = SDL_PIXELFORMAT_RGB888;
-        break;
-    case DSPF_ARGB:
-        *fmt = SDL_PIXELFORMAT_ARGB8888;
-        break;
-    case DSPF_YV12:
-        *fmt = SDL_PIXELFORMAT_YV12;
-        break;                  /* Planar mode: Y + V + U  (3 planes) */
-    case DSPF_I420:
-        *fmt = SDL_PIXELFORMAT_IYUV;
-        break;                  /* Planar mode: Y + U + V  (3 planes) */
-    case DSPF_YUY2:
-        *fmt = SDL_PIXELFORMAT_YUY2;
-        break;                  /* Packed mode: Y0+U0+Y1+V0 (1 plane) */
-    case DSPF_UYVY:
-        *fmt = SDL_PIXELFORMAT_UYVY;
-        break;                  /* Packed mode: U0+Y0+V0+Y1 (1 plane) */
-    default:
-        return -1;
-    }
-    return 0;
-}
-
-static DFBSurfacePixelFormat
-SDLToDFBPixelFormat(Uint32 format)
-{
-    switch (format) {
-    case SDL_PIXELFORMAT_INDEX4LSB:
-        return DSPF_ALUT44;
-    case SDL_PIXELFORMAT_INDEX8:
-        return DSPF_LUT8;
-    case SDL_PIXELFORMAT_RGB332:
-        return DSPF_RGB332;
-    case SDL_PIXELFORMAT_RGB555:
-        return DSPF_ARGB1555;
-    case SDL_PIXELFORMAT_ARGB4444:
-        return DSPF_ARGB4444;
-    case SDL_PIXELFORMAT_ARGB1555:
-        return DSPF_ARGB1555;
-    case SDL_PIXELFORMAT_RGB565:
-        return DSPF_RGB16;
-    case SDL_PIXELFORMAT_RGB24:
-        return DSPF_RGB24;
-    case SDL_PIXELFORMAT_RGB888:
-        return DSPF_RGB32;
-    case SDL_PIXELFORMAT_ARGB8888:
-        return DSPF_ARGB;
-    case SDL_PIXELFORMAT_YV12:
-        return DSPF_YV12;       /* Planar mode: Y + V + U  (3 planes) */
-    case SDL_PIXELFORMAT_IYUV:
-        return DSPF_I420;       /* Planar mode: Y + U + V  (3 planes) */
-    case SDL_PIXELFORMAT_YUY2:
-        return DSPF_YUY2;       /* Packed mode: Y0+U0+Y1+V0 (1 plane) */
-    case SDL_PIXELFORMAT_UYVY:
-        return DSPF_UYVY;       /* Packed mode: U0+Y0+V0+Y1 (1 plane) */
-    case SDL_PIXELFORMAT_YVYU:
-        return DSPF_UNKNOWN;    /* Packed mode: Y0+V0+Y1+U0 (1 plane) */
-    case SDL_PIXELFORMAT_INDEX1LSB:
-        return DSPF_UNKNOWN;
-    case SDL_PIXELFORMAT_INDEX1MSB:
-        return DSPF_UNKNOWN;
-    case SDL_PIXELFORMAT_INDEX4MSB:
-        return DSPF_UNKNOWN;
-    case SDL_PIXELFORMAT_RGB444:
-        return DSPF_UNKNOWN;
-    case SDL_PIXELFORMAT_BGR24:
-        return DSPF_UNKNOWN;
-    case SDL_PIXELFORMAT_BGR888:
-        return DSPF_UNKNOWN;
-    case SDL_PIXELFORMAT_RGBA8888:
-        return DSPF_UNKNOWN;
-    case SDL_PIXELFORMAT_ABGR8888:
-        return DSPF_UNKNOWN;
-    case SDL_PIXELFORMAT_BGRA8888:
-        return DSPF_UNKNOWN;
-    case SDL_PIXELFORMAT_ARGB2101010:
-        return DSPF_UNKNOWN;
-    default:
-        return DSPF_UNKNOWN;
-    }
-}
 
 static DFBEnumerationResult
 EnumModesCallback(int width, int height, int bpp, void *data)
@@ -164,25 +58,24 @@ EnumModesCallback(int width, int height, int bpp, void *data)
         modedata->modelist[modedata->nummodes++] = mode;
     }
 
-    SDL_DFB_DEBUG("w %d h %d bpp %d\n", width, height, bpp);
     return DFENUM_OK;
 }
 
 static DFBEnumerationResult
-cbScreens(DFBScreenID screen_id, DFBScreenDescription desc,
+EnumScreensCallback(DFBScreenID screen_id, DFBScreenDescription desc,
           void *callbackdata)
 {
-    struct scn_callback_t *devdata = (struct scn_callback_t *) callbackdata;
+    struct screen_callback_t *devdata = (struct screen_callback_t *) callbackdata;
 
     devdata->screenid[devdata->numscreens++] = screen_id;
     return DFENUM_OK;
 }
 
-DFBEnumerationResult
-cbLayers(DFBDisplayLayerID layer_id, DFBDisplayLayerDescription desc,
+static DFBEnumerationResult
+EnumLayersCallback(DFBDisplayLayerID layer_id, DFBDisplayLayerDescription desc,
          void *callbackdata)
 {
-    struct scn_callback_t *devdata = (struct scn_callback_t *) callbackdata;
+    struct screen_callback_t *devdata = (struct screen_callback_t *) callbackdata;
 
     if (desc.caps & DLCAPS_SURFACE) {
         if ((desc.type & DLTF_GRAPHICS) && (desc.type & DLTF_VIDEO)) {
@@ -202,13 +95,12 @@ CheckSetDisplayMode(_THIS, SDL_VideoDisplay * display, DFB_DisplayData * data, S
     SDL_DFB_DEVICEDATA(_this);
     DFBDisplayLayerConfig config;
     DFBDisplayLayerConfigFlags failed;
-    int ret;
 
     SDL_DFB_CHECKERR(data->layer->SetCooperativeLevel(data->layer,
                                                       DLSCL_ADMINISTRATIVE));
     config.width = mode->w;
     config.height = mode->h;
-    config.pixelformat = SDLToDFBPixelFormat(mode->format);
+    config.pixelformat = DirectFB_SDLToDFBPixelFormat(mode->format);
     config.flags = DLCONF_WIDTH | DLCONF_HEIGHT | DLCONF_PIXELFORMAT;
     if (devdata->use_yuv_underlays) {
         config.flags |= DLCONF_OPTIONS;
@@ -219,14 +111,37 @@ CheckSetDisplayMode(_THIS, SDL_VideoDisplay * display, DFB_DisplayData * data, S
     SDL_DFB_CHECKERR(data->layer->SetCooperativeLevel(data->layer,
                                                       DLSCL_SHARED));
     if (failed == 0)
+    {
         SDL_AddDisplayMode(display, mode);
+        SDL_DFB_LOG("Mode %d x %d Added\n", mode->w, mode->h);
+    }
     else
-        SDL_DFB_DEBUG("Mode %d x %d not available: %x\n", mode->w,
+        SDL_DFB_ERR("Mode %d x %d not available: %x\n", mode->w,
                       mode->h, failed);
 
     return;
   error:
     return;
+}
+
+
+void
+DirectFB_SetContext(_THIS, SDL_Window *window)
+{
+#if (DFB_VERSION_ATLEAST(1,0,0))
+    /* FIXME: does not work on 1.0/1.2 with radeon driver
+     *        the approach did work with the matrox driver
+     *        This has simply no effect.
+     */
+
+    SDL_VideoDisplay *display = SDL_GetDisplayForWindow(window);
+    DFB_DisplayData *dispdata = (DFB_DisplayData *) display->driverdata;
+
+	/* FIXME: should we handle the error */
+    if (dispdata->vidIDinuse)
+        SDL_DFB_CHECK(dispdata->vidlayer->SwitchContext(dispdata->vidlayer,
+                                                           DFB_TRUE));
+#endif
 }
 
 void
@@ -239,14 +154,14 @@ DirectFB_InitModes(_THIS)
     SDL_DisplayMode mode;
     DFBGraphicsDeviceDescription caps;
     DFBDisplayLayerConfig dlc;
-    struct scn_callback_t *screencbdata;
+    struct screen_callback_t *screencbdata;
 
     int tcw[DFB_MAX_SCREENS];
     int tch[DFB_MAX_SCREENS];
     int i;
     DFBResult ret;
 
-    SDL_DFB_CALLOC(screencbdata, 1, sizeof(*screencbdata));
+    SDL_DFB_ALLOC_CLEAR(screencbdata, sizeof(*screencbdata));
 
     screencbdata->numscreens = 0;
 
@@ -255,7 +170,7 @@ DirectFB_InitModes(_THIS)
         screencbdata->vidlayer[i] = -1;
     }
 
-    SDL_DFB_CHECKERR(devdata->dfb->EnumScreens(devdata->dfb, &cbScreens,
+    SDL_DFB_CHECKERR(devdata->dfb->EnumScreens(devdata->dfb, &EnumScreensCallback,
                                                screencbdata));
 
     for (i = 0; i < screencbdata->numscreens; i++) {
@@ -266,19 +181,16 @@ DirectFB_InitModes(_THIS)
                                                  [i], &screen));
 
         screencbdata->aux = i;
-        SDL_DFB_CHECKERR(screen->EnumDisplayLayers(screen, &cbLayers,
+        SDL_DFB_CHECKERR(screen->EnumDisplayLayers(screen, &EnumLayersCallback,
                                                    screencbdata));
         screen->GetSize(screen, &tcw[i], &tch[i]);
+
         screen->Release(screen);
     }
 
     /* Query card capabilities */
 
     devdata->dfb->GetDeviceDescription(devdata->dfb, &caps);
-
-    SDL_DFB_DEBUG("SDL directfb video driver - %s %s\n", __DATE__, __TIME__);
-    SDL_DFB_DEBUG("Using %s (%s) driver.\n", caps.name, caps.vendor);
-    SDL_DFB_DEBUG("Found %d screens\n", screencbdata->numscreens);
 
     for (i = 0; i < screencbdata->numscreens; i++) {
         SDL_DFB_CHECKERR(devdata->dfb->GetDisplayLayer(devdata->dfb,
@@ -296,18 +208,20 @@ DirectFB_InitModes(_THIS)
             dlc.options = DLOP_ALPHACHANNEL;
 
             ret = layer->SetConfiguration(layer, &dlc);
-            if (ret) {
+            if (ret != DFB_OK) {
                 /* try AiRGB if the previous failed */
                 dlc.pixelformat = DSPF_AiRGB;
-                ret = layer->SetConfiguration(layer, &dlc);
+                SDL_DFB_CHECKERR(layer->SetConfiguration(layer, &dlc));
             }
         }
 
         /* Query layer configuration to determine the current mode and pixelformat */
         dlc.flags = DLCONF_ALL;
-        layer->GetConfiguration(layer, &dlc);
+        SDL_DFB_CHECKERR(layer->GetConfiguration(layer, &dlc));
 
-        if (DFBToSDLPixelFormat(dlc.pixelformat, &mode.format) != 0) {
+        mode.format = DirectFB_DFBToSDLPixelFormat(dlc.pixelformat);
+        
+        if (mode.format == SDL_PIXELFORMAT_UNKNOWN) {
             SDL_DFB_ERR("Unknown dfb pixelformat %x !\n", dlc.pixelformat);
             goto error;
         }
@@ -317,7 +231,7 @@ DirectFB_InitModes(_THIS)
         mode.refresh_rate = 0;
         mode.driverdata = NULL;
 
-        SDL_DFB_CALLOC(dispdata, 1, sizeof(*dispdata));
+        SDL_DFB_ALLOC_CLEAR(dispdata, sizeof(*dispdata));
 
         dispdata->layer = layer;
         dispdata->pixelformat = dlc.pixelformat;
@@ -363,7 +277,6 @@ DirectFB_GetDisplayModes(_THIS, SDL_VideoDisplay * display)
     SDL_DisplayMode mode;
     struct modes_callback_t data;
     int i;
-    int ret;
 
     data.nummodes = 0;
     /* Enumerate the available fullscreen modes */
@@ -403,7 +316,6 @@ DirectFB_SetDisplayMode(_THIS, SDL_VideoDisplay * display, SDL_DisplayMode * mod
     DFB_DisplayData *data = (DFB_DisplayData *) display->driverdata;
     DFBDisplayLayerConfig config, rconfig;
     DFBDisplayLayerConfigFlags fail = 0;
-    DFBResult ret;
 
     SDL_DFB_CHECKERR(data->layer->SetCooperativeLevel(data->layer,
                                                       DLSCL_ADMINISTRATIVE));
@@ -412,7 +324,7 @@ DirectFB_SetDisplayMode(_THIS, SDL_VideoDisplay * display, SDL_DisplayMode * mod
     config.flags = DLCONF_WIDTH | DLCONF_HEIGHT;
     if (mode->format != SDL_PIXELFORMAT_UNKNOWN) {
         config.flags |= DLCONF_PIXELFORMAT;
-        config.pixelformat = SDLToDFBPixelFormat(mode->format);
+        config.pixelformat = DirectFB_SDLToDFBPixelFormat(mode->format);
         data->pixelformat = config.pixelformat;
     }
     config.width = mode->w;
@@ -433,7 +345,6 @@ DirectFB_SetDisplayMode(_THIS, SDL_VideoDisplay * display, SDL_DisplayMode * mod
         return -1;
     }
 
-    SDL_DFB_DEBUG("Trace\n");
     config.flags &= ~fail;
     SDL_DFB_CHECKERR(data->layer->SetConfiguration(data->layer, &config));
 #if (DFB_VERSION_ATLEAST(1,2,0))
@@ -467,20 +378,18 @@ DirectFB_SetDisplayMode(_THIS, SDL_VideoDisplay * display, SDL_DisplayMode * mod
 void
 DirectFB_QuitModes(_THIS)
 {
-    //DFB_DeviceData *devdata = (DFB_DeviceData *) _this->driverdata;
     SDL_DisplayMode tmode;
-    DFBResult ret;
     int i;
 
     for (i = 0; i < _this->num_displays; ++i) {
         SDL_VideoDisplay *display = &_this->displays[i];
         DFB_DisplayData *dispdata = (DFB_DisplayData *) display->driverdata;
 
-        SDL_GetDesktopDisplayModeForDisplay(display, &tmode);
+        SDL_GetDesktopDisplayMode(i, &tmode);
         tmode.format = SDL_PIXELFORMAT_UNKNOWN;
         DirectFB_SetDisplayMode(_this, display, &tmode);
 
-        SDL_GetDesktopDisplayModeForDisplay(display, &tmode);
+        SDL_GetDesktopDisplayMode(i, &tmode);
         DirectFB_SetDisplayMode(_this, display, &tmode);
 
         if (dispdata->layer) {
@@ -499,5 +408,7 @@ DirectFB_QuitModes(_THIS)
 
     }
 }
+
+#endif /* SDL_VIDEO_DRIVER_DIRECTFB */
 
 /* vi: set ts=4 sw=4 expandtab: */

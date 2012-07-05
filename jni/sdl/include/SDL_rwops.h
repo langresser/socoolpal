@@ -1,30 +1,29 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2010 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2012 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
 
 /**
  *  \file SDL_rwops.h
  *  
  *  This file provides a general interface for SDL to read and write
- *  data sources.  It can easily be extended to files, memory, etc.
+ *  data streams.  It can easily be extended to files, memory, etc.
  */
 
 #ifndef _SDL_rwops_h
@@ -50,14 +49,14 @@ typedef struct SDL_RWops
      *  Seek to \c offset relative to \c whence, one of stdio's whence values:
      *  RW_SEEK_SET, RW_SEEK_CUR, RW_SEEK_END
      *  
-     *  \return the final offset in the data source.
+     *  \return the final offset in the data stream.
      */
     long (SDLCALL * seek) (struct SDL_RWops * context, long offset,
                            int whence);
 
     /**
      *  Read up to \c maxnum objects each of size \c size from the data
-     *  source to the area pointed at by \c ptr.
+     *  stream to the area pointed at by \c ptr.
      *  
      *  \return the number of objects read, or 0 at error or end of file.
      */
@@ -65,8 +64,8 @@ typedef struct SDL_RWops
                             size_t size, size_t maxnum);
 
     /**
-     *  Write exactly \c num objects each of size \c objsize from the area
-     *  pointed at by \c ptr to data source.
+     *  Write exactly \c num objects each of size \c size from the area
+     *  pointed at by \c ptr to data stream.
      *  
      *  \return the number of objects written, or 0 at error or end of file.
      */
@@ -83,7 +82,20 @@ typedef struct SDL_RWops
     Uint32 type;
     union
     {
-#ifdef __WIN32__
+#if defined(ANDROID)
+        struct
+        {
+            void *fileName;
+            void *fileNameRef;
+            void *inputStream;
+            void *inputStreamRef;
+            void *readableByteChannel;
+            void *readableByteChannelRef;
+            void *readMethod;
+            long position;
+            int size;
+        } androidio;
+#elif defined(__WIN32__)
         struct
         {
             SDL_bool append;
@@ -94,8 +106,9 @@ typedef struct SDL_RWops
                 size_t size;
                 size_t left;
             } buffer;
-        } win32io;
+        } windowsio;
 #endif
+
 #ifdef HAVE_STDIO_H
         struct
         {
@@ -121,7 +134,7 @@ typedef struct SDL_RWops
 /**
  *  \name RWFrom functions
  *  
- *  Functions to create SDL_RWops structures from various data sources.
+ *  Functions to create SDL_RWops structures from various data streams.
  */
 /*@{*/
 

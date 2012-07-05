@@ -1,23 +1,22 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 2008 Edgar Simo
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2012 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
 #include "SDL_config.h"
 
@@ -26,52 +25,53 @@
 #include "SDL_haptic.h"
 #include "../SDL_syshaptic.h"
 #include "SDL_joystick.h"
-#include <nds/arm9/rumble.h>
 #include <nds/memory.h>
+#include <nds/arm9/rumble.h>
 
 #define MAX_HAPTICS  1
 /* right now only the ezf3in1 (and maybe official rumble pak) are supported
    and there can only be one of those in at a time (in GBA slot.) */
 
-SDL_Haptic *nds_haptic = NULL;
+static SDL_Haptic *nds_haptic = NULL;
 
-typedef struct
+struct haptic_hwdata
 {
     enum
     { NONE, OFFICIAL, EZF3IN1 } type;
     int pos;
-} NDS_HapticData;
+};
 
 
-void
+void
 NDS_EZF_OpenNorWrite() 
 {
-    GBA_BUS[0x0FF0000] = 0xD200;
-    GBA_BUS[0x0000000] = 0x1500;
-    GBA_BUS[0x0010000] = 0xD200;
-    GBA_BUS[0x0020000] = 0x1500;
-    GBA_BUS[0x0E20000] = 0x1500;
-    GBA_BUS[0x0FE0000] = 0x1500;
-} void
+    GBA_BUS[0x0FF0000] = 0xD200;
+    GBA_BUS[0x0000000] = 0x1500;
+    GBA_BUS[0x0010000] = 0xD200;
+    GBA_BUS[0x0020000] = 0x1500;
+    GBA_BUS[0x0E20000] = 0x1500;
+    GBA_BUS[0x0FE0000] = 0x1500;
+}
 
+void
 NDS_EZF_CloseNorWrite() 
 {
-    GBA_BUS[0x0FF0000] = 0xD200;
-    GBA_BUS[0x0000000] = 0x1500;
-    GBA_BUS[0x0010000] = 0xD200;
-    GBA_BUS[0x0020000] = 0x1500;
-    GBA_BUS[0x0E20000] = 0xD200;
-    GBA_BUS[0x0FE0000] = 0x1500;
-}
+    GBA_BUS[0x0FF0000] = 0xD200;
+    GBA_BUS[0x0000000] = 0x1500;
+    GBA_BUS[0x0010000] = 0xD200;
+    GBA_BUS[0x0020000] = 0x1500;
+    GBA_BUS[0x0E20000] = 0xD200;
+    GBA_BUS[0x0FE0000] = 0x1500;
+}
 
 void
 NDS_EZF_ChipReset()
 {
-    GBA_BUS[0x0000] = 0x00F0;
-    GBA_BUS[0x1000] = 0x00F0;
-} uint32 NDS_EZF_IsPresent() 
+    GBA_BUS[0x0000] = 0x00F0;
+    GBA_BUS[0x1000] = 0x00F0;
+} uint32 NDS_EZF_IsPresent() 
 {
-    vuint16 id1, id2;
+    vuint16 id1, id2;
 
     NDS_EZF_OpenNorWrite();
 
@@ -81,35 +81,35 @@ NDS_EZF_ChipReset()
     GBA_BUS[0x1555] = 0x00AA;
     GBA_BUS[0x12AA] = 0x0055;
     GBA_BUS[0x1555] = 0x0090;
-    id1 = GBA_BUS[0x0001];
-    id2 = GBA_BUS[0x1001];
-    if ((id1 != 0x227E) || (id2 != 0x227E)) {
+    id1 = GBA_BUS[0x0001];
+    id2 = GBA_BUS[0x1001];
+    if ((id1 != 0x227E) || (id2 != 0x227E)) {
         NDS_EZF_CloseNorWrite();
-        return 0;
+        return 0;
     }
-    id1 = GBA_BUS[0x000E];
-    id2 = GBA_BUS[0x100E];
+    id1 = GBA_BUS[0x000E];
+    id2 = GBA_BUS[0x100E];
 
     NDS_EZF_CloseNorWrite();
-    if (id1 == 0x2218 && id2 == 0x2218) {
-        return 1;
+    if (id1 == 0x2218 && id2 == 0x2218) {
+        return 1;
     }
-    return 0;
-}
-void
+    return 0;
+}
+void
 NDS_EZF_SetShake(u8 pos) 
 {
     u16 data = ((pos % 3) | 0x00F0);
-    GBA_BUS[0x0FF0000] = 0xD200;
-    GBA_BUS[0x0000000] = 0x1500;
-    GBA_BUS[0x0010000] = 0xD200;
-    GBA_BUS[0x0020000] = 0x1500;
-    GBA_BUS[0x0F10000] = data;
-    GBA_BUS[0x0FE0000] = 0x1500;
+    GBA_BUS[0x0FF0000] = 0xD200;
+    GBA_BUS[0x0000000] = 0x1500;
+    GBA_BUS[0x0010000] = 0xD200;
+    GBA_BUS[0x0020000] = 0x1500;
+    GBA_BUS[0x0F10000] = data;
+    GBA_BUS[0x0FE0000] = 0x1500;
 
     GBA_BUS[0] = 0x0000;        /* write any value for vibration. */
     GBA_BUS[0] = 0x0002;
-}
+}
 
 static int
 SDL_SYS_LogicError(void)
@@ -164,7 +164,7 @@ SDL_SYS_HapticOpen(SDL_Haptic * haptic)
         return -1;
     }
 
-    haptic->hwdata = SDL_malloc(sizeof(NDS_HapticData));
+    haptic->hwdata = SDL_malloc(sizeof(struct haptic_hwdata));
     if (!haptic->hwdata) {
         SDL_OutOfMemory();
         return -1;

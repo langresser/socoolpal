@@ -1,23 +1,22 @@
 /*
-    SDL_image:  An example image loading library for use with SDL
-    Copyright (C) 1997-2009 Sam Lantinga
+  SDL_image:  An example image loading library for use with SDL
+  Copyright (C) 1997-2012 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
 
 #if !defined(__APPLE__) || defined(SDL_IMAGE_USE_COMMON_BACKEND)
@@ -239,7 +238,7 @@ static SDL_Surface *LoadBMP_RW (SDL_RWops *src, int freesrc)
 		goto done;
 	}
 	if ( strncmp(magic, "BM", 2) != 0 ) {
-		SDL_SetError("File is not a Windows BMP file");
+		IMG_SetError("File is not a Windows BMP file");
 		was_error = SDL_TRUE;
 		goto done;
 	}
@@ -340,6 +339,10 @@ static SDL_Surface *LoadBMP_RW (SDL_RWops *src, int freesrc)
 			switch (biBitCount) {
 				case 15:
 				case 16:
+					Rmask = SDL_ReadLE32(src);
+					Gmask = SDL_ReadLE32(src);
+					Bmask = SDL_ReadLE32(src);
+					break;
 				case 32:
 					Rmask = SDL_ReadLE32(src);
 					Gmask = SDL_ReadLE32(src);
@@ -402,7 +405,7 @@ static SDL_Surface *LoadBMP_RW (SDL_RWops *src, int freesrc)
 	}
 	if ((biCompression == BI_RLE4) || (biCompression == BI_RLE8)) {
 		was_error = readRlePixels(surface, src, biCompression == BI_RLE8);
-		if (was_error) SDL_SetError("Error reading from BMP");
+		if (was_error) IMG_SetError("Error reading from BMP");
 		goto done;
 	}
 	top = (Uint8 *)surface->pixels;
@@ -435,7 +438,7 @@ static SDL_Surface *LoadBMP_RW (SDL_RWops *src, int freesrc)
 			for ( i=0; i<surface->w; ++i ) {
 				if ( i%(8/ExpandBMP) == 0 ) {
 					if ( !SDL_RWread(src, &pixel, 1, 1) ) {
-						SDL_SetError(
+						IMG_SetError(
 					"Error reading from BMP");
 						was_error = SDL_TRUE;
 						goto done;
@@ -564,7 +567,7 @@ LoadICOCUR_RW(SDL_RWops * src, int type, int freesrc)
     bfType = SDL_ReadLE16(src);
     bfCount = SDL_ReadLE16(src);
     if ((bfReserved != 0) || (bfType != type) || (bfCount == 0)) {
-        SDL_SetError("File is not a Windows %s file", type == 1 ? "ICO" : "CUR");
+        IMG_SetError("File is not a Windows %s file", type == 1 ? "ICO" : "CUR");
         was_error = SDL_TRUE;
         goto done;
     }
@@ -617,7 +620,7 @@ LoadICOCUR_RW(SDL_RWops * src, int type, int freesrc)
         biClrUsed = SDL_ReadLE32(src);
         biClrImportant = SDL_ReadLE32(src);
     } else {
-        SDL_SetError("Unsupported ICO bitmap format");
+        IMG_SetError("Unsupported ICO bitmap format");
         was_error = SDL_TRUE;
         goto done;
     }
@@ -648,13 +651,13 @@ LoadICOCUR_RW(SDL_RWops * src, int type, int freesrc)
             ExpandBMP = 0;
             break;
         default:
-            SDL_SetError("ICO file with unsupported bit count");
+            IMG_SetError("ICO file with unsupported bit count");
             was_error = SDL_TRUE;
             goto done;
         }
         break;
     default:
-        SDL_SetError("Compressed ICO files not supported");
+        IMG_SetError("Compressed ICO files not supported");
         was_error = SDL_TRUE;
         goto done;
     }
@@ -713,7 +716,7 @@ LoadICOCUR_RW(SDL_RWops * src, int type, int freesrc)
                 for (i = 0; i < surface->w; ++i) {
                     if (i % (8 / ExpandBMP) == 0) {
                         if (!SDL_RWread(src, &pixel, 1, 1)) {
-                            SDL_SetError("Error reading from ICO");
+                            IMG_SetError("Error reading from ICO");
                             was_error = SDL_TRUE;
                             goto done;
                         }
@@ -754,7 +757,7 @@ LoadICOCUR_RW(SDL_RWops * src, int type, int freesrc)
         for (i = 0; i < surface->w; ++i) {
             if (i % (8 / ExpandBMP) == 0) {
                 if (!SDL_RWread(src, &pixel, 1, 1)) {
-                    SDL_SetError("Error reading from ICO");
+                    IMG_SetError("Error reading from ICO");
                     was_error = SDL_TRUE;
                     goto done;
                 }

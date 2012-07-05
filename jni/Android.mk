@@ -1,7 +1,3 @@
-
-# The namespace in Java file, with dots replaced with underscores
-SDL_JAVA_PACKAGE_PATH := org_socool_pal
-
 # Path to shared libraries - Android 1.6 cannot load them properly, thus we have to specify absolute path here
 # SDL_SHARED_LIBRARIES_PATH := /data/data/de.schwardtnet.alienblaster/lib
 

@@ -1,25 +1,26 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2010 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2012 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
 #include "SDL_config.h"
+
+#if SDL_AUDIO_DRIVER_ARTS
 
 /* Allow access to a raw mixing buffer */
 
@@ -42,9 +43,6 @@
 #define SDL_NAME(X)	X
 #endif
 
-/* The tag name used by artsc audio */
-#define ARTS_DRIVER_NAME         "arts"
-
 #ifdef SDL_AUDIO_DRIVER_ARTS_DYNAMIC
 
 static const char *arts_library = SDL_AUDIO_DRIVER_ARTS_DYNAMIC;
@@ -63,6 +61,7 @@ static int (*SDL_NAME(arts_stream_get)) (arts_stream_t s,
 static int (*SDL_NAME(arts_write)) (arts_stream_t s, const void *buffer,
                                     int count);
 static void (*SDL_NAME(arts_close_stream)) (arts_stream_t s);
+static int (*SDL_NAME(arts_suspend))(void);
 static int (*SDL_NAME(arts_suspended)) (void);
 static const char *(*SDL_NAME(arts_error_text)) (int errorcode);
 
@@ -80,6 +79,7 @@ static struct
     SDL_ARTS_SYM(arts_stream_get),
     SDL_ARTS_SYM(arts_write),
     SDL_ARTS_SYM(arts_close_stream),
+    SDL_ARTS_SYM(arts_suspend),
     SDL_ARTS_SYM(arts_suspended),
     SDL_ARTS_SYM(arts_error_text),
 /* *INDENT-ON* */
@@ -218,6 +218,17 @@ ARTS_CloseDevice(_THIS)
     }
 }
 
+static int
+ARTS_Suspend(void)
+{
+    const Uint32 abortms = SDL_GetTicks() + 3000; /* give up after 3 secs */
+    while ( (!SDL_NAME(arts_suspended)()) && (SDL_GetTicks() < abortms) ) {
+        if ( SDL_NAME(arts_suspend)() ) {
+            break;
+        }
+    }
+    return SDL_NAME(arts_suspended)();
+}
 
 static int
 ARTS_OpenDevice(_THIS, const char *devname, int iscapture)
@@ -272,7 +283,7 @@ ARTS_OpenDevice(_THIS, const char *devname, int iscapture)
         return 0;
     }
 
-    if (!SDL_NAME(arts_suspended) ()) {
+    if (!ARTS_Suspend()) {
         ARTS_CloseDevice(this);
         SDL_SetError("ARTS can not open audio device");
         return 0;
@@ -348,7 +359,7 @@ ARTS_Init(SDL_AudioDriverImpl * impl)
         }
 
         /* Play a stream so aRts doesn't crash */
-        if (SDL_NAME(arts_suspended) ()) {
+        if (ARTS_Suspend()) {
             arts_stream_t stream;
             stream = SDL_NAME(arts_play_stream) (44100, 16, 2, "SDL");
             SDL_NAME(arts_write) (stream, "", 0);
@@ -373,7 +384,9 @@ ARTS_Init(SDL_AudioDriverImpl * impl)
 
 
 AudioBootStrap ARTS_bootstrap = {
-    ARTS_DRIVER_NAME, "Analog RealTime Synthesizer", ARTS_Init, 0
+    "arts", "Analog RealTime Synthesizer", ARTS_Init, 0
 };
+
+#endif /* SDL_AUDIO_DRIVER_ARTS */
 
 /* vi: set ts=4 sw=4 expandtab: */

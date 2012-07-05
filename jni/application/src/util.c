@@ -22,6 +22,7 @@
 //
 
 #include "util.h"
+#include "log.h"
 
 void
 trim(
@@ -287,6 +288,7 @@ TerminateOnError(
 
 
    fprintf(stderr, "\nFATAL ERROR: %s\n", string);
+   LOGE(string);
 
 #ifdef _WIN32
    MessageBoxA(0, string, "FATAL ERROR", MB_ICONERROR);
