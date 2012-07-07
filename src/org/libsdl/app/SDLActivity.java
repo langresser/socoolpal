@@ -48,12 +48,11 @@ public class SDLActivity extends Activity {
 
     // Load the .so
     static {
-    	System.loadLibrary("tremor");
     	System.loadLibrary("SDL");
         System.loadLibrary("SDL_image");
         System.loadLibrary("SDL_mixer");
         System.loadLibrary("SDL_ttf");
-    	System.loadLibrary("application");
+    	System.loadLibrary("sdlpal");
     }
     
     private PowerManager.WakeLock wakeLock = null;

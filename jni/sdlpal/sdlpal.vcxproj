@@ -1,0 +1,268 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <SccProjectName />
+    <SccLocalPath />
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>.\Release\</OutDir>
+    <IntDir>.\Release\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>.\Debug\</OutDir>
+    <IntDir>.\Debug\Obj</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>d:\sdl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
+      <PrecompiledHeaderOutputFile>.\Release\sdlpal.pch</PrecompiledHeaderOutputFile>
+      <ObjectFileName>.\Release\</ObjectFileName>
+      <ProgramDataBaseFileName>.\Release\</ProgramDataBaseFileName>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>.\Release\sdlpal.tlb</TypeLibraryName>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <TargetEnvironment>Win32</TargetEnvironment>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0804</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\Release\sdlpal.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>.\Release\sdlpal.exe</OutputFile>
+      <AdditionalLibraryDirectories>d:\sdl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;winmm.lib;sdl.lib;sdlmain.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <Optimization>Disabled</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <MinimalRebuild>true</MinimalRebuild>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AdditionalIncludeDirectories>./sdl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>.\Debug\Obj\</AssemblerListingLocation>
+      <BrowseInformation>true</BrowseInformation>
+      <PrecompiledHeaderOutputFile>.\Debug\sdlpal.pch</PrecompiledHeaderOutputFile>
+      <ObjectFileName>.\Debug\Obj\</ObjectFileName>
+      <ProgramDataBaseFileName>.\Debug\Obj\</ProgramDataBaseFileName>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>.\Debug\sdlpal.tlb</TypeLibraryName>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <TargetEnvironment>Win32</TargetEnvironment>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0804</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\Debug\sdlpal.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>.\Debug\sdlpal.exe</OutputFile>
+      <AdditionalLibraryDirectories>./sdl/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;winmm.lib;SDL.lib;SDLmain.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="battle.c" />
+    <ClCompile Include="ending.c" />
+    <ClCompile Include="fight.c" />
+    <ClCompile Include="font.c" />
+    <ClCompile Include="game.c" />
+    <ClCompile Include="getopt.c" />
+    <ClCompile Include="global.c" />
+    <ClCompile Include="input.c" />
+    <ClCompile Include="itemmenu.c" />
+    <ClCompile Include="magicmenu.c" />
+    <ClCompile Include="main.c" />
+    <ClCompile Include="map.c" />
+    <ClCompile Include="midi.c" />
+    <ClCompile Include="palcommon.c" />
+    <ClCompile Include="palette.c" />
+    <ClCompile Include="play.c" />
+    <ClCompile Include="res.c" />
+    <ClCompile Include="rixplay.cpp" />
+    <ClCompile Include="rngplay.c" />
+    <ClCompile Include="scene.c" />
+    <ClCompile Include="script.c" />
+    <ClCompile Include="sound.c" />
+    <ClCompile Include="text.c" />
+    <ClCompile Include="ui.c" />
+    <ClCompile Include="uibattle.c" />
+    <ClCompile Include="uigame.c" />
+    <ClCompile Include="util.c" />
+    <ClCompile Include="video.c" />
+    <ClCompile Include="yj1.c" />
+    <ClCompile Include="adplug\binfile.cpp" />
+    <ClCompile Include="adplug\binio.cpp" />
+    <ClCompile Include="adplug\dosbox_opl.cpp" />
+    <ClCompile Include="adplug\emuopl.cpp" />
+    <ClCompile Include="adplug\fmopl.c" />
+    <ClCompile Include="adplug\fprovide.cpp" />
+    <ClCompile Include="adplug\player.cpp" />
+    <ClCompile Include="adplug\rix.cpp" />
+    <ClCompile Include="adplug\surroundopl.cpp" />
+    <ClCompile Include="native_midi\native_midi_common.c" />
+    <ClCompile Include="native_midi\native_midi_win32.c" />
+    <ClCompile Include="libmad\bit.c" />
+    <ClCompile Include="libmad\decoder.c" />
+    <ClCompile Include="libmad\fixed.c" />
+    <ClCompile Include="libmad\frame.c" />
+    <ClCompile Include="libmad\huffman.c" />
+    <ClCompile Include="libmad\layer12.c" />
+    <ClCompile Include="libmad\layer3.c" />
+    <ClCompile Include="libmad\music_mad.c" />
+    <ClCompile Include="libmad\stream.c" />
+    <ClCompile Include="libmad\synth.c" />
+    <ClCompile Include="libmad\timer.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ascii.h" />
+    <ClInclude Include="battle.h" />
+    <ClInclude Include="common.h" />
+    <ClInclude Include="ending.h" />
+    <ClInclude Include="fight.h" />
+    <ClInclude Include="font.h" />
+    <ClInclude Include="game.h" />
+    <ClInclude Include="getopt.h" />
+    <ClInclude Include="global.h" />
+    <ClInclude Include="input.h" />
+    <ClInclude Include="itemmenu.h" />
+    <ClInclude Include="magicmenu.h" />
+    <ClInclude Include="main.h" />
+    <ClInclude Include="map.h" />
+    <ClInclude Include="midi.h" />
+    <ClInclude Include="palcommon.h" />
+    <ClInclude Include="palette.h" />
+    <ClInclude Include="play.h" />
+    <ClInclude Include="res.h" />
+    <ClInclude Include="rixplay.h" />
+    <ClInclude Include="rngplay.h" />
+    <ClInclude Include="scene.h" />
+    <ClInclude Include="script.h" />
+    <ClInclude Include="sound.h" />
+    <ClInclude Include="text.h" />
+    <ClInclude Include="ui.h" />
+    <ClInclude Include="uibattle.h" />
+    <ClInclude Include="uigame.h" />
+    <ClInclude Include="util.h" />
+    <ClInclude Include="video.h" />
+    <ClInclude Include="adplug\binfile.h" />
+    <ClInclude Include="adplug\binio.h" />
+    <ClInclude Include="adplug\demuopl.h" />
+    <ClInclude Include="adplug\dosbox_opl.h" />
+    <ClInclude Include="adplug\emuopl.h" />
+    <ClInclude Include="adplug\fmopl.h" />
+    <ClInclude Include="adplug\fprovide.h" />
+    <ClInclude Include="adplug\opl.h" />
+    <ClInclude Include="adplug\player.h" />
+    <ClInclude Include="adplug\rix.h" />
+    <ClInclude Include="adplug\surroundopl.h" />
+    <ClInclude Include="native_midi\native_midi.h" />
+    <ClInclude Include="native_midi\native_midi_common.h" />
+    <ClInclude Include="libmad\bit.h" />
+    <ClInclude Include="libmad\decoder.h" />
+    <ClInclude Include="libmad\fixed.h" />
+    <ClInclude Include="libmad\frame.h" />
+    <ClInclude Include="libmad\huffman.h" />
+    <ClInclude Include="libmad\layer12.h" />
+    <ClInclude Include="libmad\layer3.h" />
+    <ClInclude Include="libmad\libmad_config.h" />
+    <ClInclude Include="libmad\libmad_global.h" />
+    <ClInclude Include="libmad\mad.h" />
+    <ClInclude Include="libmad\music_mad.h" />
+    <ClInclude Include="libmad\stream.h" />
+    <ClInclude Include="libmad\synth.h" />
+    <ClInclude Include="libmad\timer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="sdlpal.ico" />
+    <CustomBuild Include="libmad\D.dat">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="libmad\imdct_s.dat">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="libmad\qc_table.dat">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="libmad\rq_table.dat">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="libmad\sf_table.dat">
+      <FileType>Document</FileType>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="sdlpal.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

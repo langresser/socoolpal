@@ -1,0 +1,35 @@
+; Installation file for sdlpal application
+;
+; This is an auto-generated PKG file by Carbide.
+; This file uses variables specific to Carbide builds that will not work
+; on command-line builds. If you want to use this generated PKG file from the
+; command-line tools you will need to modify the variables with the appropriate
+; values: $(EPOCROOT), $(PLATFORM), $(TARGET)
+;
+;Languages
+&EN
+
+;
+; UID is the app's UID
+;
+#{"sdlpal"},(0x100039CE),5,0,0
+
+;Localised Vendor name
+%{"Vendor-EN"}
+
+;Unique Vendor name
+:"Vendor"
+
+; Supports Series 60 v 3.0
+[0x101F7961], 0, 0, 0, {"S60ProductID"}
+;depend libs detected
+;(0x20009a80), 1, 0, 0, {"Symbian OS PIPS"}
+;(0x10281f2c), 1, 0, 0, {"Open C GLIBRARY"}
+; Files to install
+; Symbols set up for the source location are Carbide.c++ specific symbols
+"$(EPOCROOT)epoc32\release\$(PLATFORM)\$(TARGET)\sdlpal.exe"             -"!:\sys\bin\sdlpal.exe"
+"$(EPOCROOT)Epoc32\data\z\resource\apps\sdlpal.rsc"		-"!:\resource\apps\sdlpal.rsc"
+"$(EPOCROOT)epoc32\data\z\private\10003a3f\import\apps\sdlpal_reg.rsc"   -"!:\private\10003a3f\import\apps\sdlpal_reg.rsc"
+"$(EPOCROOT)epoc32\data\z\resource\apps\sdlpal_aif.mbm"				-"!:\resource\apps\sdlpal_aif.mbm"
+; required for application to be covered by backup\restore facility" 
+"..\sis\backup_registration.xml"    -"!:\private\ECC92048\backup_registration.xml"

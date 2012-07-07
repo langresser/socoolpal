@@ -1,0 +1,52 @@
+TARGET sdlpal.exe
+TARGETTYPE exe
+UID 0x100039CE 0xE730F801
+
+USERINCLUDE . ..\ ..\adplug
+SYSTEMINCLUDE   \epoc32\include\SDL 
+SYSTEMINCLUDE	\epoc32\include 
+SYSTEMINCLUDE	\epoc32\include\stdapis
+SYSTEMINCLUDE	\epoc32\include\stdapis\sys
+SYSTEMINCLUDE	\epoc32\include\stdapis\stlport
+SYSTEMINCLUDE	\epoc32\include\stdapis\stlport\stl
+
+
+SOURCEPATH ..\symbian_mr
+START RESOURCE sdlpal.rss
+	HEADER
+	TARGETPATH \resource\apps
+END
+START RESOURCE sdlpal_reg.rss
+#ifdef WINSCW
+TARGETPATH      \private\10003a3f\apps
+#else
+TARGETPATH      \private\E730F801\import\apps
+#endif
+END //RESOURCE
+
+LIBRARY euser.lib
+LIBRARY sdl.lib
+LIBRARY sdlexe.lib
+LIBRARY estlib.lib
+LIBRARY	libstdcpp.lib
+LIBRARY	libc.lib
+LIBRARY	libpthread.lib
+
+LIBRARY flogger.lib eikdlg.lib apparc.lib eikctl.lib eikcore.lib aknnotify.lib eikcoctl.lib avkon.lib efsrv.lib cone.lib bafl.lib libm.lib 
+
+
+SOURCEPATH ..
+SOURCE yj1.c video.c util.c uigame.c uibattle.c ui.c text.c sound.c script.c scene.c rngplay.c rixplay.cpp res.c play.c palette.c palcommon.c pal_s60-10.cpp map.c main.c magicmenu.c itemmenu.c input.c global.c getopt.c game.c font.c fight.c ending.c battle.c
+SOURCEPATH ..\adplug
+SOURCE binfile.cpp binio.cpp emuopl.cpp fmopl.c fprovide.cpp player.cpp rix.cpp
+//MACRO SCRIPT_TRACE 
+//MACRO CALL_TRACE
+MACRO PAL_CLASSIC 
+//MACRO __S60_5X__
+//CAPABILITY LocalServices Location ReadUserData UserEnvironment WriteUserData
+CAPABILITY ReadUserData WriteUserData 
+/*UserEnvironment*/
+EPOCHEAPSIZE 1000000 20000000
+EPOCSTACKSIZE 0x5000
+OPTION_REPLACE ARMCC --cpu ARM926EJ-S -O3 -Otime
+ALWAYS_BUILD_AS_ARM

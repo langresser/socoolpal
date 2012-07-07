@@ -1,0 +1,35 @@
+PRJ_PLATFORMS
+WINSCW ARMV5 GCCE
+
+PRJ_EXPORTS
+.\data\0.RPG \epoc32\winscw\e\data\pal\0.RPG
+.\data\1.RPG \epoc32\winscw\e\data\pal\1.RPG
+.\data\2.RPG \epoc32\winscw\e\data\pal\2.RPG
+.\data\3.rpg \epoc32\winscw\e\data\pal\3.rpg
+.\data\4.rpg \epoc32\winscw\e\data\pal\4.rpg
+.\data\5.rpg \epoc32\winscw\e\data\pal\5.rpg
+.\data\ABC.MKF \epoc32\winscw\e\data\pal\ABC.MKF 
+.\data\BALL.MKF \epoc32\winscw\e\data\pal\BALL.MKF
+.\data\DATA.MKF \epoc32\winscw\e\data\pal\DATA.MKF
+.\data\F.MKF \epoc32\winscw\e\data\pal\F.MKF
+.\data\FANTI.FON \epoc32\winscw\e\data\pal\FANTI.FON
+.\data\FBP.MKF \epoc32\winscw\e\data\pal\FBP.MKF
+.\data\FIRE.MKF \epoc32\winscw\e\data\pal\FIRE.MKF
+.\data\GOP.MKF \epoc32\winscw\e\data\pal\GOP.MKF
+.\data\M.MSG \epoc32\winscw\e\data\pal\M.MSG
+.\data\MAP.MKF \epoc32\winscw\e\data\pal\MAP.MKF
+.\data\MGO.MKF \epoc32\winscw\e\data\pal\MGO.MKF
+.\data\MIDI.MKF \epoc32\winscw\e\data\pal\MIDI.MKF
+.\data\MUS.MKF \epoc32\winscw\e\data\pal\MUS.MKF
+.\data\PAL.JS3 \epoc32\winscw\e\data\pal\PAL.JS3
+.\data\PAT.MKF \epoc32\winscw\e\data\pal\PAT.MKF
+.\data\RGM.MKF \epoc32\winscw\e\data\pal\RGM.MKF
+.\data\RNG.MKF \epoc32\winscw\e\data\pal\RNG.MKF
+.\data\SSS.MKF \epoc32\winscw\e\data\pal\SSS.MKF
+.\data\VOC.MKF \epoc32\winscw\e\data\pal\VOC.MKF
+.\data\WOR16.ASC \epoc32\winscw\e\data\pal\WOR16.ASC
+.\data\WOR16.FON \epoc32\winscw\e\data\pal\WOR16.FON
+.\data\WORD.DAT \epoc32\winscw\e\data\pal\WORD.DAT
+
+PRJ_MMPFILES
+sdlpal.mmp

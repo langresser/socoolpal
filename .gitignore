@@ -10,3 +10,8 @@ bin/
 gen/
 obj/
 libs/
+*.obj
+Debug/
+*.user
+*.suo
+jni/sdl/lib

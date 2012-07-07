@@ -1,0 +1,39 @@
+CHARACTER_SET UTF8 
+
+//  RESOURCE IDENTIFIER
+NAME    SPAL // 4 letter ID
+
+//  INCLUDES
+
+#include <eikon.rh>
+#include <avkon.rh>
+#include <avkon.rsg>
+#include <avkon.mbg>
+#include <eikon.hrh>
+#include <appinfo.rh>
+
+RESOURCE RSS_SIGNATURE {}
+
+RESOURCE TBUF { buf= ""; }
+
+RESOURCE EIK_APP_INFO
+ 	{
+  	status_pane = R_AVKON_STATUS_PANE_LAYOUT_EMPTY;
+  	cba = R_AVKON_SOFTKEYS_EMPTY;
+  	}
+      
+ #define ICON_DIR
+
+ RESOURCE LOCALISABLE_APP_INFO r_app_info
+	{
+	short_caption =  "仙剑奇侠传1";
+	caption_and_icon = CAPTION_AND_ICON_INFO
+	        {
+	        caption = "仙剑奇侠传1";
+					number_of_icons = 1;
+					icon_file = "z:\\resource\\apps\\sdlpal_aif.mbm";
+	        };
+	}
+
+
+// End of File
