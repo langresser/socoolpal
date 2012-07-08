@@ -451,6 +451,7 @@ PAL_SplashScreen(
    PAL_FadeOut(1);
 }
 
+// 此处的main会被定义为SDL_main，进行sdl的初始化流程
 int
 main(
    int      argc,

@@ -25,7 +25,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#define INLINE          __inline
+//#define INLINE          __inline
+#define INLINE
 #define HAS_YM3812      1
 
 #include <stdio.h>

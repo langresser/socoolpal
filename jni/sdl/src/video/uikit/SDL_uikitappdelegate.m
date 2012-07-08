@@ -56,7 +56,7 @@ int main(int argc, char **argv)
     forward_argv[i] = NULL;
 
     /* Give over control to run loop, SDLUIKitDelegate will handle most things from here */
-    UIApplicationMain(argc, argv, NULL, [SDLUIKitDelegate getAppDelegateClassName]);
+    UIApplicationMain(argc, argv, NULL, @"SDLUIKitDelegate");
 
     /* free the memory we used to hold copies of argc and argv */
     for (i = 0; i < forward_argc; i++) {
