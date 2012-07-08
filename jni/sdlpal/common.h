@@ -85,6 +85,15 @@ extern "C"
 #define PAL_PREFIX            "ms0:/"
 #define PAL_SAVE_PREFIX       "ms0:/PSP/SAVEDATA/SDLPAL/"
 
+#elif defined (ANDROID)
+
+#undef  _WIN32
+#undef  SDL_INIT_JOYSTICK
+#define SDL_INIT_JOYSTICK     0
+#define PAL_HAS_MOUSE         1
+#define PAL_PREFIX            "./"
+#define PAL_SAVE_PREFIX       "./"
+
 #else
 
 #define PAL_HAS_JOYSTICKS     1
@@ -170,11 +179,17 @@ typedef const CHAR         *LPCSTR;
 
 #endif
 
-#if defined (__SYMBIAN32__)
+#if defined (__SYMBIAN32__) || defined ( ANDROID )
 #define PAL_LARGE           static
 #else
 #define PAL_LARGE           /* */
 #endif
+
+
+#define SCREEN_TYPE_SMALL 0
+#define SCREEN_TYPE_MIDDLE 1
+#define SCREEN_TYPE_LARGE 2
+#define SCREEN_TYPE SCREEN_TYPE_SMALL
 
 #ifdef __cplusplus
 }

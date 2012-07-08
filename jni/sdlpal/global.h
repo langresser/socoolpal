@@ -456,6 +456,7 @@ typedef struct tagFILES
    FILE            *fpFIRE;     // fire effect sprites
    FILE            *fpRGM;      // character face bitmaps
    FILE            *fpSSS;      // script data
+   FILE            *fpVOC;      // sound data
 } FILES, *LPFILES;
 
 // player party

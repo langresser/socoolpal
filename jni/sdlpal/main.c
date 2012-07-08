@@ -476,6 +476,7 @@ main(
 {
    WORD          wScreenWidth = 0, wScreenHeight = 0;
    int           c;
+   int			 m;
    BOOL          fFullScreen = FALSE;
 
    UTIL_OpenLog();
@@ -496,6 +497,36 @@ main(
    {
       switch (c)
       {
+//       case 'm':
+//     	  m = atoi(optarg);
+//     	  switch(m)
+//     	  {
+//     	  case 0://320*240
+//     		  wScreenWidth = 320;
+//     		  wScreenHeight = 240;
+//     		  break;
+//     	  case 1://400*240
+//     		  wScreenWidth = 400;
+// 			  wScreenHeight = 240;
+// 			  break;
+//     	  case 2://432*240
+//     		  wScreenWidth = 432;
+// 			  wScreenHeight = 240;
+// 			  break;
+//     	  case 3://480*320
+// 			  wScreenWidth = 480;
+// 			  wScreenHeight = 320;
+// 			  break;
+//     	  case 4://800*480
+// 			  wScreenWidth = 800;
+// 			  wScreenHeight = 480;
+// 			  break;
+//     	  case 5://854*480
+// 			  wScreenWidth = 854;
+// 			  wScreenHeight = 480;
+// 			  break;
+//     	  }
+//     	  break;
       case 'w':
          //
          // Set the width of the screen
@@ -561,9 +592,20 @@ main(
 #if defined(GPH) || defined(DINGOO)
       wScreenWidth = 320;
       wScreenHeight = 240;
+#elif defined (ANDROID)
+      wScreenWidth = 480;
+      wScreenHeight = 320;		
 #else
+#if SCREEN_TYPE == SCREEN_TYPE_SMALL
+	  wScreenWidth = 480;
+      wScreenHeight = 320;
+#elif SCREEN_TYPE == SCREEN_TYPE_MIDDLE
+	  wScreenWidth = 480;
+      wScreenHeight = 320;
+#elif SCREEN_TYPE == SCREEN_TYPE_LARGE
       wScreenWidth = 640;
       wScreenHeight = fFullScreen ? 480 : 400;
+#endif
 #endif
 #endif
    }

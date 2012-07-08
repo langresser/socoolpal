@@ -73,6 +73,7 @@ PAL_InitGlobals(
    gpGlobals->f.fpFIRE = UTIL_OpenRequiredFile("fire.mkf");
    gpGlobals->f.fpRGM = UTIL_OpenRequiredFile("rgm.mkf");
    gpGlobals->f.fpSSS = UTIL_OpenRequiredFile("sss.mkf");
+   gpGlobals->f.fpVOC = UTIL_OpenRequiredFile("voc.mkf");
 
    gpGlobals->lpObjectDesc = PAL_LoadObjectDesc(va("%s%s", PAL_PREFIX, "desc.dat"));
 
@@ -113,6 +114,7 @@ PAL_FreeGlobals(
       UTIL_CloseFile(gpGlobals->f.fpFIRE);
       UTIL_CloseFile(gpGlobals->f.fpRGM);
       UTIL_CloseFile(gpGlobals->f.fpSSS);
+      UTIL_CloseFile(gpGlobals->f.fpVOC);
 
       //
       // Free the game data
