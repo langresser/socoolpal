@@ -565,8 +565,6 @@ PAL_ReadMenu(
             return rgMenuItem[wCurrentItem].wValue;
          }
       }
-
-	  VIDEO_UpdateScreen(NULL);
       //
       // Use delay function to avoid high CPU usage.
       //

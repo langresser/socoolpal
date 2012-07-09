@@ -20,20 +20,14 @@
 
 #include "main.h"
 
-// Screen buffer
+// Screen buffer 游戏屏幕（固定320*200分辨率）
 SDL_Surface              *gpScreen           = NULL;
 
-// Backup screen buffer
+// Backup screen buffer 后备缓冲
 SDL_Surface              *gpScreenBak        = NULL;
 
-// The real screen surface
+// The real screen surface 实际游戏屏幕（与设备相关）
 static SDL_Surface       *gpScreenReal       = NULL;
-
-#if (defined (__SYMBIAN32__) && !defined (__S60_5X__)) || defined (PSP)
-   static BOOL bScaleScreen = FALSE;
-#else
-   static BOOL bScaleScreen = TRUE;
-#endif
 
 // Initial screen size
 static WORD               g_wInitialWidth    = 640;
@@ -97,15 +91,6 @@ VIDEO_Init(
    gpScreenReal = SDL_SetVideoMode(wScreenWidth, wScreenHeight, 8,
       SDL_HWSURFACE | SDL_RESIZABLE | (fFullScreen ? SDL_FULLSCREEN : 0));
 #endif
-
-   if (gpScreenReal == NULL)
-   {
-      //
-      // Fall back to 640x480 software mode.
-      //
-      gpScreenReal = SDL_SetVideoMode(640, 480, 8,
-         SDL_SWSURFACE | (fFullScreen ? SDL_FULLSCREEN : 0));
-   }
 
    //
    // Still fail?
@@ -211,7 +196,6 @@ VIDEO_UpdateScreen(
 --*/
 {
    SDL_Rect        srcrect, dstrect;
-   short           offset = 240 - 200;
    short           screenRealHeight = gpScreenReal->h;
    short           screenRealY = 0;
 
@@ -222,12 +206,6 @@ VIDEO_UpdateScreen(
    {
       if (SDL_LockSurface(gpScreenReal) < 0)
          return;
-   }
-
-   if (!bScaleScreen)
-   {
-      screenRealHeight -= offset;
-      screenRealY = offset / 2;
    }
 
    if (lpRect != NULL)
@@ -448,7 +426,6 @@ VIDEO_ToggleScaleScreen(
 --*/
 {
 #ifdef __SYMBIAN32__
-   bScaleScreen = !bScaleScreen;
    VIDEO_Resize(320, 240);
    VIDEO_UpdateScreen(NULL);
 #endif
@@ -681,12 +658,6 @@ VIDEO_SwitchScreen(
    short             screenRealHeight = gpScreenReal->h;
    short             screenRealY = 0;
 
-   if (!bScaleScreen)
-   {
-      screenRealHeight -= offset;
-      screenRealY = offset / 2;
-   }
-
    wSpeed++;
    wSpeed *= 10;
 
@@ -748,12 +719,6 @@ VIDEO_FadeScreen(
    {
       if (SDL_LockSurface(gpScreenReal) < 0)
          return;
-   }
-
-   if (!bScaleScreen)
-   {
-      screenRealHeight -= offset;
-      screenRealY = offset / 2;
    }
 
    time = SDL_GetTicks();
