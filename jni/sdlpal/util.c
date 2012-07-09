@@ -27,6 +27,15 @@
 #include "midi.h"
 #endif
 
+char g_application_dir[256] = {0};
+char g_resource_dir[256] = {0};
+
+void init_game_dir(const char* app_dir, const char* res_dir)
+{
+	strncpy(g_application_dir, app_dir, sizeof(g_application_dir) - 1);
+	strncpy(g_resource_dir, res_dir, sizeof(res_dir) - 1);
+}
+
 void
 trim(
    char *str
@@ -389,7 +398,7 @@ UTIL_OpenRequiredFile(
 {
    FILE         *fp;
 
-   fp = fopen(va("%s%s", PAL_PREFIX, lpszFileName), "rb");
+   fp = open_file(lpszFileName, "rb");
 
    if (fp == NULL)
    {
@@ -424,6 +433,30 @@ UTIL_CloseFile(
    }
 }
 
+FILE* open_file(const char* file_name, const char* read_mode)
+{
+	char szTemp[256] = {0};
+	FILE* fp = NULL;
+
+	// 先查找资源目录，资源目录要求是可以读写的。如果有相同文件，优先读取资源目录下的。（更新文件）
+	snprintf(szTemp, sizeof(szTemp) - 1, "%s%s", g_resource_dir, file_name);
+	strlwr(szTemp);
+	fp = fopen(szTemp, read_mode);
+
+	if (fp) {
+		return fp;
+	}
+
+	snprintf(szTemp, sizeof(szTemp) - 1, "%s%s", g_application_dir, file_name);
+	strlwr(szTemp);
+	fp = fopen(szTemp, read_mode);
+	if (fp) {
+		return fp;
+	}
+
+	return NULL;
+}
+
 #ifdef ENABLE_LOG
 
 static FILE *pLogFile = NULL;
@@ -433,7 +466,7 @@ UTIL_OpenLog(
    VOID
 )
 {
-   if ((pLogFile = fopen(_PATH_LOG, "a+")) == NULL)
+   if ((pLogFile = open_file("log.txt", "a+")) == NULL)
    {
       return NULL;
    }

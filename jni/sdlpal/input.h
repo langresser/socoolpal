@@ -31,7 +31,8 @@ extern "C"
 
 typedef struct tagPALINPUTSTATE
 {
-   PALDIRECTION           dir, prevdir;
+   PALDIRECTION           dir;
+   DWORD				  dirKeyPress;
    DWORD                  dwKeyPress;
 } PALINPUTSTATE;
 

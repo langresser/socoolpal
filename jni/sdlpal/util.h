@@ -30,6 +30,11 @@ extern "C"
 {
 #endif
 
+extern char g_resource_dir[256];
+extern char g_application_dir[256];
+
+void init_game_dir(const char* app_dir, const char* res_dir);
+
 void
 trim(
    char *str
@@ -84,7 +89,8 @@ UTIL_CloseFile(
    FILE                *fp
 );
 
-#define _PATH_LOG           PAL_PREFIX "log.txt"
+FILE* open_file(const char* file_name, const char* read_mode);
+
 #define LOG_EMERG           0 /* system is unusable */
 #define LOG_ALERT           1 /* action must be taken immediately */
 #define LOG_CRIT            2 /* critical conditions */

@@ -43,9 +43,7 @@ BOOL         g_fUseMidi = FALSE;
 
 static BOOL  g_fUseWav = FALSE;
 
-#ifdef __SYMBIAN32__
 INT          g_iVolume  = SDL_MIX_MAXVOLUME * 0.1;
-#endif
 
 typedef struct tagSNDPLAYER
 {
@@ -53,9 +51,6 @@ typedef struct tagSNDPLAYER
    SDL_AudioSpec             spec;
    LPBYTE                    buf[2], pos[2];
    INT                       audio_len[2];
-#ifdef PAL_HAS_CD
-   SDL_CD                   *pCD;
-#endif
 #ifdef PAL_HAS_MP3
    mad_data                 *pMP3;
    BOOL                      fMP3Loop;
@@ -308,10 +303,10 @@ SOUND_OpenAudio(
    //
    // Load the MKF file.
    //
-   gSndPlayer.mkf = fopen(va("%s%s", PAL_PREFIX, "voc.mkf"), "rb");
+   gSndPlayer.mkf = open_file("voc.mkf", "rb");
    if (gSndPlayer.mkf == NULL)
    {
-      gSndPlayer.mkf = fopen(va("%s%s", PAL_PREFIX, "sounds.mkf"), "rb");
+      gSndPlayer.mkf = open_file("sounds.mkf", "rb");
       if (gSndPlayer.mkf == NULL)
       {
          return -2;
@@ -355,34 +350,7 @@ SOUND_OpenAudio(
    //
    // Initialize the music subsystem.
    //
-   RIX_Init(va("%s%s", PAL_PREFIX, "mus.mkf"));
-
-#ifdef PAL_HAS_CD
-   //
-   // Initialize the CD audio.
-   //
-   {
-      int i;
-      gSndPlayer.pCD = NULL;
-
-      for (i = 0; i < SDL_CDNumDrives(); i++)
-      {
-         gSndPlayer.pCD = SDL_CDOpen(i);
-         if (gSndPlayer.pCD != NULL)
-         {
-            if (!CD_INDRIVE(SDL_CDStatus(gSndPlayer.pCD)))
-            {
-               SDL_CDClose(gSndPlayer.pCD);
-               gSndPlayer.pCD = NULL;
-            }
-            else
-            {
-               break;
-            }
-         }
-      }
-   }
-#endif
+   RIX_Init("mus.mkf");
 
 #ifdef PAL_HAS_MP3
    gSndPlayer.iCurrentMP3 = -1;
@@ -403,7 +371,7 @@ SOUND_ReloadVOC(
 	void
 )
 {
-   gSndPlayer.mkf = fopen(va("%s%s", PAL_PREFIX, "voc.mkf"), "rb");
+   gSndPlayer.mkf = open_file("voc.mkf", "rb");
    g_fUseWav = FALSE;
 }
 #endif
@@ -462,20 +430,10 @@ SOUND_CloseAudio(
 
    RIX_Shutdown();
 
-#ifdef PAL_HAS_CD
-   if (gSndPlayer.pCD != NULL)
-   {
-      SOUND_PlayCDA(-1);
-      SDL_CDClose(gSndPlayer.pCD);
-   }
-#endif
-
 #ifdef PAL_HAS_NATIVEMIDI
    MIDI_Play(0, FALSE);
 #endif
 }
-
-#ifdef __SYMBIAN32__
 
 VOID
 SOUND_AdjustVolume(
@@ -519,8 +477,6 @@ SOUND_AdjustVolume(
       }
    }
 }
-
-#endif
 
 VOID
 SOUND_PlayChannel(
@@ -666,7 +622,7 @@ PAL_PlayMUS(
    {
       SDL_mutexP(gSndPlayer.lock);
 
-      gSndPlayer.pMP3 = mad_openFile(va("%s/mp3/%.2d.mp3", PAL_PREFIX, iNumRIX), &gSndPlayer.spec);
+      gSndPlayer.pMP3 = mad_openFile(va("mp3/%.2d.mp3", iNumRIX), &gSndPlayer.spec);
       if (gSndPlayer.pMP3 != NULL)
       {
          RIX_Play(0, FALSE, flFadeTime);
@@ -705,25 +661,5 @@ SOUND_PlayCDA(
 
 --*/
 {
-#ifdef PAL_HAS_CD
-   if (gSndPlayer.pCD != NULL)
-   {
-      if (CD_INDRIVE(SDL_CDStatus(gSndPlayer.pCD)))
-      {
-         SDL_CDStop(gSndPlayer.pCD);
-
-         if (iNumTrack != -1)
-         {
-            PAL_PlayMUS(-1, FALSE, 0);
-
-            if (SDL_CDPlayTracks(gSndPlayer.pCD, iNumTrack - 1, 0, 1, 0) == 0)
-            {
-               return TRUE;
-            }
-         }
-      }
-   }
-#endif
-
    return FALSE;
 }

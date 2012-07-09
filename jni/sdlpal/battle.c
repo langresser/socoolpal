@@ -1404,7 +1404,6 @@ PAL_StartBattle(
 #ifdef PAL_ALLOW_KEYREPEAT
    SDL_EnableKeyRepeat(0, 0);
    PAL_ClearKeyState();
-   g_InputState.prevdir = kDirUnknown;
 #endif
 
    if (i == kBattleResultWon)

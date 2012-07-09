@@ -52,12 +52,10 @@ SOUND_PlayChannel(
    INT    iChannel
 );
 
-#ifdef __SYMBIAN32__
 VOID
 SOUND_AdjustVolume(
    INT    iDirectory
 );
-#endif
 
 VOID
 PAL_PlayMUS(

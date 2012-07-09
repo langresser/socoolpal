@@ -75,7 +75,7 @@ PAL_InitGlobals(
    gpGlobals->f.fpSSS = UTIL_OpenRequiredFile("sss.mkf");
    gpGlobals->f.fpVOC = UTIL_OpenRequiredFile("voc.mkf");
 
-   gpGlobals->lpObjectDesc = PAL_LoadObjectDesc(va("%s%s", PAL_PREFIX, "desc.dat"));
+   gpGlobals->lpObjectDesc = PAL_LoadObjectDesc("desc.dat");
 
    gpGlobals->bCurrentSaveSlot = 1;
 
@@ -353,7 +353,7 @@ PAL_LoadGame(
    //
    // Try to open the specified file
    //
-   fp = fopen(szFileName, "rb");
+   fp = open_file(szFileName, "rb");
    if (fp == NULL)
    {
       return -1;
@@ -502,7 +502,7 @@ PAL_SaveGame(
    //
    // Try writing to file
    //
-   fp = fopen(szFileName, "wb");
+   fp = open_file(szFileName, "wb");
    if (fp == NULL)
    {
       return;
@@ -541,7 +541,7 @@ PAL_InitGameData(
    //
    // try loading from the saved game file.
    //
-   if (iSaveSlot == 0 || PAL_LoadGame(va("%s%d%s", PAL_SAVE_PREFIX, iSaveSlot, ".rpg")) != 0)
+   if (iSaveSlot == 0 || PAL_LoadGame(va("%d%s", iSaveSlot, ".rpg")) != 0)
    {
       //
       // Cannot load the saved game file. Load the defaults.

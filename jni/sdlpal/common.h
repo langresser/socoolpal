@@ -64,53 +64,36 @@ extern "C"
 #endif
 
 #if defined (__SYMBIAN32__)
-
 #undef  _WIN32
 #undef  SDL_INIT_JOYSTICK
 #define SDL_INIT_JOYSTICK     0
 #define PAL_HAS_MOUSE         1
-#define PAL_PREFIX            "e:/data/pal/"
-#define PAL_SAVE_PREFIX       "e:/data/pal/"
 
 #elif defined (GEKKO)
-
 #define PAL_HAS_JOYSTICKS     1
 #define PAL_HAS_MOUSE         0
-#define PAL_PREFIX            "SD:/apps/sdlpal/"
-#define PAL_SAVE_PREFIX       "SD:/apps/sdlpal/"
 
 #elif defined (PSP)
-
 #define PAL_HAS_JOYSTICKS     0
-#define PAL_PREFIX            "ms0:/"
-#define PAL_SAVE_PREFIX       "ms0:/PSP/SAVEDATA/SDLPAL/"
 
 #elif defined (ANDROID)
-
 #undef  _WIN32
 #undef  SDL_INIT_JOYSTICK
 #define SDL_INIT_JOYSTICK     0
 #define PAL_HAS_MOUSE         1
-#define PAL_PREFIX            "./"
-#define PAL_SAVE_PREFIX       "./"
+
+#elif defined __IPHONEOS__
 
 #else
 
+#define PAL_HAS_MOUSE         1
 #define PAL_HAS_JOYSTICKS     1
 #ifndef _WIN32_WCE
 #define PAL_ALLOW_KEYREPEAT   1
-#if SDL_MAJOR_VERSION == 1 && SDL_MINOR_VERSION <= 2
-#define PAL_HAS_CD            1
-#endif
+
 #if !defined (CYGWIN) && !defined (DINGOO) && !defined (GPH) && !defined (GEKKO)
 #define PAL_HAS_MP3           1
 #endif
-#endif
-#ifndef PAL_PREFIX
-#define PAL_PREFIX            "./"
-#endif
-#ifndef PAL_SAVE_PREFIX
-#define PAL_SAVE_PREFIX       "./"
 #endif
 
 #endif
@@ -120,7 +103,6 @@ extern "C"
 #endif
 
 #ifdef _WIN32
-
 #include <windows.h>
 
 #if !defined(__BORLANDC__) && !defined(_WIN32_WCE)
@@ -128,6 +110,7 @@ extern "C"
 #endif
 
 #define vsnprintf _vsnprintf
+#define snprintf _snprintf
 
 #ifdef _MSC_VER
 #pragma warning (disable:4018)

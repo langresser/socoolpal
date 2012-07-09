@@ -305,7 +305,6 @@ PAL_SceneFade(
          //
          PAL_ClearKeyState();
          g_InputState.dir = kDirUnknown;
-         g_InputState.prevdir = kDirUnknown;
          PAL_GameUpdate(FALSE);
          PAL_MakeScene();
          VIDEO_UpdateScreen(NULL);
@@ -341,7 +340,6 @@ PAL_SceneFade(
          //
          PAL_ClearKeyState();
          g_InputState.dir = kDirUnknown;
-         g_InputState.prevdir = kDirUnknown;
          PAL_GameUpdate(FALSE);
          PAL_MakeScene();
          VIDEO_UpdateScreen(NULL);
@@ -431,7 +429,6 @@ PAL_PaletteFade(
       {
          PAL_ClearKeyState();
          g_InputState.dir = kDirUnknown;
-         g_InputState.prevdir = kDirUnknown;
          PAL_GameUpdate(FALSE);
          PAL_MakeScene();
          VIDEO_UpdateScreen(NULL);

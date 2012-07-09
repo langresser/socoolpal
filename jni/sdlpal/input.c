@@ -32,6 +32,84 @@ BOOL                     g_fUseJoystick = TRUE;
 #define MAX_DEADZONE 16384
 #endif
 
+static int get_dir_by_key(DWORD key)
+{
+	BOOL isLeftPress = (key & kKeyLeft) != 0;
+	BOOL isRightPress = (key & kKeyRight) != 0;
+	BOOL isUpPress = (key & kKeyUp) != 0;
+	BOOL isDownPress = (key & kKeyDown) != 0;
+	int keyNumber = isLeftPress + isRightPress + isUpPress + isDownPress;
+
+	// 只有一个按键，最好办，直接取按键方向
+	if (keyNumber == 0) {
+		return kDirUnknown;
+	} else if (keyNumber == 1) {
+		if (isLeftPress) {
+			return kDirWest;
+		} else if (isRightPress) {
+			return kDirEast;
+		} else if (isUpPress) {
+			return kDirNorth;
+		} else if (isDownPress) {
+			return kDirSouth;
+		} else {
+			return kDirUnknown;
+		}
+	}
+
+	switch (g_InputState.dir) {
+	case kDirNorth:
+		if (isUpPress) {
+			return kDirNorth;
+		} else if (isLeftPress) {
+			return kDirWest;
+		} else if (isRightPress) {
+			return kDirEast;
+		} else if (isDownPress) {
+			return kDirSouth;
+		}
+		break;
+	case kDirSouth:
+		if (isDownPress) {
+			return kDirSouth;
+		} else if (isLeftPress) {
+			return kDirWest;
+		} else if (isRightPress) {
+			return kDirEast;
+		} else if (isUpPress) {
+			return kDirNorth;
+		}
+		break;
+	case kDirWest:
+		if (isLeftPress) {
+			return kDirWest;
+		} else if (isUpPress) {
+			return kDirNorth;
+		} else if (isDownPress) {
+			return kDirSouth;
+		} else if (isRightPress) {
+			return kDirEast;
+		} 
+		break;
+	case kDirEast:
+		if (isRightPress) {
+			return kDirEast;
+		} else if (isUpPress) {
+			return kDirNorth;
+		} else if (isDownPress) {
+			return kDirSouth;
+		} else if (isLeftPress) {
+			return kDirWest;
+		}
+		break;
+	case kDirUnknown:
+		return kDirUnknown;
+		break;
+	}
+
+	return kDirUnknown;
+}
+
 static VOID
 PAL_KeyboardEventFilter(
    const SDL_Event       *lpEvent
@@ -95,31 +173,31 @@ PAL_KeyboardEventFilter(
 #endif
 
       case SDLK_UP:
-      case SDLK_KP8:
-         g_InputState.prevdir = (gpGlobals->fInBattle ? kDirUnknown : g_InputState.dir);
+	  case SDLK_KP8:
          g_InputState.dir = kDirNorth;
-         g_InputState.dwKeyPress |= kKeyUp;
+		 g_InputState.dwKeyPress |=kKeyUp;
+         g_InputState.dirKeyPress |= kKeyUp;
          break;
 
       case SDLK_DOWN:
       case SDLK_KP2:
-         g_InputState.prevdir = (gpGlobals->fInBattle ? kDirUnknown : g_InputState.dir);
          g_InputState.dir = kDirSouth;
-         g_InputState.dwKeyPress |= kKeyDown;
+		 g_InputState.dwKeyPress |= kKeyDown;
+         g_InputState.dirKeyPress |= kKeyDown;
          break;
 
       case SDLK_LEFT:
       case SDLK_KP4:
-         g_InputState.prevdir = (gpGlobals->fInBattle ? kDirUnknown : g_InputState.dir);
          g_InputState.dir = kDirWest;
-         g_InputState.dwKeyPress |= kKeyLeft;
+		 g_InputState.dwKeyPress |= kKeyLeft;
+         g_InputState.dirKeyPress |= kKeyLeft;
          break;
 
       case SDLK_RIGHT:
       case SDLK_KP6:
-         g_InputState.prevdir = (gpGlobals->fInBattle ? kDirUnknown : g_InputState.dir);
          g_InputState.dir = kDirEast;
-         g_InputState.dwKeyPress |= kKeyRight;
+		 g_InputState.dwKeyPress |= kKeyRight;
+         g_InputState.dirKeyPress |= kKeyRight;
          break;
 
 #if defined(DINGOO)
@@ -210,38 +288,35 @@ PAL_KeyboardEventFilter(
       {
       case SDLK_UP:
       case SDLK_KP8:
-         if (g_InputState.dir == kDirNorth)
-         {
-            g_InputState.dir = g_InputState.prevdir;
-         }
-         g_InputState.prevdir = kDirUnknown;
+		  if ((g_InputState.dirKeyPress & kKeyUp) != 0) {
+			  g_InputState.dirKeyPress ^= kKeyUp;
+		  }
+		  
+         g_InputState.dir = get_dir_by_key(g_InputState.dirKeyPress);
          break;
 
       case SDLK_DOWN:
       case SDLK_KP2:
-         if (g_InputState.dir == kDirSouth)
-         {
-            g_InputState.dir = g_InputState.prevdir;
-         }
-         g_InputState.prevdir = kDirUnknown;
+		  if ((g_InputState.dirKeyPress & kKeyDown) != 0) {
+			  g_InputState.dirKeyPress ^= kKeyDown;
+		  }
+         g_InputState.dir = get_dir_by_key(g_InputState.dirKeyPress);
          break;
 
       case SDLK_LEFT:
       case SDLK_KP4:
-         if (g_InputState.dir == kDirWest)
-         {
-            g_InputState.dir = g_InputState.prevdir;
-         }
-         g_InputState.prevdir = kDirUnknown;
+		  if ((g_InputState.dirKeyPress & kKeyLeft) != 0) {
+			  g_InputState.dirKeyPress ^= kKeyLeft;
+		  }
+         g_InputState.dir = get_dir_by_key(g_InputState.dirKeyPress);
          break;
 
       case SDLK_RIGHT:
       case SDLK_KP6:
-         if (g_InputState.dir == kDirEast)
-         {
-            g_InputState.dir = g_InputState.prevdir;
-         }
-         g_InputState.prevdir = kDirUnknown;
+		  if ((g_InputState.dirKeyPress & kKeyRight) != 0) {
+			  g_InputState.dirKeyPress ^= kKeyRight;
+		  }
+         g_InputState.dir = get_dir_by_key(g_InputState.dirKeyPress);
          break;
 
       default:
@@ -312,19 +387,15 @@ PAL_MouseEventFilter(
       switch (gridIndex)
       {
       case 2:
-         g_InputState.prevdir = g_InputState.dir;
          g_InputState.dir = kDirNorth;
          break;
       case 6:
-         g_InputState.prevdir = g_InputState.dir;
          g_InputState.dir = kDirSouth;
          break;
       case 0:
-         g_InputState.prevdir = g_InputState.dir;
          g_InputState.dir = kDirWest;
          break;
       case 8:
-         g_InputState.prevdir = g_InputState.dir;
          g_InputState.dir = kDirEast;
          break;
       case 1:
@@ -403,7 +474,6 @@ PAL_MouseEventFilter(
     	  }
       case 8:
          g_InputState.dir = kDirUnknown;
-         g_InputState.prevdir = kDirUnknown;
          break;
       case 1:
     	 if( isRightMouseClick )
@@ -467,25 +537,21 @@ PAL_JoystickEventFilter(
       switch (lpEvent->jhat.value)
       {
       case SDL_HAT_LEFT:
-        g_InputState.prevdir = (gpGlobals->fInBattle ? kDirUnknown : g_InputState.dir);
         g_InputState.dir = kDirWest;
         g_InputState.dwKeyPress = kKeyLeft;
         break;
 
       case SDL_HAT_RIGHT:
-        g_InputState.prevdir = (gpGlobals->fInBattle ? kDirUnknown : g_InputState.dir);
         g_InputState.dir = kDirEast;
         g_InputState.dwKeyPress = kKeyRight;
         break;
 
       case SDL_HAT_UP:
-        g_InputState.prevdir = (gpGlobals->fInBattle ? kDirUnknown : g_InputState.dir);
         g_InputState.dir = kDirNorth;
         g_InputState.dwKeyPress = kKeyUp;
         break;
 
-      case SDL_HAT_DOWN:
-        g_InputState.prevdir = (gpGlobals->fInBattle ? kDirUnknown : g_InputState.dir);
+	  case SDL_HAT_DOWN:
         g_InputState.dir = kDirSouth;
         g_InputState.dwKeyPress = kKeyDown;
         break;
@@ -504,11 +570,9 @@ PAL_JoystickEventFilter(
          //
 #if defined(GPH)
 		if (lpEvent->jaxis.value > MAX_DEADZONE) {
-			g_InputState.prevdir = (gpGlobals->fInBattle ? kDirUnknown : g_InputState.dir);
 			g_InputState.dir = kDirEast;
 			g_InputState.dwKeyPress = kKeyRight;
 		} else if (lpEvent->jaxis.value < MIN_DEADZONE) {
-			g_InputState.prevdir = (gpGlobals->fInBattle ? kDirUnknown : g_InputState.dir);
 			g_InputState.dir = kDirWest;
 			g_InputState.dwKeyPress = kKeyLeft;
 		} else {
@@ -521,7 +585,6 @@ PAL_JoystickEventFilter(
             {
                g_InputState.dwKeyPress |= kKeyRight;
             }
-            g_InputState.prevdir = g_InputState.dir;
             g_InputState.dir = kDirEast;
          }
          else if (lpEvent->jaxis.value < -20000)
@@ -530,17 +593,11 @@ PAL_JoystickEventFilter(
             {
                g_InputState.dwKeyPress |= kKeyLeft;
             }
-            g_InputState.prevdir = g_InputState.dir;
             g_InputState.dir = kDirWest;
          }
          else
          {
-            if (g_InputState.prevdir != kDirEast &&
-               g_InputState.prevdir != kDirWest)
-            {
-               g_InputState.dir = g_InputState.prevdir;
-            }
-            g_InputState.prevdir = kDirUnknown;
+            g_InputState.dir = kDirUnknown;
          }
 #endif
          break;
@@ -568,7 +625,6 @@ PAL_JoystickEventFilter(
             {
                g_InputState.dwKeyPress |= kKeyDown;
             }
-            g_InputState.prevdir = g_InputState.dir;
             g_InputState.dir = kDirSouth;
          }
          else if (lpEvent->jaxis.value < -20000)
@@ -577,17 +633,11 @@ PAL_JoystickEventFilter(
             {
                g_InputState.dwKeyPress |= kKeyUp;
             }
-            g_InputState.prevdir = g_InputState.dir;
             g_InputState.dir = kDirNorth;
          }
          else
          {
-            if (g_InputState.prevdir != kDirNorth &&
-               g_InputState.prevdir != kDirSouth)
-            {
-               g_InputState.dir = g_InputState.prevdir;
-            }
-            g_InputState.prevdir = kDirUnknown;
+            g_InputState.dir = kDirUnknown;
          }
 #endif
          break;
@@ -744,7 +794,6 @@ PAL_InitInput(
 {
    memset(&g_InputState, 0, sizeof(g_InputState));
    g_InputState.dir = kDirUnknown;
-   g_InputState.prevdir = kDirUnknown;
 #if SDL_MAJOR_VERSION == 1 && SDL_MINOR_VERSION <= 2
    SDL_SetEventFilter(PAL_EventFilter);
 #else

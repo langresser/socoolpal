@@ -60,6 +60,10 @@ PAL_Init(
 
 --*/
 {
+#ifdef WIN32
+#elif defined __ANDROID__
+#elif defined __IPHONEOS__
+#endif
    int           e;
 
 #if defined (NDS) && defined (GEKKO)
@@ -618,11 +622,14 @@ main(
 #endif
    PAL_Init(wScreenWidth, wScreenHeight, fFullScreen);
 
+#ifndef _DEBUG
    //
    // Show the trademark screen and splash screen
    //
    PAL_TrademarkScreen();
+   #endif
    PAL_SplashScreen();
+
 
    //
    // Run the main game routine
