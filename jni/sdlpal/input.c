@@ -137,15 +137,7 @@ PAL_KeyboardEventFilter(
       //
       if (lpEvent->key.keysym.mod & KMOD_ALT)
       {
-         if (lpEvent->key.keysym.sym == SDLK_RETURN)
-         {
-            //
-            // Pressed Alt+Enter (toggle fullscreen)...
-            //
-            VIDEO_ToggleFullscreen();
-            return;
-         }
-         else if (lpEvent->key.keysym.sym == SDLK_F4)
+         if (lpEvent->key.keysym.sym == SDLK_F4)
          {
             //
             // Pressed Alt+F4 (Exit program)...
@@ -346,8 +338,7 @@ PAL_MouseEventFilter(
 --*/
 {
 #ifdef PAL_HAS_MOUSE
-   static short hitTest = 0; // Double click detect;	
-   const SDL_VideoInfo *vi;
+   static short hitTest = 0; // Double click detect;
 
    double       screenWidth, gridWidth;
    double       screenHeight, gridHeight;
@@ -357,7 +348,6 @@ PAL_MouseEventFilter(
    INT          gridIndex;
    BOOL			isLeftMouseDBClick = FALSE;
    BOOL			isLeftMouseClick = FALSE;
-   BOOL			isRightMouseClick = FALSE;
    static INT   lastReleaseButtonTime, lastPressButtonTime, betweenTime;
    static INT   lastPressx = 0;
    static INT   lastPressy = 0;
@@ -366,10 +356,8 @@ PAL_MouseEventFilter(
 
    if (lpEvent->type!= SDL_MOUSEBUTTONDOWN && lpEvent->type != SDL_MOUSEBUTTONUP)
       return;
-
-   vi = SDL_GetVideoInfo();
-   screenWidth = vi->current_w;
-   screenHeight = vi->current_h;
+   screenWidth = g_wInitialWidth;
+   screenHeight = g_wInitialHeight;
    gridWidth = screenWidth / 3;
    gridHeight = screenHeight / 3;
    mx = lpEvent->button.x;
@@ -377,7 +365,13 @@ PAL_MouseEventFilter(
    thumbx = ceil(mx / gridWidth);
    thumby = floor(my / gridHeight);
    gridIndex = thumbx + thumby * 3 - 1;
-   
+  
+   // 斜45度，人他妈是斜着走的
+/*
+0   1   2
+3   4   5
+6   7   8
+*/
    switch (lpEvent->type)
    {
    case SDL_MOUSEBUTTONDOWN:
@@ -425,84 +419,32 @@ PAL_MouseEventFilter(
       lastReleasex = lpEvent->button.x;
       lastReleasey = lpEvent->button.y;
       hitTest ++;
-      if (abs(lastPressx - lastReleasex) < 25 &&
-                     abs(lastPressy - lastReleasey) < 25)
-      {
-		  betweenTime = lastReleaseButtonTime - lastPressButtonTime;
-		  if (betweenTime >500)
-		  {
-			  isRightMouseClick = TRUE;
-		  }
-		  else if (betweenTime >=0)
-		  {
-			  if((betweenTime < 100) && (hitTest >= 2))
-			  {
-				  isLeftMouseClick = TRUE;
-			  	  hitTest = 0;  
-			  }
-			  else
-			  {  
-				  isLeftMouseClick = TRUE;
-				  if(betweenTime > 100)
-				  {
-					  hitTest = 0;
-				  }
-				  
-			  }
-		  }
-      }
+   
       switch (gridIndex)
       {
-      case 2:
-    	 if( isLeftMouseDBClick )
-		 {
-			 SOUND_AdjustVolume(1);
-			 break;
-		 }
-      case 6:
-      case 0:
-    	 if( isLeftMouseDBClick )
-		 {
-			 SOUND_AdjustVolume(0);
-			 break;
-		 }
+	// 在方向区域，直接停止移动
+	  case 0:
+	  case 2:
+	  case 6:
+	  case 8:
+		  g_InputState.dir = kDirUnknown;
+		  break;
       case 7:
-    	  if (isRightMouseClick) //repeat attack
-    	  {
-    	     g_InputState.dwKeyPress |= kKeyRepeat;
-    	     break;
-    	  }
-      case 8:
-         g_InputState.dir = kDirUnknown;
-         break;
+    	  g_InputState.dwKeyPress |= kKeyRepeat;
+    	  break;
       case 1:
-    	 if( isRightMouseClick )
-		 {
-			 g_InputState.dwKeyPress |= kKeyForce;
-		 }
+    	 g_InputState.dwKeyPress |= kKeyForce;
     	 break;
       case 3:
-    	 if( isRightMouseClick )
-		 {
-			 g_InputState.dwKeyPress |= kKeyAuto;
-		 }
+    	 g_InputState.dwKeyPress |= kKeyAuto;
     	 break;
       case 5:
-    	 if( isRightMouseClick )
-		 {
-			 g_InputState.dwKeyPress |= kKeyDefend;
-		 }
+    	 g_InputState.dwKeyPress |= kKeyDefend;
 		 break;
+	// 中部区域，弹出菜单
       case 4:
-		if (isRightMouseClick) // menu
-		{
-		   g_InputState.dwKeyPress |= kKeyMenu;
-		}
-		else if (isLeftMouseClick) // search
-		{
-		   g_InputState.dwKeyPress |= kKeySearch;
-		}
-		
+		g_InputState.dwKeyPress |= kKeyMenu;
+		g_InputState.dwKeyPress |= kKeySearch;		
         break;
       }
       break;

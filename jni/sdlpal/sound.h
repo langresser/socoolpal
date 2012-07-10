@@ -64,11 +64,6 @@ PAL_PlayMUS(
    FLOAT     flFadeTime
 );
 
-BOOL
-SOUND_PlayCDA(
-   INT    iNumTrack
-);
-
 #define SOUND_Play(i) SOUND_PlayChannel((i), 0)
 
 extern BOOL       g_fNoSound;

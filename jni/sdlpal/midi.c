@@ -59,7 +59,6 @@ MIDI_Play(
       return;
    }
 
-   SOUND_PlayCDA(-1);
    native_midi_freesong(g_pMid);
    g_pMid = NULL;
    iMidCurrent = -1;

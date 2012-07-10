@@ -642,24 +642,3 @@ PAL_PlayMUS(
    RIX_Play(iNumRIX, fLoop, flFadeTime);
 }
 
-BOOL
-SOUND_PlayCDA(
-   INT    iNumTrack
-)
-/*++
-  Purpose:
-
-    Play a CD Audio Track.
-
-  Parameters:
-
-    [IN]  iNumTrack - number of the CD Audio Track.
-
-  Return value:
-
-    TRUE if the track can be played, FALSE if not.
-
---*/
-{
-   return FALSE;
-}

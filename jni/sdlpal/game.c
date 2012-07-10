@@ -88,6 +88,7 @@ PAL_GameMain(
    // Run the main game loop.
    //
    dwTime = SDL_GetTicks();
+  
    while (TRUE)
    {
       //

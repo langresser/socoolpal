@@ -29,7 +29,10 @@ extern "C"
 #include "common.h"
 
 extern SDL_Surface *gpScreen;
+extern SDL_Surface *gpScreenReal;
 extern SDL_Surface *gpScreenBak;
+extern WORD  g_wInitialWidth;
+extern WORD  g_wInitialHeight;
 
 INT
 #ifdef GEKKO // Rikku2000: Crash on compile, allready define on WIISDK
@@ -65,11 +68,6 @@ VIDEO_Resize(
 
 SDL_Color *
 VIDEO_GetPalette(
-   VOID
-);
-
-VOID
-VIDEO_ToggleFullscreen(
    VOID
 );
 

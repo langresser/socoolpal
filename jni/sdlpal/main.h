@@ -57,4 +57,12 @@ PAL_Shutdown(
    VOID
 );
 
+#define GAME_STATE_PREINIT 0
+#define GAME_STATE_SPLASH 1
+#define GAME_STATE_MENU 2
+#define GAME_STATE_SCENE 3
+#define GAME_STATE_BATTLE 4
+#define GAME_STATE_END 5
+
+extern int g_game_state;
 #endif

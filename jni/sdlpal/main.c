@@ -35,6 +35,8 @@
 #define SPRITENUM_SPLASH_CRANE      0x49
 #define NUM_RIX_TITLE               0x5
 
+int g_game_state = GAME_STATE_PREINIT;
+
 static VOID
 PAL_Init(
    WORD             wScreenWidth,
@@ -73,24 +75,9 @@ PAL_Init(
    //
    // Initialize defaults, video and audio
    //
-#if defined(DINGOO)
-   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK) == -1)
-#else
-   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_CDROM | SDL_INIT_NOPARACHUTE | SDL_INIT_JOYSTICK) == -1)
-#endif
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK) == -1)
    {
-#if defined (_WIN32) && SDL_MAJOR_VERSION == 1 && SDL_MINOR_VERSION <= 2
-      //
-      // Try the WINDIB driver if DirectX failed.
-      //
-      putenv("SDL_VIDEODRIVER=windib");
-      if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_NOPARACHUTE | SDL_INIT_JOYSTICK) == -1)
-      {
-         TerminateOnError("Could not initialize SDL: %s.\n", SDL_GetError());
-      }
-#else
-      TerminateOnError("Could not initialize SDL: %s.\n", SDL_GetError());
-#endif
+		TerminateOnError("Could not initialize SDL: %s.\n", SDL_GetError());
    }
 
    //
@@ -136,11 +123,7 @@ PAL_Init(
    PAL_InitResources();
    SOUND_OpenAudio();
 
-#ifdef _DEBUG
-   SDL_WM_SetCaption("Pal (Debug Build)", NULL);
-#else
-   SDL_WM_SetCaption("Pal", NULL);
-#endif
+	SDL_WM_SetCaption("Pal", NULL);
 }
 
 VOID
@@ -233,8 +216,6 @@ PAL_SplashScreen(
    LPBYTE         buf, buf2;
    int            cranepos[9][3], i, iImgPos = 200, iCraneFrame = 0, iTitleHeight;
    DWORD          dwTime, dwBeginTime;
-   BOOL           fUseCD = TRUE;
-
    if (palette == NULL)
    {
       fprintf(stderr, "ERROR: PAL_SplashScreen(): palette == NULL\n");
@@ -290,11 +271,7 @@ PAL_SplashScreen(
    //
    // Play the title music
    //
-   if (!SOUND_PlayCDA(7))
-   {
-      fUseCD = FALSE;
-      PAL_PlayMUS(NUM_RIX_TITLE, TRUE, 2);
-   }
+   PAL_PlayMUS(NUM_RIX_TITLE, TRUE, 2);
 
    //
    // Clear all of the events and key states
@@ -447,10 +424,7 @@ PAL_SplashScreen(
    SDL_FreeSurface(lpBitmapUp);
    free(buf);
 
-   if (!fUseCD)
-   {
-      PAL_PlayMUS(0, FALSE, 1);
-   }
+   PAL_PlayMUS(0, FALSE, 1);
 
    PAL_FadeOut(1);
 }
@@ -569,9 +543,6 @@ main(
 
 #ifdef PAL_HAS_NATIVEMIDI
       case 'm':
-         //
-         // Use MIDI music
-         //
          g_fUseMidi = TRUE;
          break;
 #endif
@@ -579,9 +550,6 @@ main(
    }
 #endif
 
-   //
-   // Default resolution is 640x400 (windowed) or 640x480 (fullscreen).
-   //
    if (wScreenWidth == 0)
    {
 #ifdef __SYMBIAN32__
@@ -622,23 +590,16 @@ main(
 #endif
    PAL_Init(wScreenWidth, wScreenHeight, fFullScreen);
 
-#ifndef _DEBUG
    //
    // Show the trademark screen and splash screen
    //
-   PAL_TrademarkScreen();
-   #endif
+//   PAL_TrademarkScreen();
+#ifndef _DEBUG
    PAL_SplashScreen();
+#endif
 
-
-   //
-   // Run the main game routine
-   //
    PAL_GameMain();
 
-   //
-   // Should not really reach here...
-   //
    assert(FALSE);
    return 255;
 }

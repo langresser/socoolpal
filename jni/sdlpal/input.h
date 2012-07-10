@@ -34,6 +34,7 @@ typedef struct tagPALINPUTSTATE
    PALDIRECTION           dir;
    DWORD				  dirKeyPress;
    DWORD                  dwKeyPress;
+   int controlType;
 } PALINPUTSTATE;
 
 extern PALINPUTSTATE g_InputState;

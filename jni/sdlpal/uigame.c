@@ -57,7 +57,6 @@ PAL_DrawOpeningMenuBackground(
    //
    PAL_FBPBlitToSurface(buf, gpScreen);
    VIDEO_UpdateScreen(NULL);
-
    free(buf);
 }
 
@@ -98,10 +97,12 @@ PAL_OpeningMenu(
    // Draw the background
    //
    PAL_DrawOpeningMenuBackground();
+   
    PAL_FadeIn(0, FALSE, 1);
 
    while (TRUE)
    {
+	   VIDEO_UpdateScreen(NULL);
       //
       // Activate the menu
       //

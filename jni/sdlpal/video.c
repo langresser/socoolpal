@@ -27,11 +27,11 @@ SDL_Surface              *gpScreen           = NULL;
 SDL_Surface              *gpScreenBak        = NULL;
 
 // The real screen surface 实际游戏屏幕（与设备相关）
-static SDL_Surface       *gpScreenReal       = NULL;
+SDL_Surface       *gpScreenReal       = NULL;
 
 // Initial screen size
-static WORD               g_wInitialWidth    = 640;
-static WORD               g_wInitialHeight   = 400;
+WORD               g_wInitialWidth    = 640;
+WORD               g_wInitialHeight   = 400;
 
 // Shake times and level
 static WORD               g_wShakeTime       = 0;
@@ -429,89 +429,6 @@ VIDEO_ToggleScaleScreen(
    VIDEO_Resize(320, 240);
    VIDEO_UpdateScreen(NULL);
 #endif
-}
-
-VOID
-VIDEO_ToggleFullscreen(
-   VOID
-)
-/*++
-  Purpose:
-
-    Toggle fullscreen mode.
-
-  Parameters:
-
-    None.
-
-  Return value:
-
-    None.
-
---*/
-{
-   DWORD                    flags;
-   PAL_LARGE SDL_Color      palette[256];
-   int                      i;
-
-   //
-   // Get the original palette.
-   //
-   for (i = 0; i < gpScreenReal->format->palette->ncolors; i++)
-   {
-      palette[i] = gpScreenReal->format->palette->colors[i];
-   }
-
-   //
-   // Get the flags of the original screen surface
-   //
-   flags = gpScreenReal->flags;
-
-   if (flags & SDL_FULLSCREEN)
-   {
-      //
-      // Already in fullscreen mode. Remove the fullscreen flag.
-      //
-      flags &= ~SDL_FULLSCREEN;
-      flags |= SDL_RESIZABLE;
-      SDL_ShowCursor(TRUE);
-   }
-   else
-   {
-      //
-      // Not in fullscreen mode. Set the fullscreen flag.
-      //
-      flags |= SDL_FULLSCREEN;
-      SDL_ShowCursor(FALSE);
-   }
-
-   //
-   // Free the original screen surface
-   //
-   SDL_FreeSurface(gpScreenReal);
-
-   //
-   // ... and create a new one
-   //
-   if (g_wInitialWidth == 640 && g_wInitialHeight == 400 && (flags & SDL_FULLSCREEN))
-   {
-      gpScreenReal = SDL_SetVideoMode(640, 480, 8, flags);
-   }
-   else if (g_wInitialWidth == 640 && g_wInitialHeight == 480 && !(flags & SDL_FULLSCREEN))
-   {
-      gpScreenReal = SDL_SetVideoMode(640, 400, 8, flags);
-   }
-   else
-   {
-      gpScreenReal = SDL_SetVideoMode(g_wInitialWidth, g_wInitialHeight, 8, flags);
-   }
-
-   VIDEO_SetPalette(palette);
-
-   //
-   // Update the screen
-   //
-   VIDEO_UpdateScreen(NULL);
 }
 
 VOID
