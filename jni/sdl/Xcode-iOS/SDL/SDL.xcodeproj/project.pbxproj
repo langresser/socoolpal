@@ -770,6 +770,13 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		3B3C905B15AE07E400976B55 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = iOS;
+			sourceTree = "<group>";
+		};
 		56EA86F813E9EBF9002E47EB /* coreaudio */ = {
 			isa = PBXGroup;
 			children = (
@@ -1090,6 +1097,7 @@
 		FDA682420DF2374D00F98A1A /* video */ = {
 			isa = PBXGroup;
 			children = (
+				3B3C905B15AE07E400976B55 /* iOS */,
 				FD689F090E26E5D900F90B21 /* uikit */,
 				FDA685F40DF244C800F98A1A /* dummy */,
 				FDA683000DF2374E00F98A1A /* SDL_blit.c */,

@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3B3C905015AE00E900976B55 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3C904D15AE00E900976B55 /* AppDelegate.m */; };
+		3B3C905115AE00E900976B55 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3C904F15AE00E900976B55 /* ViewController.m */; };
+		3B3C905815AE04A900976B55 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3C905715AE04A900976B55 /* main.m */; };
+		3B3C908615AE0BE200976B55 /* EAGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B3C908515AE0BE200976B55 /* EAGLView.m */; };
 		3B713CB415A9F71200A63662 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B713CB315A9F71200A63662 /* UIKit.framework */; };
 		3B713CB615A9F71200A63662 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B713CB515A9F71200A63662 /* Foundation.framework */; };
 		3B713CB815A9F71200A63662 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B713CB715A9F71200A63662 /* CoreGraphics.framework */; };
@@ -130,6 +134,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3B3C904C15AE00E900976B55 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		3B3C904D15AE00E900976B55 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		3B3C904E15AE00E900976B55 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		3B3C904F15AE00E900976B55 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		3B3C905715AE04A900976B55 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		3B3C908415AE0BE200976B55 /* EAGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EAGLView.h; sourceTree = "<group>"; };
+		3B3C908515AE0BE200976B55 /* EAGLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EAGLView.m; sourceTree = "<group>"; };
 		3B713CAF15A9F71200A63662 /* Pal_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pal_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B713CB315A9F71200A63662 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		3B713CB515A9F71200A63662 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -244,9 +255,9 @@
 		3B713D5115A9F7D900A63662 /* uibattle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = uibattle.h; path = ../../uibattle.h; sourceTree = "<group>"; };
 		3B713D5215A9F7D900A63662 /* uigame.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = uigame.c; path = ../../uigame.c; sourceTree = "<group>"; };
 		3B713D5315A9F7D900A63662 /* uigame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = uigame.h; path = ../../uigame.h; sourceTree = "<group>"; };
-		3B713D5415A9F7D900A63662 /* util.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = util.c; path = ../../util.c; sourceTree = "<group>"; };
+		3B713D5415A9F7D900A63662 /* util.c */ = {isa = PBXFileReference; fileEncoding = 2147486000; lastKnownFileType = sourcecode.c.c; name = util.c; path = ../../util.c; sourceTree = "<group>"; };
 		3B713D5515A9F7D900A63662 /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = util.h; path = ../../util.h; sourceTree = "<group>"; };
-		3B713D5615A9F7D900A63662 /* video.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = video.c; path = ../../video.c; sourceTree = "<group>"; };
+		3B713D5615A9F7D900A63662 /* video.c */ = {isa = PBXFileReference; fileEncoding = 2147486000; lastKnownFileType = sourcecode.c.c; name = video.c; path = ../../video.c; sourceTree = "<group>"; };
 		3B713D5715A9F7D900A63662 /* video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = video.h; path = ../../video.h; sourceTree = "<group>"; };
 		3B713D5815A9F7D900A63662 /* yj1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = yj1.c; path = ../../yj1.c; sourceTree = "<group>"; };
 		3B713D8615A9F80700A63662 /* SDL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL.xcodeproj; path = "../../sdl/Xcode-iOS/SDL/SDL.xcodeproj"; sourceTree = "<group>"; };
@@ -304,6 +315,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3B3C904B15AE006C00976B55 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				3B3C904C15AE00E900976B55 /* AppDelegate.h */,
+				3B3C904D15AE00E900976B55 /* AppDelegate.m */,
+				3B3C904E15AE00E900976B55 /* ViewController.h */,
+				3B3C904F15AE00E900976B55 /* ViewController.m */,
+				3B3C905715AE04A900976B55 /* main.m */,
+				3B3C908415AE0BE200976B55 /* EAGLView.h */,
+				3B3C908515AE0BE200976B55 /* EAGLView.m */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
 		3B713CA415A9F71200A63662 = {
 			isa = PBXGroup;
 			children = (
@@ -340,6 +365,7 @@
 		3B713CB915A9F71200A63662 /* Pal_iOS */ = {
 			isa = PBXGroup;
 			children = (
+				3B3C904B15AE006C00976B55 /* Classes */,
 				3B713CD915A9F79600A63662 /* adplug */,
 				3B713D1415A9F7D900A63662 /* libmad */,
 				3B713CD815A9F78200A63662 /* Src */,
@@ -363,12 +389,12 @@
 			children = (
 				3B713D0015A9F7D900A63662 /* ascii.h */,
 				3B713D0115A9F7D900A63662 /* battle.c */,
+				3B713D0715A9F7D900A63662 /* fight.h */,
 				3B713D0215A9F7D900A63662 /* battle.h */,
 				3B713D0315A9F7D900A63662 /* common.h */,
 				3B713D0415A9F7D900A63662 /* ending.c */,
 				3B713D0515A9F7D900A63662 /* ending.h */,
 				3B713D0615A9F7D900A63662 /* fight.c */,
-				3B713D0715A9F7D900A63662 /* fight.h */,
 				3B713D0815A9F7D900A63662 /* font.c */,
 				3B713D0915A9F7D900A63662 /* font.h */,
 				3B713D0A15A9F7D900A63662 /* game.c */,
@@ -718,6 +744,10 @@
 				3B713D8315A9F7D900A63662 /* util.c in Sources */,
 				3B713D8415A9F7D900A63662 /* video.c in Sources */,
 				3B713D8515A9F7D900A63662 /* yj1.c in Sources */,
+				3B3C905015AE00E900976B55 /* AppDelegate.m in Sources */,
+				3B3C905115AE00E900976B55 /* ViewController.m in Sources */,
+				3B3C905815AE04A900976B55 /* main.m in Sources */,
+				3B3C908615AE0BE200976B55 /* EAGLView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

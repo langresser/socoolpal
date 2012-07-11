@@ -433,6 +433,15 @@ UTIL_CloseFile(
    }
 }
 
+char*   my_strlwr(   char*   str   )
+{
+    char*   orig   =   str;
+    //   process   the   string
+    for   (   ;   *str   != '\0';   str++   )
+        *str   =   tolower(*str);
+    return   orig;
+}
+
 FILE* open_file(const char* file_name, const char* read_mode)
 {
 	char szTemp[256] = {0};
@@ -440,7 +449,7 @@ FILE* open_file(const char* file_name, const char* read_mode)
 
 	// 先查找资源目录，资源目录要求是可以读写的。如果有相同文件，优先读取资源目录下的。（更新文件）
 	snprintf(szTemp, sizeof(szTemp) - 1, "%s%s", g_resource_dir, file_name);
-	strlwr(szTemp);
+	my_strlwr(szTemp);
 	fp = fopen(szTemp, read_mode);
 
 	if (fp) {
@@ -448,7 +457,7 @@ FILE* open_file(const char* file_name, const char* read_mode)
 	}
 
 	snprintf(szTemp, sizeof(szTemp) - 1, "%s%s", g_application_dir, file_name);
-	strlwr(szTemp);
+	my_strlwr(szTemp);
 	fp = fopen(szTemp, read_mode);
 	if (fp) {
 		return fp;

@@ -15,3 +15,6 @@ Debug/
 *.user
 *.suo
 jni/sdl/lib
+.DS_Store
+jni/sdlpal/Pal_iOS/Pal_iOS.xcodeproj/xcuserdata/wangjiatc.xcuserdatad/xcdebugger/Breakpoints.xcbkptlist
+jni/sdlpal/Pal_iOS/Pal_iOS.xcodeproj/project.xcworkspace/xcuserdata/wangjiatc.xcuserdatad/UserInterfaceState.xcuserstate

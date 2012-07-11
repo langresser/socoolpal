@@ -24,7 +24,9 @@
 #include <math.h>
 
 PALINPUTSTATE            g_InputState;
+#ifdef PAL_HAS_JOYSTICKS
 static SDL_Joystick     *g_pJoy = NULL;
+#endif
 BOOL                     g_fUseJoystick = TRUE;
 
 #if defined(GPH)

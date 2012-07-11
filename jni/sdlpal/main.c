@@ -566,7 +566,10 @@ main(
       wScreenHeight = 240;
 #elif defined (ANDROID)
       wScreenWidth = 480;
-      wScreenHeight = 320;		
+      wScreenHeight = 320;
+#elif defined (__IPHONEOS__)
+       wScreenWidth = 480;
+       wScreenHeight = 320;	
 #else
 #if SCREEN_TYPE == SCREEN_TYPE_SMALL
 	  wScreenWidth = 480;

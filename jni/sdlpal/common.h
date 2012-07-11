@@ -83,7 +83,9 @@ extern "C"
 #define PAL_HAS_MOUSE         1
 
 #elif defined __IPHONEOS__
-
+#undef SDL_INIT_JOYSTICK
+#define SDL_INIT_JOYSTICK     0
+#define PAL_HAS_MOUSE         1
 #else
 
 #define PAL_HAS_MOUSE         1
