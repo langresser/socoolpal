@@ -106,7 +106,7 @@ PAL_OpeningMenu(
       //
       // Activate the menu
       //
-      wItemSelected = PAL_ReadMenu(NULL, rgMainMenuItem, 2, wDefaultItem, MENUITEM_COLOR);
+      wItemSelected = PAL_ReadMenu(NULL, rgMainMenuItem, 2, wDefaultItem, MENUITEM_COLOR, FALSE);
 
       if (wItemSelected == 0 || wItemSelected == MENUITEM_VALUE_CANCELLED)
       {
@@ -210,7 +210,7 @@ PAL_SaveSlotMenu(
    //
    // Activate the menu
    //
-   wItemSelected = PAL_ReadMenu(NULL, rgMenuItem, 5, wDefaultSlot - 1, MENUITEM_COLOR);
+   wItemSelected = PAL_ReadMenu(NULL, rgMenuItem, 5, wDefaultSlot - 1, MENUITEM_COLOR, TRUE);
 
    //
    // Delete the boxes
@@ -277,7 +277,7 @@ PAL_ConfirmMenu(
    //
    // Activate the menu
    //
-   wReturnValue = PAL_ReadMenu(NULL, rgMenuItem, 2, 0, MENUITEM_COLOR);
+   wReturnValue = PAL_ReadMenu(NULL, rgMenuItem, 2, 0, MENUITEM_COLOR, FALSE);
 
    //
    // Delete the boxes
@@ -343,7 +343,7 @@ PAL_SwitchMenu(
    //
    // Activate the menu
    //
-   wReturnValue = PAL_ReadMenu(NULL, rgMenuItem, 2, fEnabled ? 1 : 0, MENUITEM_COLOR);
+   wReturnValue = PAL_ReadMenu(NULL, rgMenuItem, 2, fEnabled ? 1 : 0, MENUITEM_COLOR, FALSE);
 
    //
    // Delete the boxes
@@ -406,7 +406,7 @@ PAL_BattleSpeedMenu(
    // Activate the menu
    //
    wReturnValue = PAL_ReadMenu(NULL, rgMenuItem, 5, gpGlobals->bBattleSpeed - 1,
-      MENUITEM_COLOR);
+      MENUITEM_COLOR, FALSE);
 
    //
    // Delete the boxes
@@ -554,10 +554,10 @@ PAL_SystemMenu(
    //
 #ifdef PAL_CLASSIC
    wReturnValue = PAL_ReadMenu(PAL_SystemMenu_OnItemChange, rgSystemMenuItem, 5,
-      gpGlobals->iCurSystemMenuItem, MENUITEM_COLOR);
+      gpGlobals->iCurSystemMenuItem, MENUITEM_COLOR, FALSE);
 #else
    wReturnValue = PAL_ReadMenu(PAL_SystemMenu_OnItemChange, rgSystemMenuItem, 6,
-      gpGlobals->iCurSystemMenuItem, MENUITEM_COLOR);
+      gpGlobals->iCurSystemMenuItem, MENUITEM_COLOR, FALSE);
 #endif
 
    if (wReturnValue == MENUITEM_VALUE_CANCELLED)
@@ -733,7 +733,7 @@ PAL_InGameMagicMenu(
    PAL_CreateBox(PAL_XY(35, 62), gpGlobals->wMaxPartyMemberIndex, 2, 0, FALSE);
    VIDEO_UpdateScreen(&rect);
 
-   w = PAL_ReadMenu(NULL, rgMenuItem, gpGlobals->wMaxPartyMemberIndex + 1, w, MENUITEM_COLOR);
+   w = PAL_ReadMenu(NULL, rgMenuItem, gpGlobals->wMaxPartyMemberIndex + 1, w, MENUITEM_COLOR, FALSE);
 
    if (w == MENUITEM_VALUE_CANCELLED)
    {
@@ -810,41 +810,53 @@ PAL_InGameMagicMenu(
                PAL_ClearKeyState();
                PAL_ProcessEvent();
 
-			   if (g_InputState.hasTouch == TRUE) {
+			   if (g_InputState.touchEventType == TOUCH_DOWN) {
+				   BOOL hasTouch = FALSE;
 				   for (i = 0; i <= gpGlobals->wMaxPartyMemberIndex; i++) {
 					   if (PAL_IsTouch(45 + i * 78, 165, 78, 200 - 165)) {
-						   wPlayer = i;
-						   gpGlobals->g.rgObject[wMagic].magic.wScriptOnUse =
-							   PAL_RunTriggerScript(gpGlobals->g.rgObject[wMagic].magic.wScriptOnUse,
-							   gpGlobals->rgParty[wPlayer].wPlayerRole);
-
-						   if (g_fScriptSuccess)
-						   {
-							   gpGlobals->g.rgObject[wMagic].magic.wScriptOnSuccess =
-								   PAL_RunTriggerScript(gpGlobals->g.rgObject[wMagic].magic.wScriptOnSuccess,
-								   gpGlobals->rgParty[wPlayer].wPlayerRole);
-
-							   if (g_fScriptSuccess)
-							   {
-								   gpGlobals->g.PlayerRoles.rgwMP[gpGlobals->rgParty[w].wPlayerRole] -=
-									   gpGlobals->g.lprgMagic[gpGlobals->g.rgObject[wMagic].magic.wMagicNumber].wCostMP;
-
-								   //
-								   // Check if we have run out of MP
-								   //
-								   if (gpGlobals->g.PlayerRoles.rgwMP[gpGlobals->rgParty[w].wPlayerRole] <
-									   gpGlobals->g.lprgMagic[gpGlobals->g.rgObject[wMagic].magic.wMagicNumber].wCostMP)
-								   {
-									   //
-									   // Don't go further if run out of MP
-									   //
-									   wPlayer = MENUITEM_VALUE_CANCELLED;
-								   }
-							   }
-						   }
-						   break;
+						  wPlayer = i;
+						  hasTouch = TRUE;
+						  break;
 					   }
 				   }
+
+				   if (hasTouch == TRUE) {
+					   break;
+				   }
+			   } else if (g_InputState.touchEventType == TOUCH_UP) {
+				   BOOL hasTouch = FALSE;
+					if (PAL_IsTouch(45 + wPlayer * 78, 165, 78, 200 - 165)) {
+						gpGlobals->g.rgObject[wMagic].magic.wScriptOnUse =
+							PAL_RunTriggerScript(gpGlobals->g.rgObject[wMagic].magic.wScriptOnUse,
+							gpGlobals->rgParty[wPlayer].wPlayerRole);
+
+						if (g_fScriptSuccess)
+						{
+							hasTouch = TRUE;
+							gpGlobals->g.rgObject[wMagic].magic.wScriptOnSuccess =
+								PAL_RunTriggerScript(gpGlobals->g.rgObject[wMagic].magic.wScriptOnSuccess,
+								gpGlobals->rgParty[wPlayer].wPlayerRole);
+
+							if (g_fScriptSuccess)
+							{
+								gpGlobals->g.PlayerRoles.rgwMP[gpGlobals->rgParty[w].wPlayerRole] -=
+									gpGlobals->g.lprgMagic[gpGlobals->g.rgObject[wMagic].magic.wMagicNumber].wCostMP;
+
+								//
+								// Check if we have run out of MP
+								//
+								if (gpGlobals->g.PlayerRoles.rgwMP[gpGlobals->rgParty[w].wPlayerRole] <
+									gpGlobals->g.lprgMagic[gpGlobals->g.rgObject[wMagic].magic.wMagicNumber].wCostMP)
+								{
+									//
+									// Don't go further if run out of MP
+									//
+									wPlayer = MENUITEM_VALUE_CANCELLED;
+								}
+							}
+						}
+						break;
+					}
 			   }
 
                if (g_InputState.dwKeyPress & kKeyMenu)
@@ -953,7 +965,7 @@ PAL_InventoryMenu(
    PAL_CreateBox(PAL_XY(30, 60), 1, 1, 0, FALSE);
    VIDEO_UpdateScreen(&rect);
 
-   w = PAL_ReadMenu(NULL, rgMenuItem, 2, w - 1, MENUITEM_COLOR);
+   w = PAL_ReadMenu(NULL, rgMenuItem, 2, w - 1, MENUITEM_COLOR, FALSE);
 
    switch (w)
    {
@@ -1041,7 +1053,7 @@ PAL_InGameMenu(
    while (TRUE)
    {
       wReturnValue = PAL_ReadMenu(PAL_InGameMenu_OnItemChange, rgMainMenuItem, 4,
-         gpGlobals->iCurMainMenuItem, MENUITEM_COLOR);
+         gpGlobals->iCurMainMenuItem, MENUITEM_COLOR, FALSE);
 
       if (wReturnValue == MENUITEM_VALUE_CANCELLED)
       {
@@ -1621,7 +1633,7 @@ PAL_BuyMenu(
 
    while (TRUE)
    {
-      w = PAL_ReadMenu(PAL_BuyMenu_OnItemChange, rgMenuItem, i, w, MENUITEM_COLOR);
+      w = PAL_ReadMenu(PAL_BuyMenu_OnItemChange, rgMenuItem, i, w, MENUITEM_COLOR, FALSE);
 
       if (w == MENUITEM_VALUE_CANCELLED)
       {

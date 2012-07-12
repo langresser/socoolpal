@@ -197,7 +197,8 @@ PAL_ReadMenu(
    LPMENUITEM                rgMenuItem,
    INT                       nMenuItem,
    WORD                      wDefaultItem,
-   BYTE                      bLabelColor
+   BYTE                      bLabelColor,
+   BOOL						couldCancel
 );
 
 VOID

@@ -454,7 +454,6 @@ main(
 {
    WORD          wScreenWidth = 0, wScreenHeight = 0;
    int           c;
-   int			 m;
    BOOL          fFullScreen = FALSE;
 
    UTIL_OpenLog();

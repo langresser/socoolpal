@@ -370,7 +370,8 @@ PAL_ReadMenu(
    LPMENUITEM                rgMenuItem,
    INT                       nMenuItem,
    WORD                      wDefaultItem,
-   BYTE                      bLabelColor
+   BYTE                      bLabelColor,
+   BOOL						couldCancel
 )
 /*++
   Purpose:
@@ -398,7 +399,6 @@ PAL_ReadMenu(
 {
    int               i;
    WORD              wCurrentItem    = (wDefaultItem < nMenuItem) ? wDefaultItem : 0;
-   int menuItemX, menuItemY;
    SDL_Rect rectMenuItem;
 
    //
@@ -446,16 +446,44 @@ PAL_ReadMenu(
 
       PAL_ProcessEvent();
 
-	  if (g_InputState.hasTouch == TRUE) {
+	  if (g_InputState.touchEventType == TOUCH_DOWN) {
 
 		  for (i = 0; i < nMenuItem; ++i) {
-			  menuItemX = PAL_X(rgMenuItem[i].pos);
-			  menuItemY = PAL_Y(rgMenuItem[i].pos);
-			  if (g_InputState.touchX >= menuItemX && g_InputState.touchX < menuItemX + rgMenuItem[i].width
-				  && g_InputState.touchY >= menuItemY && g_InputState.touchY < menuItemY + rgMenuItem[i].height) {
+			  if (PAL_IsTouch(PAL_X(rgMenuItem[i].pos), PAL_Y(rgMenuItem[i].pos), rgMenuItem[i].width, rgMenuItem[i].height)) {
+					if (rgMenuItem[wCurrentItem].fEnabled)
+					 {
+						//
+						// Dehighlight the unselected item.
+						//
+						PAL_DrawMenuText(PAL_GetWord(rgMenuItem[wCurrentItem].wNumWord),
+						   rgMenuItem[wCurrentItem].pos, bLabelColor, FALSE, TRUE);
+					 }
+					 else
+					 {
+						PAL_DrawMenuText(PAL_GetWord(rgMenuItem[wCurrentItem].wNumWord),
+						   rgMenuItem[wCurrentItem].pos, MENUITEM_COLOR_INACTIVE, FALSE, TRUE);
+					 }
+
 					wCurrentItem = i;
-					return rgMenuItem[i].wValue;
+
+					 if (rgMenuItem[wCurrentItem].fEnabled)
+					 {
+						PAL_DrawMenuText(PAL_GetWord(rgMenuItem[wCurrentItem].wNumWord),
+						   rgMenuItem[wCurrentItem].pos, MENUITEM_COLOR_SELECTED, FALSE, TRUE);
+					 }
+					 else
+					 {
+						PAL_DrawMenuText(PAL_GetWord(rgMenuItem[wCurrentItem].wNumWord),
+						   rgMenuItem[wCurrentItem].pos, MENUITEM_COLOR_SELECTED_INACTIVE, FALSE, TRUE);
+					 }
 			  }
+		  }
+	  } else if (g_InputState.touchEventType == TOUCH_UP) {
+		  if (wCurrentItem != MENUITEM_VALUE_CANCELLED && wCurrentItem >= 0 && wCurrentItem < nMenuItem &&
+			  PAL_IsTouch(PAL_X(rgMenuItem[wCurrentItem].pos), PAL_Y(rgMenuItem[wCurrentItem].pos), rgMenuItem[wCurrentItem].width, rgMenuItem[wCurrentItem].height)) {
+			return rgMenuItem[wCurrentItem].wValue;
+		  } else if (couldCancel == TRUE) {
+			return MENUITEM_VALUE_CANCELLED;
 		  }
 	  }
 

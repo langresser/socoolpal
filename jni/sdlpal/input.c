@@ -380,6 +380,10 @@ PAL_MouseEventFilter(
       lastPressButtonTime = SDL_GetTicks();
       lastPressx = lpEvent->button.x;
       lastPressy = lpEvent->button.y;
+
+	  g_InputState.touchEventType = TOUCH_DOWN;
+	  g_InputState.touchX = lpEvent->button.x * 320.0 / g_wInitialWidth;
+	  g_InputState.touchY = lpEvent->button.y * 200.0 / g_wInitialHeight;
       switch (gridIndex)
       {
       case 2:
@@ -394,26 +398,6 @@ PAL_MouseEventFilter(
       case 8:
          g_InputState.dir = kDirEast;
          break;
-      case 1:
-    	 //g_InputState.prevdir = g_InputState.dir;
-    	 //g_InputState.dir = kDirNorth;
-         g_InputState.dwKeyPress |= kKeyUp;
-         break;
-      case 7:
-    	 //g_InputState.prevdir = g_InputState.dir;
-    	 //g_InputState.dir = kDirSouth; 
-         g_InputState.dwKeyPress |= kKeyDown;
-         break;
-      case 3:
-    	 //g_InputState.prevdir = g_InputState.dir;
-    	 //g_InputState.dir = kDirWest;
-    	 g_InputState.dwKeyPress |= kKeyLeft;
-         break;
-      case 5:
-         //g_InputState.prevdir = g_InputState.dir;
-         //g_InputState.dir = kDirEast;
-         g_InputState.dwKeyPress |= kKeyRight;
-         break;
       }
       break;
    case SDL_MOUSEBUTTONUP:
@@ -422,9 +406,13 @@ PAL_MouseEventFilter(
       lastReleasey = lpEvent->button.y;
       hitTest ++;
 
-	  g_InputState.hasTouch = TRUE;
-	  g_InputState.touchX = lpEvent->button.x * 320.0 / g_wInitialWidth;
-	  g_InputState.touchY = lpEvent->button.y * 200.0 / g_wInitialHeight;
+	  if (lastReleaseButtonTime - lastPressButtonTime <= 1000) {
+		g_InputState.touchEventType = TOUCH_UP;
+		g_InputState.touchX = lpEvent->button.x * 320.0 / g_wInitialWidth;
+		g_InputState.touchY = lpEvent->button.y * 200.0 / g_wInitialHeight;
+	  } else {
+		g_InputState.touchEventType = TOUCH_NONE;
+	  } 
 
       switch (gridIndex)
       {
@@ -435,23 +423,6 @@ PAL_MouseEventFilter(
 	  case 8:
 		  g_InputState.dir = kDirUnknown;
 		  break;
-      case 7:
-    	  g_InputState.dwKeyPress |= kKeyRepeat;
-    	  break;
-      case 1:
-    	 g_InputState.dwKeyPress |= kKeyForce;
-    	 break;
-      case 3:
-    	 g_InputState.dwKeyPress |= kKeyAuto;
-    	 break;
-      case 5:
-    	 g_InputState.dwKeyPress |= kKeyDefend;
-		 break;
-	// 中部区域，弹出菜单
-      case 4:
-// 		g_InputState.dwKeyPress |= kKeyMenu;
-// 		g_InputState.dwKeyPress |= kKeySearch;		
-        break;
       }
       break;
    }
@@ -719,7 +690,7 @@ PAL_ClearKeyState(
 --*/
 {
    g_InputState.dwKeyPress = 0;
-   g_InputState.hasTouch = FALSE;
+   g_InputState.touchEventType = TOUCH_NONE;
 }
 
 VOID
@@ -818,10 +789,37 @@ PAL_ProcessEvent(
    while (SDL_PollEvent(NULL));
 }
 
-
 BOOL PAL_IsTouch(int x, int y, int w, int h)
 {
-	if (g_InputState.hasTouch == FALSE) {
+	if (g_InputState.touchEventType == TOUCH_NONE) {
+		return FALSE;
+	}
+
+	if (g_InputState.touchX >= x && g_InputState.touchX <= x + w
+		&& g_InputState.touchY >= y && g_InputState.touchY <= y + h) {
+			return TRUE;
+	}
+
+	return FALSE;
+}
+
+BOOL PAL_IsTouchDown(int x, int y, int w, int h)
+{
+	if (g_InputState.touchEventType != TOUCH_DOWN) {
+		return FALSE;
+	}
+
+	if (g_InputState.touchX >= x && g_InputState.touchX <= x + w
+		&& g_InputState.touchY >= y && g_InputState.touchY <= y + h) {
+			return TRUE;
+	}
+
+	return FALSE;
+}
+
+BOOL PAL_IsTouchUp(int x, int y, int w, int h)
+{
+	if (g_InputState.touchEventType != TOUCH_UP) {
 		return FALSE;
 	}
 

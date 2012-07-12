@@ -52,7 +52,6 @@ PAL_MagicSelectionMenuUpdate(
 {
    int         i, j, k;
    BYTE        bColor;
-   int menuX, menuY;
 
    //
    // Check for inputs
@@ -227,7 +226,7 @@ PAL_MagicSelectionMenuUpdate(
       }
    }
 
-   if (g_InputState.hasTouch == TRUE) {
+   if (g_InputState.touchEventType == TOUCH_DOWN) {
 	   for (j = 0; j < 5; j++)
 	   {
 		   for (k = 0; k < 3; k++)
@@ -238,12 +237,18 @@ PAL_MagicSelectionMenuUpdate(
 
 			   if (PAL_IsTouch(35 + j * 87, 54 + k * 18, 87, 18)) {
 				   g_iCurrentItem = k * 3 + j;
-				   if (rgMagicItem[g_iCurrentItem].fEnabled) {
-					   return rgMagicItem[g_iCurrentItem].wMagic;
-				   }
+				   
 			   }
 		   }
 	   }
+   } else if (g_InputState.touchEventType == TOUCH_UP) {
+	   j = g_iCurrentItem % 3;
+       k = (g_iCurrentItem < 3 * 2) ? (g_iCurrentItem / 3) : 2;
+	   if (PAL_IsTouch(35 + j * 87, 54 + k * 18, 87, 18)) {
+			if (rgMagicItem[g_iCurrentItem].fEnabled) {
+				return rgMagicItem[g_iCurrentItem].wMagic;
+			}
+		}
    }
 
    if (g_InputState.dwKeyPress & kKeySearch)

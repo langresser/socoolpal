@@ -29,12 +29,16 @@ extern "C"
 {
 #endif
 
+#define TOUCH_NONE 0
+#define TOUCH_DOWN 1
+#define TOUCH_UP	2
+
 typedef struct tagPALINPUTSTATE
 {
    PALDIRECTION           dir;
    DWORD				  dirKeyPress;
    DWORD                  dwKeyPress;
-   BOOL					  hasTouch;
+   int					  touchEventType;
    DWORD					touchX;
    DWORD					touchY;
 } PALINPUTSTATE;
@@ -82,6 +86,8 @@ PAL_ShutdownInput(
 );
 
 BOOL PAL_IsTouch(int x, int y, int w, int h);
+BOOL PAL_IsTouchDown(int x, int y, int w, int h);
+BOOL PAL_IsTouchUp(int x, int y, int w, int h);
 
 extern BOOL g_fUseJoystick;
 
