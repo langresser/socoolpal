@@ -29,11 +29,18 @@ extern "C"
 {
 #endif
 
+typedef enum CONTROL_TYPE
+{
+	CONTROL_TYPE_NONE,
+	CONTROL_TYPE_MOUSE_WALK,
+};
+
 typedef struct tagPALINPUTSTATE
 {
    PALDIRECTION           dir;
    DWORD				  dirKeyPress;
    DWORD                  dwKeyPress;
+   int nMoveDir;
    int controlType;
 } PALINPUTSTATE;
 

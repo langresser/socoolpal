@@ -318,6 +318,79 @@ PAL_KeyboardEventFilter(
    }
 }
 
+int GetMouseMoveDir(int nMouseX, int nMouseY)
+{
+	// why use initial ? Maybe fix later 
+	int nScrW = g_wInitialWidth;
+	int nScrH = g_wInitialHeight;
+
+	// 目前来看人物似乎总是在屏幕中心，即使走到地图边上;
+	int nHeroX = nScrW / 2;
+	int nHeroY = nScrH / 2;
+
+	int nDeltaX = nMouseX - nHeroX;
+	int nDeltaY = nMouseY - nHeroY;
+
+	int nAbsDeltaX = abs(nDeltaX);
+	int nAbsDeltaY = abs(nDeltaY);
+
+	int nDir = eMoveDirUnknown;
+
+	if (nDeltaX > 0) {
+		if (nDeltaY > 0) {
+			// 第一象限,N;
+			if (nAbsDeltaX > nAbsDeltaY) {
+				nDir = eMoveDirNE;
+			} else if (nAbsDeltaX == nAbsDeltaY) {
+				nDir = eMoveDirNorth;
+			} else {
+				nDir = eMoveDirNW;
+			}
+		} else if (nDeltaY == 0) {
+			nDir = eMoveDirRight;
+		} else {
+			// 第四象限,E;
+			if (nAbsDeltaX > nAbsDeltaY) {
+				nDir = eMoveDirEN;
+			} else if (nAbsDeltaX == nAbsDeltaY) {
+				nDir = eMoveDirEast;
+			} else {
+				nDir = eMoveDirES;
+			}
+		}
+	} else if (nDeltaX < 0) {
+		if (nDeltaY > 0) {
+			// 第二象限,W;
+			if (nAbsDeltaX > nAbsDeltaY) {
+				nDir = eMoveDirWS;
+			} else if (nAbsDeltaX == nAbsDeltaY) {
+				nDir = eMoveDirWest;
+			} else {
+				nDir = eMoveDirWN;
+			}
+		} else if (nDeltaY == 0) {
+			nDir = eMoveDirLeft;
+		} else {
+			// 第四象限,S;
+			if (nAbsDeltaX > nAbsDeltaY) {
+				nDir = eMoveDirSW;
+			} else if (nAbsDeltaX == nAbsDeltaY) {
+				nDir = eMoveDirSouth;
+			} else {
+				nDir = eMoveDirSE;
+			}
+		}
+	} else {
+		if (nDeltaY > 0) {
+			nDir = eMoveDirUp;
+		} else if (nDeltaY < 0) {
+			nDir = eMoveDirDown;
+		}
+	}
+
+	return nDir;
+}
+
 static VOID
 PAL_MouseEventFilter(
    const SDL_Event *lpEvent
@@ -362,6 +435,7 @@ PAL_MouseEventFilter(
    gridHeight = screenHeight / 3;
    mx = lpEvent->button.x;
    my = lpEvent->button.y;
+
    thumbx = ceil(mx / gridWidth);
    thumby = floor(my / gridHeight);
    gridIndex = thumbx + thumby * 3 - 1;
@@ -372,47 +446,57 @@ PAL_MouseEventFilter(
 3   4   5
 6   7   8
 */
+
+   g_InputState.controlType = CONTROL_TYPE_NONE;
+
    switch (lpEvent->type)
    {
    case SDL_MOUSEBUTTONDOWN:
       lastPressButtonTime = SDL_GetTicks();
       lastPressx = lpEvent->button.x;
       lastPressy = lpEvent->button.y;
-      switch (gridIndex)
-      {
-      case 2:
-         g_InputState.dir = kDirNorth;
-         break;
-      case 6:
-         g_InputState.dir = kDirSouth;
-         break;
-      case 0:
-         g_InputState.dir = kDirWest;
-         break;
-      case 8:
-         g_InputState.dir = kDirEast;
-         break;
-      case 1:
-    	 //g_InputState.prevdir = g_InputState.dir;
-    	 //g_InputState.dir = kDirNorth;
-         g_InputState.dwKeyPress |= kKeyUp;
-         break;
-      case 7:
-    	 //g_InputState.prevdir = g_InputState.dir;
-    	 //g_InputState.dir = kDirSouth; 
-         g_InputState.dwKeyPress |= kKeyDown;
-         break;
-      case 3:
-    	 //g_InputState.prevdir = g_InputState.dir;
-    	 //g_InputState.dir = kDirWest;
-    	 g_InputState.dwKeyPress |= kKeyLeft;
-         break;
-      case 5:
-         //g_InputState.prevdir = g_InputState.dir;
-         //g_InputState.dir = kDirEast;
-         g_InputState.dwKeyPress |= kKeyRight;
-         break;
-      }
+      
+	  if (4 != gridIndex) {
+		  g_InputState.controlType = CONTROL_TYPE_MOUSE_WALK;
+		  g_InputState.nMoveDir = GetMouseMoveDir(lastPressx, lastPressy);
+	  }
+
+	  switch (gridIndex)
+	  {
+	  case 2:
+		  g_InputState.dir = kDirNorth;
+		  break;
+	  case 6:
+		  g_InputState.dir = kDirSouth;
+		  break;
+	  case 0:
+		  g_InputState.dir = kDirWest;
+		  break;
+	  case 8:
+		  g_InputState.dir = kDirEast;
+		  break;
+	  case 1:
+		  //g_InputState.prevdir = g_InputState.dir;
+		  g_InputState.dir = kDirNorth;
+		  //g_InputState.dwKeyPress |= kKeyUp;
+		  break;
+	  case 7:
+		  //g_InputState.prevdir = g_InputState.dir;
+		  g_InputState.dir = kDirSouth; 
+		  //g_InputState.dwKeyPress |= kKeyDown;
+		  break;
+	  case 3:
+		  //g_InputState.prevdir = g_InputState.dir;
+		  g_InputState.dir = kDirWest;
+		  //g_InputState.dwKeyPress |= kKeyLeft;
+		  break;
+	  case 5:
+		  //g_InputState.prevdir = g_InputState.dir;
+		  g_InputState.dir = kDirEast;
+		  //g_InputState.dwKeyPress |= kKeyRight;
+		  break;
+	  }
+
       break;
    case SDL_MOUSEBUTTONUP:
       lastReleaseButtonTime = SDL_GetTicks();

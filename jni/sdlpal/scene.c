@@ -749,6 +749,79 @@ PAL_UpdatePartyGestures(
    }
 }
 
+void GetMouseMoveDirOffset(int nDir, int* pOffsetX, int* pOffsetY)
+{
+	int xSource = PAL_X(gpGlobals->viewport) + PAL_X(gpGlobals->partyoffset);
+	int ySource = PAL_Y(gpGlobals->viewport) + PAL_Y(gpGlobals->partyoffset);
+	int nDir1 = nDir;
+	int nDir2 = nDir;
+	int nArrOffsetX[] = { 0, 1, 1, 1, 0, -1, -1, -1, 0 };
+	int nArrOffsetY[] = { 0, 1, 0, -1, -1, -1, 0, 1, 1 };
+	int nOffsetX = 0;
+	int nOffsetY = 0;
+	int nTargetX;
+	int nTargetY;
+
+	switch (nDir) {
+	case eMoveDirNE:
+		nDir1 = eMoveDirNorth;
+		nDir2 = eMoveDirEast;
+		break;
+	case eMoveDirNW:
+		nDir1 = eMoveDirNorth;
+		nDir2 = eMoveDirWest;
+		break;
+	case eMoveDirSE:
+		nDir1 = eMoveDirSouth;
+		nDir2 = eMoveDirEast;
+		break;
+	case eMoveDirSW:
+		nDir1 = eMoveDirSouth;
+		nDir2 = eMoveDirWest;
+		break;
+	case eMoveDirEN:
+		nDir1 = eMoveDirEast;
+		nDir2 = eMoveDirNorth;
+		break;
+	case eMoveDirES:
+		nDir1 = eMoveDirEast;
+		nDir2 = eMoveDirSouth;
+		break;
+	case eMoveDirWN:
+		nDir1 = eMoveDirWest;
+		nDir2 = eMoveDirNorth;
+		break;
+	case eMoveDirWS:
+		nDir1 = eMoveDirWest;
+		nDir2 = eMoveDirSouth;
+		break;
+	default:
+		break;
+	}
+
+	nOffsetX = nArrOffsetX[nDir1] * 16;
+	nOffsetY = nArrOffsetY[nDir1] * 8;
+	nTargetX = xSource + nOffsetX;
+	nTargetY = ySource + nOffsetY;
+
+	*pOffsetX = nOffsetX;
+	*pOffsetY = nOffsetY;
+
+	if (!PAL_CheckObstacle(PAL_XY(nTargetX, nTargetY), TRUE, 0)) {
+		return;
+	}
+
+	nOffsetX = nArrOffsetX[nDir2] * 16;
+	nOffsetY = nArrOffsetY[nDir2] * 8;
+	nTargetX = xSource + nOffsetX;
+	nTargetY = ySource + nOffsetY;
+
+	if (!PAL_CheckObstacle(PAL_XY(nTargetX, nTargetY), TRUE, 0)) {
+		*pOffsetX = nOffsetX;
+		*pOffsetY = nOffsetY;
+	}
+}
+
 VOID
 PAL_UpdateParty(
    VOID
@@ -775,8 +848,12 @@ PAL_UpdateParty(
    //
    if (g_InputState.dir != kDirUnknown)
    {
-      xOffset = ((g_InputState.dir == kDirWest || g_InputState.dir == kDirSouth) ? -16 : 16);
-      yOffset = ((g_InputState.dir == kDirWest || g_InputState.dir == kDirNorth) ? -8 : 8);
+	  if (CONTROL_TYPE_MOUSE_WALK == g_InputState.controlType) {
+		  GetMouseMoveDirOffset(g_InputState.nMoveDir, &xOffset, &yOffset);
+	  } else {
+		  xOffset = ((g_InputState.dir == kDirWest || g_InputState.dir == kDirSouth) ? -16 : 16);
+		  yOffset = ((g_InputState.dir == kDirWest || g_InputState.dir == kDirNorth) ? -8 : 8);
+	  }
 
       xSource = PAL_X(gpGlobals->viewport) + PAL_X(gpGlobals->partyoffset);
       ySource = PAL_Y(gpGlobals->viewport) + PAL_Y(gpGlobals->partyoffset);
@@ -784,7 +861,8 @@ PAL_UpdateParty(
       xTarget = xSource + xOffset;
       yTarget = ySource + yOffset;
 
-      gpGlobals->wPartyDirection = g_InputState.dir;
+	  gpGlobals->wPartyDirection = g_InputState.dir;
+      
 
       //
       // Check for obstacles on the destination location

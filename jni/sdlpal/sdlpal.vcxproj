@@ -46,6 +46,7 @@
     <OutDir>.\Debug\</OutDir>
     <IntDir>.\Debug\Obj</IntDir>
     <LinkIncremental>true</LinkIncremental>
+    <LibraryPath>$(ProjectDir)\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
