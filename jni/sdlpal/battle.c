@@ -716,7 +716,7 @@ PAL_BattleWon(
          // Player has gained a level. Show the message
          //
          PAL_CreateSingleLineBox(PAL_XY(80, 0), 10, FALSE);
-         PAL_CreateBox(PAL_XY(82, 32), 7, 8, 1, FALSE);
+         PAL_CreateBox(PAL_XY(82, 32), 7, 8, 1, FALSE, NULL);
 
          PAL_DrawText(PAL_GetWord(gpGlobals->g.PlayerRoles.rgwName[w]), PAL_XY(110, 10), 0,
             FALSE, FALSE);

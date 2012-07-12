@@ -52,6 +52,7 @@ PAL_MagicSelectionMenuUpdate(
 {
    int         i, j, k;
    BYTE        bColor;
+   SDL_Rect   mainBox;
 
    //
    // Check for inputs
@@ -100,7 +101,7 @@ PAL_MagicSelectionMenuUpdate(
    //
    // Create the box.
    //
-   PAL_CreateBox(PAL_XY(10, 42), 4, 16, 1, FALSE);
+   PAL_CreateBox(PAL_XY(10, 42), 4, 16, 1, FALSE, &mainBox);
 
    if (gpGlobals->lpObjectDesc == NULL)
    {
@@ -248,7 +249,9 @@ PAL_MagicSelectionMenuUpdate(
 			if (rgMagicItem[g_iCurrentItem].fEnabled) {
 				return rgMagicItem[g_iCurrentItem].wMagic;
 			}
-		}
+	   } else if (!PAL_IsTouch(mainBox.x, mainBox.y, mainBox.w, mainBox.h)) {
+		   return 0;
+	   }
    }
 
    if (g_InputState.dwKeyPress & kKeySearch)

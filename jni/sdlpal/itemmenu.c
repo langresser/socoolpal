@@ -48,6 +48,7 @@ PAL_ItemSelectMenuUpdate(
    BYTE               bColor;
    static BYTE        bufImage[2048];
    static WORD        wPrevImageIndex = 0xFFFF;
+   SDL_Rect     mainBox;
 
    //
    // Process input
@@ -96,7 +97,7 @@ PAL_ItemSelectMenuUpdate(
    //
    // Redraw the box
    //
-   PAL_CreateBox(PAL_XY(2, 0), 6, 17, 1, FALSE);
+   PAL_CreateBox(PAL_XY(2, 0), 6, 17, 1, FALSE, NULL, &mainBox);
 
    //
    // Draw the texts in the current page
@@ -251,6 +252,32 @@ PAL_ItemSelectMenuUpdate(
       }
    }
 
+//    if (g_InputState.touchEventType == TOUCH_DOWN) {
+// 	   for (j = 0; j < 7; j++)
+// 	   {
+// 		   for (k = 0; k < 3; k++)
+// 		   {
+// 			   if (k * 3 + j > g_iNumMagic) {
+// 				   break;
+// 			   }
+// 
+// 			   if (PAL_IsTouch(35 + j * 87, 54 + k * 18, 87, 18)) {
+// 				   g_iCurrentItem = k * 3 + j;
+// 				   
+// 			   }
+// 		   }
+// 	   }
+//    } else if (g_InputState.touchEventType == TOUCH_UP) {
+// 	   j = g_iCurrentItem % 3;
+//        k = (g_iCurrentItem < 3 * 2) ? (g_iCurrentItem / 3) : 2;
+// 	   if (PAL_IsTouch(35 + j * 87, 54 + k * 18, 87, 18)) {
+// 			if (rgMagicItem[g_iCurrentItem].fEnabled) {
+// 				return rgMagicItem[g_iCurrentItem].wMagic;
+// 			}
+// 	   } else if (!PAL_IsTouch(mainBox.x, mainBox.y, mainBox.w, mainBox.h)) {
+// 		   return 0;
+// 	   }
+//   
    if (g_InputState.dwKeyPress & kKeySearch)
    {
       if ((gpGlobals->g.rgObject[wObject].item.wFlags & g_wItemFlags) &&

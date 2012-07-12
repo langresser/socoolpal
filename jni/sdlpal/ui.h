@@ -176,7 +176,8 @@ PAL_CreateBox(
    INT            nRows,
    INT            nColumns,
    INT            iStyle,
-   BOOL           fSaveScreen
+   BOOL           fSaveScreen,
+   SDL_Rect*	  outputRect
 );
 
 LPBOX

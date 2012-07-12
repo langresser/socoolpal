@@ -53,7 +53,7 @@ PAL_SwitchMenu(
    BOOL      fEnabled
 );
 
-VOID
+BOOL
 PAL_InGameMagicMenu(
    VOID
 );
@@ -63,7 +63,7 @@ PAL_InGameMenu(
    VOID
 );
 
-VOID
+BOOL
 PAL_PlayerStatus(
    VOID
 );
@@ -87,6 +87,8 @@ VOID
 PAL_EquipItemMenu(
    WORD           wItem
 );
+
+void show_player_info();
 
 #ifdef __cplusplus
 }

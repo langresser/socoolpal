@@ -383,7 +383,7 @@ PAL_BattleUIDrawMiscMenu(
    //
    // Draw the box
    //
-   PAL_CreateBox(PAL_XY(2, 20), 4, 1, 0, FALSE);
+   PAL_CreateBox(PAL_XY(2, 20), 4, 1, 0, FALSE, NULL);
 
    //
    // Draw the menu items
@@ -500,7 +500,7 @@ PAL_BattleUIMiscItemSubMenuUpdate(
 #else
    PAL_BattleUIDrawMiscMenu(0, TRUE);
 #endif
-   PAL_CreateBox(PAL_XY(30, 50), 1, 1, 0, FALSE);
+   PAL_CreateBox(PAL_XY(30, 50), 1, 1, 0, FALSE, NULL);
 
    //
    // Draw the menu items

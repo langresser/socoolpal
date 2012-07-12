@@ -95,7 +95,8 @@ PAL_CreateBox(
    INT            nRows,
    INT            nColumns,
    INT            iStyle,
-   BOOL           fSaveScreen
+   BOOL           fSaveScreen,
+   SDL_Rect*	  outputRect
 )
 /*++
   Purpose:
@@ -189,6 +190,13 @@ PAL_CreateBox(
       lpBox->wHeight = rect.h;
    }
 
+   if (outputRect) {
+	   outputRect->x = rect.x;
+	   outputRect->y = rect.y;
+	   outputRect->w = rect.w;
+	   outputRect->h = rect.h;
+   }
+
    //
    // Border takes 2 additional rows and columns...
    //
@@ -212,7 +220,6 @@ PAL_CreateBox(
 
       rect.y += PAL_RLEGetHeight(rglpBorderBitmap[m][0]);
    }
-
    return lpBox;
 }
 
