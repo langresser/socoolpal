@@ -131,6 +131,8 @@ typedef struct tagMENUITEM
    WORD          wNumWord;
    BOOL          fEnabled;
    PAL_POS       pos;
+   int			 width;
+   int			 height;
 } MENUITEM, *LPMENUITEM;
 
 typedef struct tagOBJECTDESC

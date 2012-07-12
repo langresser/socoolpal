@@ -34,7 +34,9 @@ typedef struct tagPALINPUTSTATE
    PALDIRECTION           dir;
    DWORD				  dirKeyPress;
    DWORD                  dwKeyPress;
-   int controlType;
+   BOOL					  hasTouch;
+   DWORD					touchX;
+   DWORD					touchY;
 } PALINPUTSTATE;
 
 extern PALINPUTSTATE g_InputState;
@@ -78,6 +80,8 @@ VOID
 PAL_ShutdownInput(
    VOID
 );
+
+BOOL PAL_IsTouch(int x, int y, int w, int h);
 
 extern BOOL g_fUseJoystick;
 

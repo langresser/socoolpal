@@ -388,6 +388,75 @@ PAL_DrawText(
    }
 }
 
+SDL_Rect
+PAL_DrawMenuText(
+   LPCSTR     lpszText,
+   PAL_POS    pos,
+   BYTE       bColor,
+   BOOL       fShadow,
+   BOOL       fUpdate
+)
+{
+   SDL_Rect   rect, urect;
+   WORD       wChar;
+
+   rect.x = PAL_X(pos);
+   rect.y = PAL_Y(pos);
+
+   urect.x = rect.x;
+   urect.y = rect.y;
+   urect.h = 16;
+   urect.w = 0;
+
+   while (*lpszText)
+   {
+      //
+      // Draw the character
+      //
+      if (*lpszText & 0x80)
+      {
+         //
+         // BIG-5 Chinese Character
+         //
+         wChar = SWAP16(((LPBYTE)lpszText)[0] | (((LPBYTE)lpszText)[1] << 8));
+         if (fShadow)
+         {
+            PAL_DrawCharOnSurface(wChar, gpScreen, PAL_XY(rect.x + 1, rect.y + 1), 0);
+            PAL_DrawCharOnSurface(wChar, gpScreen, PAL_XY(rect.x + 1, rect.y), 0);
+         }
+         PAL_DrawCharOnSurface(wChar, gpScreen, PAL_XY(rect.x, rect.y), bColor);
+         lpszText += 2;
+         rect.x += 16;
+         urect.w += 16;
+      }
+      else
+      {
+         //
+         // ASCII character
+         //
+         if (fShadow)
+         {
+            PAL_DrawASCIICharOnSurface(*lpszText, gpScreen, PAL_XY(rect.x + 1, rect.y + 1), 0);
+            PAL_DrawASCIICharOnSurface(*lpszText, gpScreen, PAL_XY(rect.x + 1, rect.y), 0);
+         }
+         PAL_DrawASCIICharOnSurface(*lpszText, gpScreen, PAL_XY(rect.x, rect.y), bColor);
+         lpszText++;
+         rect.x += 8;
+         urect.w += 8;
+      }
+   }
+
+   //
+   // Update the screen area
+   //
+   if (fUpdate && urect.w > 0)
+   {
+      VIDEO_UpdateScreen(&urect);
+   }
+
+   return urect;
+}
+
 VOID
 PAL_DialogSetDelayTime(
    INT          iDelayTime

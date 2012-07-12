@@ -52,6 +52,7 @@ PAL_MagicSelectionMenuUpdate(
 {
    int         i, j, k;
    BYTE        bColor;
+   int menuX, menuY;
 
    //
    // Check for inputs
@@ -224,6 +225,25 @@ PAL_MagicSelectionMenuUpdate(
 
          i++;
       }
+   }
+
+   if (g_InputState.hasTouch == TRUE) {
+	   for (j = 0; j < 5; j++)
+	   {
+		   for (k = 0; k < 3; k++)
+		   {
+			   if (k * 3 + j > g_iNumMagic) {
+				   break;
+			   }
+
+			   if (PAL_IsTouch(35 + j * 87, 54 + k * 18, 87, 18)) {
+				   g_iCurrentItem = k * 3 + j;
+				   if (rgMagicItem[g_iCurrentItem].fEnabled) {
+					   return rgMagicItem[g_iCurrentItem].wMagic;
+				   }
+			   }
+		   }
+	   }
    }
 
    if (g_InputState.dwKeyPress & kKeySearch)

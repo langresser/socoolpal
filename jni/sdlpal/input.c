@@ -421,7 +421,11 @@ PAL_MouseEventFilter(
       lastReleasex = lpEvent->button.x;
       lastReleasey = lpEvent->button.y;
       hitTest ++;
-   
+
+	  g_InputState.hasTouch = TRUE;
+	  g_InputState.touchX = lpEvent->button.x * 320.0 / g_wInitialWidth;
+	  g_InputState.touchY = lpEvent->button.y * 200.0 / g_wInitialHeight;
+
       switch (gridIndex)
       {
 	// 在方向区域，直接停止移动
@@ -445,8 +449,8 @@ PAL_MouseEventFilter(
 		 break;
 	// 中部区域，弹出菜单
       case 4:
-		g_InputState.dwKeyPress |= kKeyMenu;
-		g_InputState.dwKeyPress |= kKeySearch;		
+// 		g_InputState.dwKeyPress |= kKeyMenu;
+// 		g_InputState.dwKeyPress |= kKeySearch;		
         break;
       }
       break;
@@ -715,6 +719,7 @@ PAL_ClearKeyState(
 --*/
 {
    g_InputState.dwKeyPress = 0;
+   g_InputState.hasTouch = FALSE;
 }
 
 VOID
@@ -811,4 +816,19 @@ PAL_ProcessEvent(
    MIDI_CheckLoop();
 #endif
    while (SDL_PollEvent(NULL));
+}
+
+
+BOOL PAL_IsTouch(int x, int y, int w, int h)
+{
+	if (g_InputState.hasTouch == FALSE) {
+		return FALSE;
+	}
+
+	if (g_InputState.touchX >= x && g_InputState.touchX <= x + w
+		&& g_InputState.touchY >= y && g_InputState.touchY <= y + h) {
+			return TRUE;
+	}
+
+	return FALSE;
 }

@@ -398,6 +398,8 @@ PAL_ReadMenu(
 {
    int               i;
    WORD              wCurrentItem    = (wDefaultItem < nMenuItem) ? wDefaultItem : 0;
+   int menuItemX, menuItemY;
+   SDL_Rect rectMenuItem;
 
    //
    // Draw all the menu texts.
@@ -418,8 +420,10 @@ PAL_ReadMenu(
          }
       }
 
-      PAL_DrawText(PAL_GetWord(rgMenuItem[i].wNumWord), rgMenuItem[i].pos,
+      rectMenuItem = PAL_DrawMenuText(PAL_GetWord(rgMenuItem[i].wNumWord), rgMenuItem[i].pos,
          bColor, TRUE, TRUE);
+	  rgMenuItem[i].width = rectMenuItem.w;
+	  rgMenuItem[i].height = rectMenuItem.h;
    }
 
    if (lpfnMenuItemChanged != NULL)
@@ -436,11 +440,24 @@ PAL_ReadMenu(
       //
       if (rgMenuItem[wCurrentItem].fEnabled)
       {
-         PAL_DrawText(PAL_GetWord(rgMenuItem[wCurrentItem].wNumWord),
+         PAL_DrawMenuText(PAL_GetWord(rgMenuItem[wCurrentItem].wNumWord),
             rgMenuItem[wCurrentItem].pos, MENUITEM_COLOR_SELECTED, FALSE, TRUE);
       }
 
       PAL_ProcessEvent();
+
+	  if (g_InputState.hasTouch == TRUE) {
+
+		  for (i = 0; i < nMenuItem; ++i) {
+			  menuItemX = PAL_X(rgMenuItem[i].pos);
+			  menuItemY = PAL_Y(rgMenuItem[i].pos);
+			  if (g_InputState.touchX >= menuItemX && g_InputState.touchX < menuItemX + rgMenuItem[i].width
+				  && g_InputState.touchY >= menuItemY && g_InputState.touchY < menuItemY + rgMenuItem[i].height) {
+					wCurrentItem = i;
+					return rgMenuItem[i].wValue;
+			  }
+		  }
+	  }
 
       if (g_InputState.dwKeyPress & (kKeyDown | kKeyRight))
       {
@@ -452,12 +469,12 @@ PAL_ReadMenu(
             //
             // Dehighlight the unselected item.
             //
-            PAL_DrawText(PAL_GetWord(rgMenuItem[wCurrentItem].wNumWord),
+            PAL_DrawMenuText(PAL_GetWord(rgMenuItem[wCurrentItem].wNumWord),
                rgMenuItem[wCurrentItem].pos, bLabelColor, FALSE, TRUE);
          }
          else
          {
-            PAL_DrawText(PAL_GetWord(rgMenuItem[wCurrentItem].wNumWord),
+            PAL_DrawMenuText(PAL_GetWord(rgMenuItem[wCurrentItem].wNumWord),
                rgMenuItem[wCurrentItem].pos, MENUITEM_COLOR_INACTIVE, FALSE, TRUE);
          }
 
@@ -473,12 +490,12 @@ PAL_ReadMenu(
          //
          if (rgMenuItem[wCurrentItem].fEnabled)
          {
-            PAL_DrawText(PAL_GetWord(rgMenuItem[wCurrentItem].wNumWord),
+            PAL_DrawMenuText(PAL_GetWord(rgMenuItem[wCurrentItem].wNumWord),
                rgMenuItem[wCurrentItem].pos, MENUITEM_COLOR_SELECTED, FALSE, TRUE);
          }
          else
          {
-            PAL_DrawText(PAL_GetWord(rgMenuItem[wCurrentItem].wNumWord),
+            PAL_DrawMenuText(PAL_GetWord(rgMenuItem[wCurrentItem].wNumWord),
                rgMenuItem[wCurrentItem].pos, MENUITEM_COLOR_SELECTED_INACTIVE, FALSE, TRUE);
          }
 
@@ -497,12 +514,12 @@ PAL_ReadMenu(
             //
             // Dehighlight the unselected item.
             //
-            PAL_DrawText(PAL_GetWord(rgMenuItem[wCurrentItem].wNumWord),
+            PAL_DrawMenuText(PAL_GetWord(rgMenuItem[wCurrentItem].wNumWord),
                rgMenuItem[wCurrentItem].pos, bLabelColor, FALSE, TRUE);
          }
          else
          {
-            PAL_DrawText(PAL_GetWord(rgMenuItem[wCurrentItem].wNumWord),
+            PAL_DrawMenuText(PAL_GetWord(rgMenuItem[wCurrentItem].wNumWord),
                rgMenuItem[wCurrentItem].pos, MENUITEM_COLOR_INACTIVE, FALSE, TRUE);
          }
 
@@ -520,12 +537,12 @@ PAL_ReadMenu(
          //
          if (rgMenuItem[wCurrentItem].fEnabled)
          {
-            PAL_DrawText(PAL_GetWord(rgMenuItem[wCurrentItem].wNumWord),
+            PAL_DrawMenuText(PAL_GetWord(rgMenuItem[wCurrentItem].wNumWord),
                rgMenuItem[wCurrentItem].pos, MENUITEM_COLOR_SELECTED, FALSE, TRUE);
          }
          else
          {
-            PAL_DrawText(PAL_GetWord(rgMenuItem[wCurrentItem].wNumWord),
+            PAL_DrawMenuText(PAL_GetWord(rgMenuItem[wCurrentItem].wNumWord),
                rgMenuItem[wCurrentItem].pos, MENUITEM_COLOR_SELECTED_INACTIVE, FALSE, TRUE);
          }
 
@@ -541,12 +558,12 @@ PAL_ReadMenu(
          //
          if (rgMenuItem[wCurrentItem].fEnabled)
          {
-            PAL_DrawText(PAL_GetWord(rgMenuItem[wCurrentItem].wNumWord),
+            PAL_DrawMenuText(PAL_GetWord(rgMenuItem[wCurrentItem].wNumWord),
                rgMenuItem[wCurrentItem].pos, bLabelColor, FALSE, TRUE);
          }
          else
          {
-            PAL_DrawText(PAL_GetWord(rgMenuItem[wCurrentItem].wNumWord),
+            PAL_DrawMenuText(PAL_GetWord(rgMenuItem[wCurrentItem].wNumWord),
                rgMenuItem[wCurrentItem].pos, MENUITEM_COLOR_INACTIVE, FALSE, TRUE);
          }
 
@@ -559,7 +576,7 @@ PAL_ReadMenu(
          //
          if (rgMenuItem[wCurrentItem].fEnabled)
          {
-            PAL_DrawText(PAL_GetWord(rgMenuItem[wCurrentItem].wNumWord),
+            PAL_DrawMenuText(PAL_GetWord(rgMenuItem[wCurrentItem].wNumWord),
                rgMenuItem[wCurrentItem].pos, MENUITEM_COLOR_CONFIRMED, FALSE, TRUE);
 
             return rgMenuItem[wCurrentItem].wValue;

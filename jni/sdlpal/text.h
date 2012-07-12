@@ -60,6 +60,16 @@ PAL_DrawText(
    BOOL       fUpdate
 );
 
+SDL_Rect
+PAL_DrawMenuText(
+	LPCSTR     lpszText,
+	PAL_POS    pos,
+	BYTE       bColor,
+	BOOL       fShadow,
+	BOOL       fUpdate
+);
+
+
 VOID
 PAL_DialogSetDelayTime(
    INT          iDelayTime

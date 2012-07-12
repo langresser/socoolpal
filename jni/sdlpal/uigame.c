@@ -810,6 +810,43 @@ PAL_InGameMagicMenu(
                PAL_ClearKeyState();
                PAL_ProcessEvent();
 
+			   if (g_InputState.hasTouch == TRUE) {
+				   for (i = 0; i <= gpGlobals->wMaxPartyMemberIndex; i++) {
+					   if (PAL_IsTouch(45 + i * 78, 165, 78, 200 - 165)) {
+						   wPlayer = i;
+						   gpGlobals->g.rgObject[wMagic].magic.wScriptOnUse =
+							   PAL_RunTriggerScript(gpGlobals->g.rgObject[wMagic].magic.wScriptOnUse,
+							   gpGlobals->rgParty[wPlayer].wPlayerRole);
+
+						   if (g_fScriptSuccess)
+						   {
+							   gpGlobals->g.rgObject[wMagic].magic.wScriptOnSuccess =
+								   PAL_RunTriggerScript(gpGlobals->g.rgObject[wMagic].magic.wScriptOnSuccess,
+								   gpGlobals->rgParty[wPlayer].wPlayerRole);
+
+							   if (g_fScriptSuccess)
+							   {
+								   gpGlobals->g.PlayerRoles.rgwMP[gpGlobals->rgParty[w].wPlayerRole] -=
+									   gpGlobals->g.lprgMagic[gpGlobals->g.rgObject[wMagic].magic.wMagicNumber].wCostMP;
+
+								   //
+								   // Check if we have run out of MP
+								   //
+								   if (gpGlobals->g.PlayerRoles.rgwMP[gpGlobals->rgParty[w].wPlayerRole] <
+									   gpGlobals->g.lprgMagic[gpGlobals->g.rgObject[wMagic].magic.wMagicNumber].wCostMP)
+								   {
+									   //
+									   // Don't go further if run out of MP
+									   //
+									   wPlayer = MENUITEM_VALUE_CANCELLED;
+								   }
+							   }
+						   }
+						   break;
+					   }
+				   }
+			   }
+
                if (g_InputState.dwKeyPress & kKeyMenu)
                {
                   wPlayer = MENUITEM_VALUE_CANCELLED;
