@@ -1418,6 +1418,7 @@ PAL_ItemUseMenu(
    static WORD    wSelectedPlayer = 0;
    SDL_Rect       rect = {110, 2, 200, 180};
    int            i;
+   int j = 0;
 
    bSelectedColor = MENUITEM_COLOR_SELECTED_FIRST;
    dwColorChangeTime = 0;
@@ -1564,6 +1565,37 @@ PAL_ItemUseMenu(
          }
 
          PAL_ProcessEvent();
+
+		 if (g_InputState.touchEventType == TOUCH_DOWN) {
+			 BOOL needUpdate = FALSE;
+			 for (j = 0; j <= gpGlobals->wMaxPartyMemberIndex; j++)
+			  {
+				  if (PAL_IsTouch(125, 16 + 20 * j, 50, 20)) {
+					  wSelectedPlayer = j;
+					  needUpdate = TRUE;
+					  break;
+				  }
+			  }
+
+			 if (!needUpdate && PAL_IsTouch(120, 0, 190, 180)) {
+				 wSelectedPlayer ++;
+				 if (wSelectedPlayer > gpGlobals->wMaxPartyMemberIndex) {
+					 wSelectedPlayer = 0;
+				 }
+				 needUpdate = TRUE;
+			 }
+
+			 if (needUpdate == TRUE) {
+				 break;
+			 }
+		 } else if (g_InputState.touchEventType == TOUCH_UP) {
+			 if (wSelectedPlayer >= 0 && wSelectedPlayer <= gpGlobals->wMaxPartyMemberIndex
+				 && PAL_IsTouch(125, 16 + 20 * wSelectedPlayer, 50, 20)) {
+				return gpGlobals->rgParty[wSelectedPlayer].wPlayerRole;
+			 } else if (!PAL_IsTouch(120, 0, 190, 180)) {
+				 return MENUITEM_VALUE_CANCELLED;
+			 }
+		 }
 
          if (g_InputState.dwKeyPress != 0)
          {
@@ -1873,7 +1905,7 @@ PAL_EquipItemMenu(
    PAL_LARGE BYTE   bufBackground[320 * 200];
    PAL_LARGE BYTE   bufImage[2048];
    WORD             w;
-   int              iCurrentPlayer, i;
+   int              iCurrentPlayer, i, j;
    BYTE             bColor, bSelectedColor;
    DWORD            dwColorChangeTime;
 
@@ -1987,11 +2019,51 @@ PAL_EquipItemMenu(
       //
       // Accept input
       //
-      PAL_ClearKeyState();
-
       while (TRUE)
       {
+		  PAL_ClearKeyState();
          PAL_ProcessEvent();
+
+		 if (g_InputState.touchEventType == TOUCH_DOWN) {
+			 BOOL needUpdate = FALSE;
+			 for (j = 0; j <= gpGlobals->wMaxPartyMemberIndex; j++)
+			  {
+				  if (PAL_IsTouch(15, 108 + 18 * j, 50, 20)) {
+					  iCurrentPlayer = j;
+					  needUpdate = TRUE;
+					  break;
+				  }
+			  }
+
+			 if (!needUpdate && PAL_IsTouch(2, 95, 50, 100)) {
+				 iCurrentPlayer++;
+				 if (iCurrentPlayer > gpGlobals->wMaxPartyMemberIndex) {
+					 iCurrentPlayer = 0;
+				 }
+			 }
+
+			 if (needUpdate == TRUE) {
+				 break;
+			 }
+		 } else if (g_InputState.touchEventType == TOUCH_UP) {
+			 if (iCurrentPlayer >= 0 && iCurrentPlayer <= gpGlobals->wMaxPartyMemberIndex
+				 && PAL_IsTouch(15, 108 + 18 * iCurrentPlayer, 50, 20)) {
+				w = gpGlobals->rgParty[iCurrentPlayer].wPlayerRole;
+
+				 if (gpGlobals->g.rgObject[wItem].item.wFlags & (kItemFlagEquipableByPlayerRole_First << w))
+				 {
+					//
+					// Run the equip script
+					//
+					gpGlobals->g.rgObject[wItem].item.wScriptOnEquip =
+					   PAL_RunTriggerScript(gpGlobals->g.rgObject[wItem].item.wScriptOnEquip,
+						  gpGlobals->rgParty[iCurrentPlayer].wPlayerRole);
+					break;
+				 }
+			 } else if (!PAL_IsTouch(2, 95, 50, 100)) {
+				 return;
+			 }
+		 }
 
          //
          // See if we should change the highlight color

@@ -49,6 +49,7 @@ PAL_ItemSelectMenuUpdate(
    static BYTE        bufImage[2048];
    static WORD        wPrevImageIndex = 0xFFFF;
    SDL_Rect     mainBox;
+   SDL_Rect   upPage, downPage;
 
    //
    // Process input
@@ -98,6 +99,27 @@ PAL_ItemSelectMenuUpdate(
    // Redraw the box
    //
    PAL_CreateBox(PAL_XY(2, 0), 6, 17, 1, FALSE, &mainBox);
+   
+   upPage.x = 200;
+   upPage.y = 150;
+   upPage.w = 50;
+   upPage.h = 20;
+   downPage.x = 265;
+   downPage.y = 150;
+   downPage.w = 50;
+   downPage.h = 20;
+
+   if (gpGlobals->iCurInvMenuItem >= 15) {
+   //if (1) {
+	   PAL_CreateSingleLineBox(PAL_XY(upPage.x, upPage.y), 2, FALSE);
+	   PAL_DrawText(PAL_GetWord(LABEL_PAGE_UP), PAL_XY(upPage.x + 5, upPage.y + 10), kNumColorYellow, FALSE, FALSE);
+   }
+
+   if (gpGlobals->iCurInvMenuItem < g_iNumInventory - 15) {
+   //if (1) {
+	   PAL_CreateSingleLineBox(PAL_XY(downPage.x, downPage.y), 2, FALSE);
+	   PAL_DrawText(PAL_GetWord(LABEL_PAGE_DOWN), PAL_XY(downPage.x + 5, downPage.y + 10), kNumColorYellow, FALSE, FALSE);
+   }
 
    //
    // Draw the texts in the current page
@@ -252,32 +274,60 @@ PAL_ItemSelectMenuUpdate(
       }
    }
 
-//    if (g_InputState.touchEventType == TOUCH_DOWN) {
-// 	   for (j = 0; j < 7; j++)
-// 	   {
-// 		   for (k = 0; k < 3; k++)
-// 		   {
-// 			   if (k * 3 + j > g_iNumMagic) {
-// 				   break;
-// 			   }
-// 
-// 			   if (PAL_IsTouch(35 + j * 87, 54 + k * 18, 87, 18)) {
-// 				   g_iCurrentItem = k * 3 + j;
-// 				   
-// 			   }
-// 		   }
-// 	   }
-//    } else if (g_InputState.touchEventType == TOUCH_UP) {
-// 	   j = g_iCurrentItem % 3;
-//        k = (g_iCurrentItem < 3 * 2) ? (g_iCurrentItem / 3) : 2;
-// 	   if (PAL_IsTouch(35 + j * 87, 54 + k * 18, 87, 18)) {
-// 			if (rgMagicItem[g_iCurrentItem].fEnabled) {
-// 				return rgMagicItem[g_iCurrentItem].wMagic;
-// 			}
-// 	   } else if (!PAL_IsTouch(mainBox.x, mainBox.y, mainBox.w, mainBox.h)) {
-// 		   return 0;
-// 	   }
-//   
+	if (g_InputState.touchEventType == TOUCH_DOWN) {
+	   i = gpGlobals->iCurInvMenuItem / 3 * 3 - 3 * 4;
+	   if (i < 0) {
+		   i = 0;
+	   }
+
+	   for (j = 0; j < 7; j++)
+	   {
+		   for (k = 0; k < 3; k++)
+		   {
+			   if (i >= g_iNumInventory) {
+				   break;
+			   }
+
+			   wObject = gpGlobals->rgInventory[i].wItem;
+			   if (!wObject) {
+				   break;
+			   }
+
+			   if (PAL_IsTouch(15 + k * 100, 12 + j * 18, 100, 18)) {
+				   gpGlobals->iCurInvMenuItem = i;
+				   wObject = gpGlobals->rgInventory[gpGlobals->iCurInvMenuItem].wItem;
+			   }
+
+			   ++i;
+		   }
+	   }
+   } else if (g_InputState.touchEventType == TOUCH_UP) {
+	   i = gpGlobals->iCurInvMenuItem % 21;
+
+	   j = (i < 3 * 4) ? (i / 3) : 4;
+       k = i % 3;
+	   if (PAL_IsTouch(15 + k * 100, 12 + j * 18, 100, 18)) {
+		   if ((gpGlobals->g.rgObject[wObject].item.wFlags & g_wItemFlags) &&
+			(SHORT)gpGlobals->rgInventory[gpGlobals->iCurInvMenuItem].nAmount >
+			(SHORT)gpGlobals->rgInventory[gpGlobals->iCurInvMenuItem].nAmountInUse)
+			  {
+				 return wObject;
+			  }
+	   } else if (gpGlobals->iCurInvMenuItem >= 21 && PAL_IsTouch(upPage.x, upPage.y, upPage.w, upPage.h)) {
+		   gpGlobals->iCurInvMenuItem -= 21;
+		   if (gpGlobals->iCurInvMenuItem < 0) {
+			   gpGlobals->iCurInvMenuItem = 0;
+		   }
+	   } else if (gpGlobals->iCurInvMenuItem < g_iNumInventory - 21 && PAL_IsTouch(downPage.x, downPage.y, downPage.w, downPage.h)) {
+		   gpGlobals->iCurInvMenuItem += 21;
+		   if (gpGlobals->iCurInvMenuItem >= g_iNumInventory) {
+			   gpGlobals->iCurInvMenuItem = g_iNumInventory - 1;
+		   }
+	   } else if (!PAL_IsTouch(mainBox.x, mainBox.y, mainBox.w, mainBox.h)) {
+		   return 0;
+	   }
+   }
+
    if (g_InputState.dwKeyPress & kKeySearch)
    {
       if ((gpGlobals->g.rgObject[wObject].item.wFlags & g_wItemFlags) &&
