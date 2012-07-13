@@ -72,6 +72,10 @@ extern "C"
 #define SYSMENU_LABEL_SOUND                14
 #define SYSMENU_LABEL_QUIT                 15
 #define SYSMENU_LABEL_BATTLEMODE           (PAL_ADDITIONAL_WORD_FIRST)
+#define LABEL_PAGE_UP						(PAL_ADDITIONAL_WORD_FIRST + 6)
+#define LABEL_PAGE_DOWN						(PAL_ADDITIONAL_WORD_FIRST + 7)
+#define LABEL_SYSTEM						(PAL_ADDITIONAL_WORD_FIRST + 8)
+#define LABEL_SEARCH						(PAL_ADDITIONAL_WORD_FIRST + 9)
 
 #define BATTLESPEEDMENU_LABEL_1            (PAL_ADDITIONAL_WORD_FIRST + 1)
 #define BATTLESPEEDMENU_LABEL_2            (PAL_ADDITIONAL_WORD_FIRST + 2)
@@ -228,6 +232,12 @@ PAL_GetObjectDesc(
 );
 
 extern LPSPRITE gpSpriteUI;
+
+
+#define UI_ELEMENT_LEFT 0
+#define UI_ELEMENT_RIGHT 1
+
+SDL_Surface* get_ui_element(int type);
 
 #ifdef __cplusplus
 }

@@ -33,6 +33,11 @@ extern "C"
 #define TOUCH_DOWN 1
 #define TOUCH_UP	2
 
+#define GAME_MODE_OPEN 0
+#define GAME_MODE_MAIN 1
+#define GAME_MODE_BATTLE 2
+#define GAME_MODE_MENU 3
+
 typedef struct tagPALINPUTSTATE
 {
    PALDIRECTION           dir;
@@ -41,6 +46,7 @@ typedef struct tagPALINPUTSTATE
    int					  touchEventType;
    DWORD					touchX;
    DWORD					touchY;
+   int					gameMode;
 } PALINPUTSTATE;
 
 extern PALINPUTSTATE g_InputState;
@@ -63,6 +69,8 @@ enum PALKEY
    kKeyFlee        = (1 << 13),
    kKeyStatus      = (1 << 14),
    kKeyForce       = (1 << 15),
+   kKeyMainMenu		= (1 << 16),
+   kKeyMainSearch	= (1 << 17),
 };
 
 VOID

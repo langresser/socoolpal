@@ -97,7 +97,7 @@ PAL_ItemSelectMenuUpdate(
    //
    // Redraw the box
    //
-   PAL_CreateBox(PAL_XY(2, 0), 6, 17, 1, FALSE, NULL, &mainBox);
+   PAL_CreateBox(PAL_XY(2, 0), 6, 17, 1, FALSE, &mainBox);
 
    //
    // Draw the texts in the current page

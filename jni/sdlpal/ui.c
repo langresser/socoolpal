@@ -21,6 +21,57 @@
 #include "main.h"
 
 LPSPRITE      gpSpriteUI = NULL;
+SDL_Surface* g_uiLeftSurface = NULL;
+SDL_Surface* g_uiRightSurface = NULL;
+
+SDL_Surface* LoadSprite(char *file)
+{
+	SDL_Surface *temp;
+
+	/* Load the sprite image */
+	SDL_Surface* sprite = SDL_LoadBMP(file);
+	if (sprite == NULL) {
+		fprintf(stderr, "Couldn't load %s: %s", file, SDL_GetError());
+		return NULL;
+	}
+
+	/* Set transparent pixel as the pixel at (0,0) */
+	if (sprite->format->palette) {
+		SDL_SetColorKey(sprite, (SDL_SRCCOLORKEY | SDL_RLEACCEL),
+			*(Uint8 *) sprite->pixels);
+	}
+
+	/* Convert sprite to video format */
+	temp = SDL_DisplayFormat(sprite);
+	SDL_FreeSurface(sprite);
+	if (temp == NULL) {
+		fprintf(stderr, "Couldn't convert background: %s\n", SDL_GetError());
+		return NULL;
+	}
+	sprite = temp;
+	SDL_SetPalette(sprite, SDL_PHYSPAL | SDL_LOGPAL, PAL_GetPalette(0, FALSE), 0, 255);
+
+	/* We're ready to roll. :) */
+	return sprite;
+}
+SDL_Surface* get_ui_element(int type)
+{
+	if (type == UI_ELEMENT_LEFT) {
+		if (g_uiLeftSurface == NULL) {
+			g_uiLeftSurface = LoadSprite("icon.bmp");//LoadSprite("minimize_left.bmp");
+		}
+
+		return g_uiLeftSurface;
+	} else if (type == UI_ELEMENT_RIGHT) {
+		if (g_uiRightSurface == NULL) {
+			g_uiRightSurface = LoadSprite("joystick.bmp");
+		}
+
+		return g_uiRightSurface;
+	}
+
+	return NULL;
+}
 
 INT
 PAL_InitUI(

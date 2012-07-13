@@ -412,7 +412,18 @@ PAL_MouseEventFilter(
 		g_InputState.touchY = lpEvent->button.y * 200.0 / g_wInitialHeight;
 	  } else {
 		g_InputState.touchEventType = TOUCH_NONE;
-	  } 
+	  }
+
+	  if (gridIndex == 4) {
+		  if (abs(lastReleasex - lastPressx) <= 25
+			  && abs(lastReleasey - lastPressy) <= 25) {
+			if (lastReleaseButtonTime - lastPressButtonTime <= 500) {
+				g_InputState.dwKeyPress |= kKeyMainSearch;
+			} else {
+				g_InputState.dwKeyPress |= kKeyMainMenu;
+			}
+		  }
+	  }
 
       switch (gridIndex)
       {

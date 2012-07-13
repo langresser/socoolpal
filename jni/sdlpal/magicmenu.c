@@ -103,6 +103,13 @@ PAL_MagicSelectionMenuUpdate(
    //
    PAL_CreateBox(PAL_XY(10, 42), 4, 16, 1, FALSE, &mainBox);
 
+   PAL_CreateSingleLineBox(PAL_XY(20, 150), 2, FALSE);
+   PAL_DrawText(PAL_GetWord(LABEL_PAGE_UP), PAL_XY(25, 160), kNumColorYellow, FALSE, FALSE);
+
+   PAL_CreateSingleLineBox(PAL_XY(250, 150), 2, FALSE);
+   PAL_DrawText(PAL_GetWord(LABEL_PAGE_DOWN), PAL_XY(255, 160), kNumColorYellow, FALSE, FALSE);
+   
+
    if (gpGlobals->lpObjectDesc == NULL)
    {
       //

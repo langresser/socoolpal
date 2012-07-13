@@ -524,9 +524,16 @@ PAL_StartFrame(
    // Update the scene
    //
    PAL_MakeScene();
+
+//    PAL_CreateBox(PAL_XY(5, 5), 1, 1, 0, TRUE, NULL);
+//    PAL_DrawText(PAL_GetWord(LABEL_SYSTEM), PAL_XY(10, 15), MENUITEM_COLOR_SELECTED_FIRST, TRUE, FALSE);
+// 
+//    PAL_CreateBox(PAL_XY(55, 5), 1, 1, 0, TRUE, NULL);
+//    PAL_DrawText(PAL_GetWord(LABEL_SEARCH), PAL_XY(60, 15), MENUITEM_COLOR_SELECTED_FIRST, TRUE, FALSE);
+
    VIDEO_UpdateScreen(NULL);
 
-   if (g_InputState.dwKeyPress & kKeyMenu)
+   if (g_InputState.dwKeyPress & kKeyMenu || g_InputState.dwKeyPress & kKeyMainMenu)
    {
       //
       // Show the in-game menu
@@ -561,7 +568,7 @@ PAL_StartFrame(
       //
       PAL_PlayerStatus();
    }
-   else if (g_InputState.dwKeyPress & kKeySearch)
+   else if (g_InputState.dwKeyPress & kKeySearch || g_InputState.dwKeyPress & kKeyMainSearch)
    {
       //
       // Process search events
