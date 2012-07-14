@@ -1344,7 +1344,8 @@ PAL_PlayerStatus(
       while (TRUE)
       {
          UTIL_Delay(1);
-		 if (g_InputState.touchEventType != TOUCH_NONE) {
+		 if (g_InputState.touchEventType == TOUCH_UP) {
+			 g_InputState.touchEventType = TOUCH_NONE;
 			 iCurrent = -1;
 			 break;
 		 }
@@ -1394,6 +1395,7 @@ PAL_ItemUseMenu(
    PAL_LARGE BYTE bufImage[2048];
    DWORD          dwColorChangeTime;
    static WORD    wSelectedPlayer = 0;
+   static int     s_currentPlayer = 0;
    SDL_Rect       rect = {110, 2, 200, 180};
    int            i;
    int j = 0;
@@ -1406,6 +1408,7 @@ PAL_ItemUseMenu(
       if (wSelectedPlayer > gpGlobals->wMaxPartyMemberIndex)
       {
          wSelectedPlayer = 0;
+		 s_currentPlayer = 0;
       }
 
       //
@@ -1555,22 +1558,19 @@ PAL_ItemUseMenu(
 				  }
 			  }
 
-			 if (!needUpdate && PAL_IsTouch(120, 0, 190, 180)) {
-				 wSelectedPlayer ++;
-				 if (wSelectedPlayer > gpGlobals->wMaxPartyMemberIndex) {
-					 wSelectedPlayer = 0;
-				 }
-				 needUpdate = TRUE;
-			 }
-
 			 if (needUpdate == TRUE) {
 				 break;
 			 }
 		 } else if (g_InputState.touchEventType == TOUCH_UP) {
 			 if (wSelectedPlayer >= 0 && wSelectedPlayer <= gpGlobals->wMaxPartyMemberIndex
 				 && PAL_IsTouch(125, 16 + 20 * wSelectedPlayer, 50, 20)) {
-				return gpGlobals->rgParty[wSelectedPlayer].wPlayerRole;
-			 } else if (!PAL_IsTouch(120, 0, 190, 180)) {
+			    if (s_currentPlayer != wSelectedPlayer) {
+					s_currentPlayer = wSelectedPlayer;
+				} else {
+					return gpGlobals->rgParty[wSelectedPlayer].wPlayerRole;
+				}
+				g_InputState.touchEventType = TOUCH_NONE;
+			 } else {
 				 return MENUITEM_VALUE_CANCELLED;
 			 }
 		 }
@@ -1591,12 +1591,14 @@ PAL_ItemUseMenu(
       if (g_InputState.dwKeyPress & (kKeyUp | kKeyLeft))
       {
          wSelectedPlayer--;
+		 s_currentPlayer = wSelectedPlayer;
       }
       else if (g_InputState.dwKeyPress & (kKeyDown | kKeyRight))
       {
          if (wSelectedPlayer < gpGlobals->wMaxPartyMemberIndex)
          {
             wSelectedPlayer++;
+			s_currentPlayer = wSelectedPlayer;
          }
       }
       else if (g_InputState.dwKeyPress & kKeyMenu)
@@ -1886,6 +1888,7 @@ PAL_EquipItemMenu(
    int              iCurrentPlayer, i, j;
    BYTE             bColor, bSelectedColor;
    DWORD            dwColorChangeTime;
+   static int s_currentSelectPlayer;
 
    gpGlobals->wLastUnequippedItem = wItem;
 
@@ -1893,6 +1896,7 @@ PAL_EquipItemMenu(
       gpGlobals->f.fpFBP);
 
    iCurrentPlayer = 0;
+   s_currentSelectPlayer = 0;
    bSelectedColor = MENUITEM_COLOR_SELECTED_FIRST;
    dwColorChangeTime = SDL_GetTicks() + (600 / MENUITEM_COLOR_SELECTED_TOTALNUM);
 
@@ -2018,6 +2022,8 @@ PAL_EquipItemMenu(
 				 if (iCurrentPlayer > gpGlobals->wMaxPartyMemberIndex) {
 					 iCurrentPlayer = 0;
 				 }
+
+				 s_currentSelectPlayer = iCurrentPlayer;
 			 }
 
 			 if (needUpdate == TRUE) {
@@ -2026,18 +2032,22 @@ PAL_EquipItemMenu(
 		 } else if (g_InputState.touchEventType == TOUCH_UP) {
 			 if (iCurrentPlayer >= 0 && iCurrentPlayer <= gpGlobals->wMaxPartyMemberIndex
 				 && PAL_IsTouch(15, 108 + 18 * iCurrentPlayer, 50, 20)) {
-				w = gpGlobals->rgParty[iCurrentPlayer].wPlayerRole;
+					 if (s_currentSelectPlayer != iCurrentPlayer) {
+						 s_currentSelectPlayer = iCurrentPlayer;
+					 } else {
+						 w = gpGlobals->rgParty[iCurrentPlayer].wPlayerRole;
 
-				 if (gpGlobals->g.rgObject[wItem].item.wFlags & (kItemFlagEquipableByPlayerRole_First << w))
-				 {
-					//
-					// Run the equip script
-					//
-					gpGlobals->g.rgObject[wItem].item.wScriptOnEquip =
-					   PAL_RunTriggerScript(gpGlobals->g.rgObject[wItem].item.wScriptOnEquip,
-						  gpGlobals->rgParty[iCurrentPlayer].wPlayerRole);
-					break;
-				 }
+						 if (gpGlobals->g.rgObject[wItem].item.wFlags & (kItemFlagEquipableByPlayerRole_First << w))
+						 {
+							//
+							// Run the equip script
+							//
+							gpGlobals->g.rgObject[wItem].item.wScriptOnEquip =
+							   PAL_RunTriggerScript(gpGlobals->g.rgObject[wItem].item.wScriptOnEquip,
+								  gpGlobals->rgParty[iCurrentPlayer].wPlayerRole);
+							break;
+						 }
+					 }
 			 } else if (!PAL_IsTouch(2, 95, 50, 100)) {
 				 return;
 			 }
@@ -2092,6 +2102,7 @@ PAL_EquipItemMenu(
          {
             iCurrentPlayer = 0;
          }
+		 s_currentSelectPlayer = iCurrentPlayer;
       }
       else if (g_InputState.dwKeyPress & (kKeyDown | kKeyRight))
       {
@@ -2100,6 +2111,7 @@ PAL_EquipItemMenu(
          {
             iCurrentPlayer = gpGlobals->wMaxPartyMemberIndex;
          }
+		 s_currentSelectPlayer = iCurrentPlayer;
       }
       else if (g_InputState.dwKeyPress & kKeyMenu)
       {

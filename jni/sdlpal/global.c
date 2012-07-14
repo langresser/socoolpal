@@ -551,7 +551,6 @@ PAL_InitGameData(
 
    gpGlobals->fGameStart = TRUE;
    gpGlobals->fNeedToFadeIn = FALSE;
-   gpGlobals->iCurInvMenuItem = 0;
    gpGlobals->fInBattle = FALSE;
 
    memset(gpGlobals->rgPlayerStatus, 0, sizeof(gpGlobals->rgPlayerStatus));

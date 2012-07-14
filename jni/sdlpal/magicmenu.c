@@ -29,6 +29,7 @@ static struct MAGICITEM
 
 static int     g_iNumMagic = 0;
 static int     g_iCurrentItem = 0;
+static int     g_currentSelectItem = 0;
 static WORD    g_wPlayerMP = 0;
 
 WORD
@@ -54,6 +55,8 @@ PAL_MagicSelectionMenuUpdate(
    BYTE        bColor;
    SDL_Rect   mainBox;
    SDL_Rect   upPage, downPage;
+   int currentPage = 0;
+   int pageAmount = 0;
 
    //
    // Check for inputs
@@ -61,26 +64,32 @@ PAL_MagicSelectionMenuUpdate(
    if (g_InputState.dwKeyPress & kKeyUp)
    {
       g_iCurrentItem -= 3;
+	  g_currentSelectItem = g_iCurrentItem;
    }
    else if (g_InputState.dwKeyPress & kKeyDown)
    {
       g_iCurrentItem += 3;
+	  g_currentSelectItem = g_iCurrentItem;
    }
    else if (g_InputState.dwKeyPress & kKeyLeft)
    {
       g_iCurrentItem--;
+	  g_currentSelectItem = g_iCurrentItem;
    }
    else if (g_InputState.dwKeyPress & kKeyRight)
    {
       g_iCurrentItem++;
+	  g_currentSelectItem = g_iCurrentItem;
    }
    else if (g_InputState.dwKeyPress & kKeyPgUp)
    {
       g_iCurrentItem -= 3 * 5;
+	  g_currentSelectItem = g_iCurrentItem;
    }
    else if (g_InputState.dwKeyPress & kKeyPgDn)
    {
       g_iCurrentItem += 3 * 5;
+	  g_currentSelectItem = g_iCurrentItem;
    }
    else if (g_InputState.dwKeyPress & kKeyMenu)
    {
@@ -99,28 +108,36 @@ PAL_MagicSelectionMenuUpdate(
       g_iCurrentItem = g_iNumMagic - 1;
    }
 
+   if (g_currentSelectItem < 0) {
+	   g_currentSelectItem = 0;
+   }
+   if (g_currentSelectItem >= g_iNumMagic) {
+	   g_currentSelectItem = g_iNumMagic - 1;
+   }
+
    
    PAL_CreateBox(PAL_XY(10, 42), 4, 16, 1, FALSE, &mainBox);
 
    upPage.x = 20;
    upPage.y = 150;
    upPage.w = 50;
-   upPage.h = 20;
+   upPage.h = 30;
    downPage.x = 250;
    downPage.y = 150;
    downPage.w = 50;
-   downPage.h = 20;
+   downPage.h = 30;
 
-   if (g_iCurrentItem >= 15) {
-   //if (1) {
+   currentPage = g_iCurrentItem / 15;
+   pageAmount = g_iNumMagic / 15 + (g_iNumMagic % 15 == 0 ? 0 : 1);
+
+   if (currentPage > 0) {
 	   PAL_CreateSingleLineBox(PAL_XY(upPage.x, upPage.y), 2, FALSE);
-	   PAL_DrawText(PAL_GetWord(LABEL_PAGE_UP), PAL_XY(upPage.x + 5, upPage.y + 10), kNumColorYellow, FALSE, FALSE);
+	   PAL_DrawText(PAL_GetWord(LABEL_PAGE_UP), PAL_XY(upPage.x + 5, upPage.y + 10), MENUITEM_COLOR_CONFIRMED, FALSE, FALSE);
    }
 
-   if (g_iCurrentItem < g_iNumMagic - 15) {
-   //if (1) {
+   if (currentPage < pageAmount - 1) {
 	   PAL_CreateSingleLineBox(PAL_XY(downPage.x, downPage.y), 2, FALSE);
-	   PAL_DrawText(PAL_GetWord(LABEL_PAGE_DOWN), PAL_XY(downPage.x + 5, downPage.y + 10), kNumColorYellow, FALSE, FALSE);
+	   PAL_DrawText(PAL_GetWord(LABEL_PAGE_DOWN), PAL_XY(downPage.x + 5, downPage.y + 10), MENUITEM_COLOR_CONFIRMED, FALSE, FALSE);
    }
    
    if (gpGlobals->lpObjectDesc == NULL)
@@ -191,7 +208,7 @@ PAL_MagicSelectionMenuUpdate(
    //
    // Draw the texts of the current page
    //
-   i = g_iCurrentItem / 3 * 3 - 3 * 2;
+   i = g_iCurrentItem / 15 * 15;
    if (i < 0)
    {
       i = 0;
@@ -248,7 +265,7 @@ PAL_MagicSelectionMenuUpdate(
    }
 
    if (g_InputState.touchEventType == TOUCH_DOWN) {
-	   i = g_iCurrentItem / 3 * 3 - 3 * 2;
+	   i = g_iCurrentItem / 15 * 15;
 	   if (i < 0) {
 		   i = 0;
 	   }
@@ -266,7 +283,6 @@ PAL_MagicSelectionMenuUpdate(
 				   g_iCurrentItem = i;
 				   j = 5;
 				   break;
-				   
 			   }
 
 			   ++i;
@@ -275,21 +291,27 @@ PAL_MagicSelectionMenuUpdate(
    } else if (g_InputState.touchEventType == TOUCH_UP) {
 	   i = g_iCurrentItem % 15;
 	   j = i % 3;
-       k = (i < 3 * 2) ? (i / 3) : 2;
+       k = i / 3;
 	   if (PAL_IsTouch(35 + j * 87, 54 + k * 18, 87, 18)) {
-			if (rgMagicItem[g_iCurrentItem].fEnabled) {
+		   if (g_currentSelectItem != g_iCurrentItem) {
+			   g_currentSelectItem = g_iCurrentItem;
+		   } else {
+			   if (rgMagicItem[g_iCurrentItem].fEnabled) {
 				return rgMagicItem[g_iCurrentItem].wMagic;
-			}
-	   } else if (g_iCurrentItem >= 15 && PAL_IsTouch(upPage.x, upPage.y, upPage.w, upPage.h)) {
+				}
+		   }
+	   } else if (currentPage > 0 && PAL_IsTouch(upPage.x, upPage.y, upPage.w, upPage.h)) {
 		   g_iCurrentItem -= 15;
 		   if (g_iCurrentItem < 0) {
 			   g_iCurrentItem = 0;
 		   }
-	   } else if (g_iCurrentItem < g_iNumMagic - 15 && PAL_IsTouch(downPage.x, downPage.y, downPage.w, downPage.h)) {
+		   g_currentSelectItem = g_iCurrentItem;
+	   } else if (currentPage < pageAmount - 1 && PAL_IsTouch(downPage.x, downPage.y, downPage.w, downPage.h)) {
 		   g_iCurrentItem += 15;
 		   if (g_iCurrentItem >= g_iNumMagic) {
 			   g_iCurrentItem = g_iNumMagic - 1;
 		   }
+		   g_currentSelectItem = g_iCurrentItem;
 	   } else if (!PAL_IsTouch(mainBox.x, mainBox.y, mainBox.w, mainBox.h)) {
 		   return 0;
 	   }
@@ -300,7 +322,7 @@ PAL_MagicSelectionMenuUpdate(
       if (rgMagicItem[g_iCurrentItem].fEnabled)
       {
          j = g_iCurrentItem % 3;
-         k = (g_iCurrentItem < 3 * 2) ? (g_iCurrentItem / 3) : 2;
+         k = (g_iCurrentItem % 15) / 3;
 
          j = 35 + j * 87;
          k = 54 + k * 18;
@@ -344,6 +366,7 @@ PAL_MagicSelectionMenuInit(
    int        i, j;
 
    g_iCurrentItem = 0;
+   g_currentSelectItem = 0;
    g_iNumMagic = 0;
 
    g_wPlayerMP = gpGlobals->g.PlayerRoles.rgwMP[wPlayerRole];
@@ -421,6 +444,7 @@ PAL_MagicSelectionMenuInit(
       if (rgMagicItem[i].wMagic == wDefaultMagic)
       {
          g_iCurrentItem = i;
+		 g_currentSelectItem = i;
          break;
       }
    }

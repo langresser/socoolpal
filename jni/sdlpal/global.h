@@ -509,7 +509,6 @@ typedef struct tagGLOBALVARS
    BYTE             bCurrentSaveSlot;    // current save slot (1-5)
    int              iCurMainMenuItem;    // current main menu item number
    int              iCurSystemMenuItem;  // current system menu item number
-   int              iCurInvMenuItem;     // current inventory menu item number
    int              iCurPlayingRNG;      // current playing RNG animation
    BOOL             fGameStart;          // TRUE if the has just started
    BOOL             fEnteringScene;      // TRUE if entering a new scene
