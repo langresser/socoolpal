@@ -88,12 +88,6 @@ PAL_OpeningMenu(
       {  1,      MAINMENU_LABEL_LOADGAME,  TRUE,     PAL_XY(125, 112) }
    };
 
-   SDL_Surface* surfaceLeft = get_ui_element(UI_ELEMENT_LEFT);
-   SDL_Surface* surfaceRight = get_ui_element(UI_ELEMENT_RIGHT);
-   
-   SDL_Rect cursorLeft, cursorRight;
-//   SDL_SaveBMP(surfaceLeft, "xxxx.bmp");
-
    //
    // Play the background music
    //
@@ -110,22 +104,6 @@ PAL_OpeningMenu(
    {
 	   VIDEO_UpdateScreen(NULL);
 	   
-
-	   cursorLeft.x = 20;
-	   cursorLeft.y = 140;
-	   cursorLeft.w = 30;
-	   cursorLeft.h = 30;
-
-
-	   cursorRight.x = 200;
-	   cursorRight.y = 140;
-	   cursorRight.w = 30;
-	   cursorRight.h = 30;
-
-	   SDL_BlitSurface(surfaceLeft, NULL, gpScreenReal, &cursorLeft);
-	   SDL_BlitSurface(surfaceRight, NULL, gpScreenReal, &cursorRight);
-	   VIDEO_UpdateScreen(NULL);
-	   VIDEO_UpdateScreen(&cursorRight);
       //
       // Activate the menu
       //

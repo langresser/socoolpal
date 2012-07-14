@@ -356,7 +356,8 @@ PAL_MouseEventFilter(
    static INT   lastReleasex = 0;
    static INT   lastReleasey = 0;
 
-   if (lpEvent->type!= SDL_MOUSEBUTTONDOWN && lpEvent->type != SDL_MOUSEBUTTONUP)
+   if (lpEvent->type!= SDL_MOUSEBUTTONDOWN && lpEvent->type != SDL_MOUSEBUTTONUP
+	   && lpEvent->type != SDL_FINGERDOWN && lpEvent->type != SDL_FINGERUP)
       return;
    screenWidth = g_wInitialWidth;
    screenHeight = g_wInitialHeight;
@@ -669,6 +670,13 @@ PAL_EventFilter(
       //
       PAL_Shutdown();
       exit(0);
+	  break;
+   case SDL_WINDOWEVENT:
+	   return 0;
+	   break;
+   case SDL_MOUSEMOTION:
+	   return 0;
+	   break;
    }
 
    PAL_KeyboardEventFilter(lpEvent);

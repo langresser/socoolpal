@@ -176,6 +176,9 @@
     <ClCompile Include="libmad\timer.c">
       <Filter>libmad</Filter>
     </ClCompile>
+    <ClCompile Include="..\sdl\src\main\windows\SDL_windows_main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ascii.h">

@@ -687,6 +687,10 @@ PAL_DialogWaitForKey(
          VIDEO_SetPalette(palette);
       }
 
+	  if (g_InputState.touchEventType == TOUCH_DOWN) {
+		  break;
+	  }
+
       if (g_InputState.dwKeyPress != 0)
       {
          break;

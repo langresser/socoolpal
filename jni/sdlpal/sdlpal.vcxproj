@@ -126,10 +126,11 @@
       <SubSystem>Windows</SubSystem>
       <OutputFile>.\Debug\sdlpal.exe</OutputFile>
       <AdditionalLibraryDirectories>../sdl/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>odbc32.lib;odbccp32.lib;winmm.lib;SDL.lib;SDLmain.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;winmm.lib;SDL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\sdl\src\main\windows\SDL_windows_main.c" />
     <ClCompile Include="battle.c" />
     <ClCompile Include="ending.c" />
     <ClCompile Include="fight.c" />
