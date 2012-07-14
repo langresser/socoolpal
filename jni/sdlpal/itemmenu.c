@@ -26,6 +26,8 @@ static BOOL    g_fNoDesc = FALSE;
 static int     g_iCurMenuItem = 0;
 static int     g_currentSelectItem = 0;
 
+#define PAGE_ITEM_AMOUNT 18
+
 WORD
 PAL_ItemSelectMenuUpdate(
    VOID
@@ -79,12 +81,12 @@ PAL_ItemSelectMenuUpdate(
    }
    else if (g_InputState.dwKeyPress & kKeyPgUp)
    {
-	   g_iCurMenuItem -= 3 * 7;
+	   g_iCurMenuItem -= PAGE_ITEM_AMOUNT;
 	   g_currentSelectItem = g_iCurMenuItem;
    }
    else if (g_InputState.dwKeyPress & kKeyPgDn)
    {
-	   g_iCurMenuItem += 3 * 7;
+	   g_iCurMenuItem += PAGE_ITEM_AMOUNT;
 	   g_currentSelectItem = g_iCurMenuItem;
    }
    else if (g_InputState.dwKeyPress & kKeyMenu)
@@ -117,17 +119,17 @@ PAL_ItemSelectMenuUpdate(
    //
    PAL_CreateBox(PAL_XY(2, 0), 6, 17, 1, FALSE, &mainBox);
    
-   upPage.x = 200;
-   upPage.y = 150;
+   upPage.x = 20;
+   upPage.y = 120;
    upPage.w = 50;
    upPage.h = 30;
-   downPage.x = 265;
-   downPage.y = 150;
+   downPage.x = 260;
+   downPage.y = 120;
    downPage.w = 50;
    downPage.h = 30;
 
-   currentPage = g_iCurMenuItem / 21;
-   pageAmount = g_iNumInventory / 21 + (g_iNumInventory % 21 == 0 ? 0 : 1);
+   currentPage = g_iCurMenuItem / PAGE_ITEM_AMOUNT;
+   pageAmount = g_iNumInventory / PAGE_ITEM_AMOUNT + (g_iNumInventory % PAGE_ITEM_AMOUNT == 0 ? 0 : 1);
 
    if (currentPage > 0) {
 	   PAL_CreateSingleLineBox(PAL_XY(upPage.x, upPage.y), 2, FALSE);
@@ -142,13 +144,13 @@ PAL_ItemSelectMenuUpdate(
    //
    // Draw the texts in the current page
    //
-   i = g_iCurMenuItem / 21 * 21;
+   i = g_iCurMenuItem / PAGE_ITEM_AMOUNT * PAGE_ITEM_AMOUNT;
    if (i < 0)
    {
       i = 0;
    }
 
-   for (j = 0; j < 7; j++)
+   for (j = 0; j < 6; j++)
    {
       for (k = 0; k < 3; k++)
       {
@@ -160,7 +162,7 @@ PAL_ItemSelectMenuUpdate(
             //
             // End of the list reached
             //
-            j = 7;
+            j = 6;
             break;
          }
 
@@ -293,21 +295,23 @@ PAL_ItemSelectMenuUpdate(
    }
 
 	if (g_InputState.touchEventType == TOUCH_DOWN) {
-	   i = g_iCurMenuItem / 21 * 21;
+	   i = g_iCurMenuItem / PAGE_ITEM_AMOUNT * PAGE_ITEM_AMOUNT;
 	   if (i < 0) {
 		   i = 0;
 	   }
 
-	   for (j = 0; j < 7; j++)
+	   for (j = 0; j < 6; j++)
 	   {
 		   for (k = 0; k < 3; k++)
 		   {
 			   if (i >= g_iNumInventory) {
+				   j = 6;
 				   break;
 			   }
 
 			   wObject = gpGlobals->rgInventory[i].wItem;
 			   if (!wObject) {
+				   j = 6;
 				   break;
 			   }
 
@@ -320,7 +324,7 @@ PAL_ItemSelectMenuUpdate(
 		   }
 	   }
    } else if (g_InputState.touchEventType == TOUCH_UP) {
-	   i = g_iCurMenuItem % 21;
+	   i = g_iCurMenuItem % PAGE_ITEM_AMOUNT;
 
 	   j = i / 3;
        k = i % 3;
@@ -336,13 +340,13 @@ PAL_ItemSelectMenuUpdate(
 				  }
 		   }
 	   } else if (currentPage > 0 && PAL_IsTouch(upPage.x, upPage.y, upPage.w, upPage.h)) {
-		   g_iCurMenuItem -= 21;
+		   g_iCurMenuItem -= PAGE_ITEM_AMOUNT;
 		   if (g_iCurMenuItem < 0) {
 			   g_iCurMenuItem = 0;
 		   }
 		   g_currentSelectItem = g_iCurMenuItem;
 	   } else if (currentPage < pageAmount - 1 && PAL_IsTouch(downPage.x, downPage.y, downPage.w, downPage.h)) {
-		   g_iCurMenuItem += 21;
+		   g_iCurMenuItem += PAGE_ITEM_AMOUNT;
 		   if (g_iCurMenuItem >= g_iNumInventory) {
 			   g_iCurMenuItem = g_iNumInventory - 1;
 		   }
@@ -360,7 +364,7 @@ PAL_ItemSelectMenuUpdate(
       {
          if (gpGlobals->rgInventory[g_iCurMenuItem].nAmount > 0)
          {
-            j = (g_iCurMenuItem % 21) / 3;
+            j = (g_iCurMenuItem % PAGE_ITEM_AMOUNT) / 3;
             k = g_iCurMenuItem % 3;
 
             PAL_DrawText(PAL_GetWord(wObject), PAL_XY(15 + k * 100, 12 + j * 18),

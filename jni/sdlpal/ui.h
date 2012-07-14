@@ -207,6 +207,16 @@ PAL_ReadMenu(
    BOOL						couldCancel
 );
 
+WORD
+PAL_ReadMenu_Buy(
+   LPITEMCHANGED_CALLBACK    lpfnMenuItemChanged,
+   LPMENUITEM                rgMenuItem,
+   INT                       nMenuItem,
+   WORD                      wDefaultItem,
+   BYTE                      bLabelColor,
+   BOOL						couldCancel
+);
+
 VOID
 PAL_DrawNumber(
    UINT            iNum,

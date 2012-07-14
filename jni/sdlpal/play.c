@@ -626,5 +626,9 @@ PAL_WaitForKey(
       {
          break;
       }
+
+	  if (g_InputState.touchEventType == TOUCH_UP) {
+		  break;
+	  }
    }
 }

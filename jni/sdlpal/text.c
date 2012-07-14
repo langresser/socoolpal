@@ -670,7 +670,7 @@ PAL_DialogWaitForKey(
 
    while (TRUE)
    {
-      UTIL_Delay(100);
+      UTIL_Delay(5);
 
       if (g_TextLib.bDialogPosition != kDialogCenterWindow &&
          g_TextLib.bDialogPosition != kDialogCenter)
@@ -688,7 +688,7 @@ PAL_DialogWaitForKey(
          VIDEO_SetPalette(palette);
       }
 
-	  if (g_InputState.touchEventType == TOUCH_DOWN) {
+	  if (g_InputState.touchEventType == TOUCH_UP) {
 		  break;
 	  }
 

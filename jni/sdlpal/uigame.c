@@ -1650,6 +1650,37 @@ PAL_BuyMenu_OnItemChange(
    {
       PAL_RLEBlitToSurface(bufImage, gpScreen, PAL_XY(42, 16));
    }
+#if 0
+   if (gpGlobals->lpObjectDesc != NULL)
+   {
+      char szDesc[512], *next;
+      const char *d = PAL_GetObjectDesc(gpGlobals->lpObjectDesc, wCurrentItem);
+
+	  PAL_CreateSingleLineBox(PAL_XY(0,75), 3, FALSE);
+      if (d != NULL)
+      {
+         int k = 75;
+         strcpy(szDesc, d);
+         d = szDesc;
+
+         while (TRUE)
+         {
+            next = strchr(d, '*');
+            if (next != NULL)
+            {
+               *next = '\0';
+               next++;
+			   if (next != NULL) {
+				   d = next;
+			   }
+            }
+
+            PAL_DrawText(d, PAL_XY(0, 0), DESCTEXT_COLOR, TRUE, FALSE);
+			break;
+         }
+      }
+   }
+#endif
 
    //
    // See how many of this item we have in the inventory
@@ -1747,10 +1778,11 @@ PAL_BuyMenu(
    VIDEO_UpdateScreen(&rect);
 
    w = 0;
+   PAL_ClearKeyState();
 
    while (TRUE)
    {
-      w = PAL_ReadMenu(PAL_BuyMenu_OnItemChange, rgMenuItem, i, w, MENUITEM_COLOR, FALSE);
+      w = PAL_ReadMenu_Buy(PAL_BuyMenu_OnItemChange, rgMenuItem, i, w, MENUITEM_COLOR, TRUE);
 
       if (w == MENUITEM_VALUE_CANCELLED)
       {

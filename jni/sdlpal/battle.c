@@ -649,7 +649,7 @@ PAL_BattleWon(
       //
       // Play the "battle win" music
       //
-      PAL_PlayMUS(g_Battle.fIsBoss ? 2 : 3, FALSE, 0);
+      PAL_PlayMUS(g_Battle.fIsBoss ? 2 : 3, TRUE, 0);
 
       //
       // Show the message about the total number of exp. and cash gained
@@ -665,7 +665,7 @@ PAL_BattleWon(
       PAL_DrawNumber(g_Battle.iCashGained, 5, PAL_XY(162, 119), kNumColorYellow, kNumAlignMid);
 
       VIDEO_UpdateScreen(&rect);
-      PAL_WaitForKey(g_Battle.fIsBoss ? 5500 : 3000);
+      PAL_WaitForKey(g_Battle.fIsBoss ? 5500 : 2500);
    }
 
    //
