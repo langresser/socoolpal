@@ -7,19 +7,9 @@
 		<key>checkkeys.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>7</integer>
-		</dict>
-		<key>graywin.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
 			<integer>25</integer>
 		</dict>
 		<key>loopwav.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>27</integer>
-		</dict>
-		<key>testalpha.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>8</integer>
@@ -27,132 +17,107 @@
 		<key>testaudioinfo.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>5</integer>
-		</dict>
-		<key>testbitmap.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>14</integer>
-		</dict>
-		<key>testblitspeed.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>29</integer>
+			<integer>23</integer>
 		</dict>
 		<key>testdraw2.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>21</integer>
-		</dict>
-		<key>testdyngles.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>20</integer>
+			<integer>19</integer>
 		</dict>
 		<key>testerror.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>1</integer>
+			<integer>6</integer>
 		</dict>
 		<key>testfile.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>16</integer>
 		</dict>
-		<key>testgamma.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>23</integer>
-		</dict>
 		<key>testgesture.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>17</integer>
-		</dict>
-		<key>testgles.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>0</integer>
-		</dict>
-		<key>testiconv.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>10</integer>
-		</dict>
-		<key>testjoystick.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>28</integer>
-		</dict>
-		<key>testkeys.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>24</integer>
-		</dict>
-		<key>testlock.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>4</integer>
-		</dict>
-		<key>testplatform.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>9</integer>
-		</dict>
-		<key>testpower.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>13</integer>
-		</dict>
-		<key>testsem.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>2</integer>
-		</dict>
-		<key>testsprite2.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>6</integer>
-		</dict>
-		<key>testthread.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>11</integer>
-		</dict>
-		<key>testtimer.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>12</integer>
-		</dict>
-		<key>testver.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>22</integer>
-		</dict>
-		<key>testvidinfo.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>26</integer>
-		</dict>
-		<key>testwin.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>19</integer>
-		</dict>
-		<key>testwm2.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>18</integer>
 		</dict>
-		<key>threadwin.xcscheme</key>
+		<key>testgles.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
+		</dict>
+		<key>testiconv.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>14</integer>
+		</dict>
+		<key>testjoystick.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>13</integer>
+		</dict>
+		<key>testkeys.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>22</integer>
+		</dict>
+		<key>testlock.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>15</integer>
 		</dict>
+		<key>testplatform.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>21</integer>
+		</dict>
+		<key>testpower.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>20</integer>
+		</dict>
+		<key>testrendertarget.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>7</integer>
+		</dict>
+		<key>testscale.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>9</integer>
+		</dict>
+		<key>testsem.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>5</integer>
+		</dict>
+		<key>testsprite2.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>10</integer>
+		</dict>
+		<key>testthread.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>12</integer>
+		</dict>
+		<key>testtimer.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>4</integer>
+		</dict>
+		<key>testver.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>11</integer>
+		</dict>
+		<key>testwm2.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>17</integer>
+		</dict>
 		<key>torturethread.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>3</integer>
+			<integer>24</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
@@ -177,7 +142,12 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>FDA8A91D0E2D1C0B00EA573E</key>
+		<key>AAE7DEDA14CBB1E100DF1A0E</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>AAE7DF9E14CBB54E00DF1A0E</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -187,27 +157,7 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>FDA8AB140E2D386600EA573E</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>FDAAC3BB0E2D47E6001DB1D8</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>FDAAC4300E2D4961001DB1D8</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>FDAAC4540E2D4C27001DB1D8</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>FDAAC5040E2D4FEB001DB1D8</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -218,11 +168,6 @@
 			<true/>
 		</dict>
 		<key>FDAAC5B80E2D55B5001DB1D8</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>FDAAC5E90E2D5843001DB1D8</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -283,21 +228,6 @@
 			<true/>
 		</dict>
 		<key>FDD2C5B30E2E8CFC00B7A85F</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>FDD2C5CF0E2E8E0300B7A85F</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>FDD2C6150E2E8F0600B7A85F</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>FDD2C6A10E2E92D200B7A85F</key>
 		<dict>
 			<key>primary</key>
 			<true/>

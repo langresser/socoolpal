@@ -2025,7 +2025,7 @@ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
-ac_config_headers="$ac_config_headers include/SDL_config_generated.h"
+ac_config_headers="$ac_config_headers include/SDL_config.h"
 
 
 cat >>confdefs.h <<\_ACEOF
@@ -2070,7 +2070,7 @@ orig_CFLAGS="$CFLAGS"
 
 #
 # Making releases:
-# Edit include/SDL/SDL_version.h and change the version, then:
+# Edit include/SDL_version.h and change the version, then:
 #   SDL_MICRO_VERSION += 1;
 #   SDL_INTERFACE_AGE += 1;
 #   SDL_BINARY_AGE += 1;
@@ -2078,8 +2078,8 @@ orig_CFLAGS="$CFLAGS"
 # if backwards compatibility has been broken,
 # set SDL_BINARY_AGE and SDL_INTERFACE_AGE to 0.
 #
-SDL_MAJOR_VERSION=1
-SDL_MINOR_VERSION=3
+SDL_MAJOR_VERSION=2
+SDL_MINOR_VERSION=0
 SDL_MICRO_VERSION=0
 SDL_INTERFACE_AGE=0
 SDL_BINARY_AGE=0
@@ -15529,11 +15529,11 @@ if test x$srcdir != x.; then
 elif test -d .hg; then
     { { echo "$as_me:$LINENO: error:
 *** When building from Mercurial you should configure and build in a
-    separate directory so you don't clobber SDL_revision.h
+    separate directory so you don't clobber SDL_config.h, SDL_revision.h
 " >&5
 echo "$as_me: error:
 *** When building from Mercurial you should configure and build in a
-    separate directory so you don't clobber SDL_revision.h
+    separate directory so you don't clobber SDL_config.h, SDL_revision.h
 " >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -15551,8 +15551,8 @@ esac
 # Uncomment the following line if you want to force SDL and applications
 # built with it to be compiled for a particular architecture.
 #AX_GCC_ARCHFLAG([no], [BASE_CFLAGS="$BASE_CFLAGS $ax_cv_gcc_archflag]")
-BUILD_CFLAGS="$CFLAGS $CPPFLAGS -DGENERATED_CONFIG_H"
-# The default optimization for SDL 1.3 is -O3 (Bug #31)
+BUILD_CFLAGS="$CFLAGS $CPPFLAGS -DUSING_GENERATED_CONFIG_H"
+# The default optimization for SDL is -O3 (Bug #31)
 if test x$orig_CFLAGS = x; then
     BUILD_CFLAGS=`echo $BUILD_CFLAGS | sed 's/-O2/-O3/'`
 fi
@@ -15569,7 +15569,7 @@ EXTRA_LDFLAGS="$BASE_LDFLAGS"
 #    fi
 #done
 SDL_CFLAGS="$BASE_CFLAGS"
-SDL_LIBS="-lSDL $BASE_LDFLAGS"
+SDL_LIBS="-lSDL2 $BASE_LDFLAGS"
 CPPFLAGS="$CPPFLAGS $EXTRA_CFLAGS"
 CFLAGS="$CFLAGS $EXTRA_CFLAGS"
 LDFLAGS="$LDFLAGS $EXTRA_LDFLAGS"
@@ -22166,6 +22166,205 @@ _ACEOF
             fi
             have_video=yes
 
+            { echo "$as_me:$LINENO: checking for const parameter to XextAddDisplay" >&5
+echo $ECHO_N "checking for const parameter to XextAddDisplay... $ECHO_C" >&6; }
+            have_const_param_XextAddDisplay=no
+            cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+              #include <X11/Xlib.h>
+              #include <X11/Xproto.h>
+              #include <X11/extensions/Xext.h>
+              #include <X11/extensions/extutil.h>
+              extern XExtDisplayInfo* XextAddDisplay(XExtensionInfo* a,Display* b,_Xconst char* c,XExtensionHooks* d,int e,XPointer f);
+
+int
+main ()
+{
+
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+
+            have_const_param_XextAddDisplay=yes
+            cat >>confdefs.h <<\_ACEOF
+#define SDL_VIDEO_DRIVER_X11_CONST_PARAM_XEXTADDDISPLAY 1
+_ACEOF
+
+
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+            { echo "$as_me:$LINENO: result: $have_const_param_XextAddDisplay" >&5
+echo "${ECHO_T}$have_const_param_XextAddDisplay" >&6; }
+
+            { echo "$as_me:$LINENO: checking for XGetEventData in -lX11" >&5
+echo $ECHO_N "checking for XGetEventData in -lX11... $ECHO_C" >&6; }
+if test "${ac_cv_lib_X11_XGetEventData+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lX11  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char XGetEventData ();
+int
+main ()
+{
+return XGetEventData ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_X11_XGetEventData=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_X11_XGetEventData=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_X11_XGetEventData" >&5
+echo "${ECHO_T}$ac_cv_lib_X11_XGetEventData" >&6; }
+if test $ac_cv_lib_X11_XGetEventData = yes; then
+
+cat >>confdefs.h <<\_ACEOF
+#define SDL_VIDEO_DRIVER_X11_SUPPORTS_GENERIC_EVENTS 1
+_ACEOF
+
+fi
+
+            { echo "$as_me:$LINENO: checking for XkbKeycodeToKeysym in -lX11" >&5
+echo $ECHO_N "checking for XkbKeycodeToKeysym in -lX11... $ECHO_C" >&6; }
+if test "${ac_cv_lib_X11_XkbKeycodeToKeysym+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lX11  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char XkbKeycodeToKeysym ();
+int
+main ()
+{
+return XkbKeycodeToKeysym ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_X11_XkbKeycodeToKeysym=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_X11_XkbKeycodeToKeysym=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_X11_XkbKeycodeToKeysym" >&5
+echo "${ECHO_T}$ac_cv_lib_X11_XkbKeycodeToKeysym" >&6; }
+if test $ac_cv_lib_X11_XkbKeycodeToKeysym = yes; then
+
+cat >>confdefs.h <<\_ACEOF
+#define SDL_VIDEO_DRIVER_X11_HAS_XKBKEYCODETOKEYSYM 1
+_ACEOF
+
+fi
+
+
             # Check whether --enable-video-x11-xcursor was given.
 if test "${enable_video_x11_xcursor+set}" = set; then
   enableval=$enable_video_x11_xcursor;
@@ -22475,9 +22674,9 @@ fi
 
             if test x$enable_video_x11_xinput = xyes; then
                 definitely_enable_video_x11_xinput=no
-                { echo "$as_me:$LINENO: checking for X11/extensions/XInput.h" >&5
-echo $ECHO_N "checking for X11/extensions/XInput.h... $ECHO_C" >&6; }
-if test "${ac_cv_header_X11_extensions_XInput_h+set}" = set; then
+                { echo "$as_me:$LINENO: checking for X11/extensions/XInput2.h" >&5
+echo $ECHO_N "checking for X11/extensions/XInput2.h... $ECHO_C" >&6; }
+if test "${ac_cv_header_X11_extensions_XInput2_h+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -22489,7 +22688,7 @@ cat >>conftest.$ac_ext <<_ACEOF
 #include <X11/Xlib.h>
 
 
-#include <X11/extensions/XInput.h>
+#include <X11/extensions/XInput2.h>
 _ACEOF
 rm -f conftest.$ac_objext
 if { (ac_try="$ac_compile"
@@ -22508,19 +22707,19 @@ eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
 	 test -z "$ac_c_werror_flag" ||
 	 test ! -s conftest.err
        } && test -s conftest.$ac_objext; then
-  ac_cv_header_X11_extensions_XInput_h=yes
+  ac_cv_header_X11_extensions_XInput2_h=yes
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_header_X11_extensions_XInput_h=no
+	ac_cv_header_X11_extensions_XInput2_h=no
 fi
 
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
-{ echo "$as_me:$LINENO: result: $ac_cv_header_X11_extensions_XInput_h" >&5
-echo "${ECHO_T}$ac_cv_header_X11_extensions_XInput_h" >&6; }
-if test $ac_cv_header_X11_extensions_XInput_h = yes; then
+{ echo "$as_me:$LINENO: result: $ac_cv_header_X11_extensions_XInput2_h" >&5
+echo "${ECHO_T}$ac_cv_header_X11_extensions_XInput2_h" >&6; }
+if test $ac_cv_header_X11_extensions_XInput2_h = yes; then
   have_xinput_h_hdr=yes
 else
   have_xinput_h_hdr=no
@@ -22532,7 +22731,7 @@ fi
                         echo "-- dynamic libXi -> $xinput_lib"
 
 cat >>confdefs.h <<_ACEOF
-#define SDL_VIDEO_DRIVER_X11_DYNAMIC_XINPUT "$xinput_lib"
+#define SDL_VIDEO_DRIVER_X11_DYNAMIC_XINPUT2 "$xinput_lib"
 _ACEOF
 
                         definitely_enable_video_x11_xinput=yes
@@ -22612,9 +22811,72 @@ fi
             if test x$definitely_enable_video_x11_xinput = xyes; then
 
 cat >>confdefs.h <<\_ACEOF
-#define SDL_VIDEO_DRIVER_X11_XINPUT 1
+#define SDL_VIDEO_DRIVER_X11_XINPUT2 1
 _ACEOF
 
+                { echo "$as_me:$LINENO: checking for xinput2 multitouch" >&5
+echo $ECHO_N "checking for xinput2 multitouch... $ECHO_C" >&6; }
+            	have_xinput2_multitouch=no
+            	cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+              		#include <X11/Xlib.h>
+             		#include <X11/Xproto.h>
+			#include <X11/extensions/XInput2.h>
+
+int
+main ()
+{
+int event_type = XI_TouchBegin;
+XITouchClassInfo *t;
+Status
+XIAllowTouchEvents(Display *a,int b,unsigned int c,Window d,int f)
+{
+    return (Status)0;
+}
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+
+            	have_xinput2_multitouch=yes
+            	cat >>confdefs.h <<\_ACEOF
+#define SDL_VIDEO_DRIVER_X11_XINPUT2_SUPPORTS_MULTITOUCH 1
+_ACEOF
+
+
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+            	{ echo "$as_me:$LINENO: result: $have_xinput2_multitouch" >&5
+echo "${ECHO_T}$have_xinput2_multitouch" >&6; }
             fi
             # Check whether --enable-video-x11-xrandr was given.
 if test "${enable_video_x11_xrandr+set}" = set; then
@@ -24484,6 +24746,67 @@ fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
                 { echo "$as_me:$LINENO: result: $have_pthread_sem" >&5
 echo "${ECHO_T}$have_pthread_sem" >&6; }
+            fi
+            if test x$have_pthread_sem = xyes; then
+                { echo "$as_me:$LINENO: checking for sem_timedwait" >&5
+echo $ECHO_N "checking for sem_timedwait... $ECHO_C" >&6; }
+                have_sem_timedwait=no
+                cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+                  #include <pthread.h>
+                  #include <semaphore.h>
+
+int
+main ()
+{
+
+                  sem_timedwait(NULL, NULL);
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+
+                have_sem_timedwait=yes
+                cat >>confdefs.h <<\_ACEOF
+#define HAVE_SEM_TIMEDWAIT 1
+_ACEOF
+
+
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+                { echo "$as_me:$LINENO: result: $have_sem_timedwait" >&5
+echo "${ECHO_T}$have_sem_timedwait" >&6; }
             fi
 
             { echo "$as_me:$LINENO: checking for pthread_spin_trylock" >&5
@@ -27410,7 +27733,7 @@ _ACEOF
         # The Windows platform requires special setup
         SDLMAIN_SOURCES="$srcdir/src/main/windows/*.c"
         EXTRA_CFLAGS="$EXTRA_CFLAGS -Dmain=SDL_main -D_WIN32_WCE=0x420"
-        EXTRA_LDFLAGS="-lSDLmain $EXTRA_LDFLAGS"
+        EXTRA_LDFLAGS="-lSDL2main $EXTRA_LDFLAGS"
         ;;
     *-*-cygwin* | *-*-mingw32*)
         ARCH=win32
@@ -27557,7 +27880,7 @@ _ACEOF
             have_loadso=yes
         fi
         # Set up the system libraries we need
-        # SDL 1.3 is unicode, and unicows emulates this on Windows 98/ME
+        # SDL is unicode, and unicows emulates this on Windows 98/ME
         # You can get this here: http://libunicows.sourceforge.net/
         #EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lunicows"
         EXTRA_LDFLAGS="$EXTRA_LDFLAGS -luser32 -lgdi32 -lwinmm -limm32 -lole32 -loleaut32 -lversion -luuid"
@@ -27565,7 +27888,7 @@ _ACEOF
         VERSION_SOURCES="$srcdir/src/main/windows/*.rc"
         SDLMAIN_SOURCES="$srcdir/src/main/windows/*.c"
         SDL_CFLAGS="$SDL_CFLAGS -Dmain=SDL_main"
-        SDL_LIBS="-lmingw32 -lSDLmain $SDL_LIBS -mwindows"
+        SDL_LIBS="-lmingw32 -lSDL2main $SDL_LIBS -mwindows"
         ;;
     *-*-beos* | *-*-haiku*)
         ARCH=beos
@@ -27640,6 +27963,54 @@ _ACEOF
         # The BeOS platform requires special setup.
         SOURCES="$srcdir/src/main/beos/*.cc $SOURCES"
         EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lroot -lbe -lmedia -lgame -ldevice -ltextencoding"
+        ;;
+    arm*-apple-darwin*)
+        # iOS - We are not writing anything to confdefs.h because you have to replace
+        # SDL_config.h for SDL_config_iphoneos.h anyway
+        ARCH=ios
+
+        CheckVisibilityHidden
+        CheckDummyVideo
+        CheckDiskAudio
+        CheckDummyAudio
+        CheckDLOPEN
+        CheckCOCOA
+        CheckPTHREAD
+
+
+        # Set up files for the audio library
+        if test x$enable_audio = xyes; then
+            SOURCES="$SOURCES $srcdir/src/audio/coreaudio/*.c"
+            have_audio=yes
+        fi
+        # Set up files for the joystick library
+        if test x$enable_joystick = xyes; then
+            SOURCES="$SOURCES $srcdir/src/joystick/iphoneos/*.m"
+            have_joystick=yes
+        fi
+        # Set up files for the haptic library
+        #if test x$enable_haptic = xyes; then
+        #    SOURCES="$SOURCES $srcdir/src/haptic/darwin/*.c"
+        #    have_haptic=yes
+        #    EXTRA_LDFLAGS="$EXTRA_LDFLAGS -Wl,-framework,ForceFeedback"
+        #fi
+        # Set up files for the power library
+        if test x$enable_power = xyes; then
+            SOURCES="$SOURCES $srcdir/src/power/uikit/*.m"
+            have_power=yes
+        fi
+        # Set up files for the timer library
+        if test x$enable_timers = xyes; then
+            SOURCES="$SOURCES $srcdir/src/timer/unix/*.c"
+            have_timers=yes
+        fi
+        # Set up additional files for the file library
+        if test x$enable_file = xyes; then
+            SOURCES="$SOURCES $srcdir/src/file/cocoa/*.m"
+        fi
+        # The iOS platform requires special setup.
+        SOURCES="$SOURCES $srcdir/src/video/uikit/*.m"
+        SOURCES="$SOURCES $srcdir/src/video/uikit/*.c"
         ;;
     *-*-darwin* )
         # This could be either full "Mac OS X", or plain "Darwin" which is
@@ -27839,15 +28210,7 @@ else
   SDL_RLD_FLAGS=""
 fi
 
-case "$ARCH" in
-  macosx)
-    # Evil hack to allow static linking on Mac OS X
-    SDL_STATIC_LIBS="\${libdir}/libSDL.a $EXTRA_LDFLAGS"
-    ;;
-  *)
-    SDL_STATIC_LIBS="$SDL_LIBS $EXTRA_LDFLAGS"
-    ;;
-esac
+SDL_STATIC_LIBS="$SDL_LIBS $EXTRA_LDFLAGS"
 
 
 
@@ -27895,7 +28258,7 @@ $VERSION_DEPENDS
 $SDLMAIN_DEPENDS
 __EOF__
 
-ac_config_files="$ac_config_files Makefile:Makefile.in:Makefile.rules sdl-config SDL.spec sdl.pc"
+ac_config_files="$ac_config_files Makefile:Makefile.in:Makefile.rules sdl2-config SDL2.spec sdl2.pc"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -28810,12 +29173,12 @@ cat >>$CONFIG_STATUS <<\_ACEOF
 for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
-    "include/SDL_config_generated.h") CONFIG_HEADERS="$CONFIG_HEADERS include/SDL_config_generated.h" ;;
+    "include/SDL_config.h") CONFIG_HEADERS="$CONFIG_HEADERS include/SDL_config.h" ;;
     "libtool") CONFIG_COMMANDS="$CONFIG_COMMANDS libtool" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile:Makefile.in:Makefile.rules" ;;
-    "sdl-config") CONFIG_FILES="$CONFIG_FILES sdl-config" ;;
-    "SDL.spec") CONFIG_FILES="$CONFIG_FILES SDL.spec" ;;
-    "sdl.pc") CONFIG_FILES="$CONFIG_FILES sdl.pc" ;;
+    "sdl2-config") CONFIG_FILES="$CONFIG_FILES sdl2-config" ;;
+    "SDL2.spec") CONFIG_FILES="$CONFIG_FILES SDL2.spec" ;;
+    "sdl2.pc") CONFIG_FILES="$CONFIG_FILES sdl2.pc" ;;
 
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}

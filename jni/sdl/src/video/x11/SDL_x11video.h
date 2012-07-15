@@ -37,8 +37,8 @@
 #if SDL_VIDEO_DRIVER_X11_XINERAMA
 #include <X11/extensions/Xinerama.h>
 #endif
-#if SDL_VIDEO_DRIVER_X11_XINPUT
-#include <X11/extensions/XInput.h>
+#if SDL_VIDEO_DRIVER_X11_XINPUT2
+#include <X11/extensions/XInput2.h>
 #endif
 #if SDL_VIDEO_DRIVER_X11_XRANDR
 #include <X11/extensions/Xrandr.h>
@@ -92,7 +92,7 @@ typedef struct SDL_VideoData
     Atom UTF8_STRING;
 
     SDL_Scancode key_layout[256];
-    SDL_bool selection_waiting;
+    SDL_bool selection_waiting;    
 } SDL_VideoData;
 
 extern SDL_bool X11_UseDirectColorVisuals(void);

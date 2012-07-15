@@ -54,6 +54,7 @@ static int GL_UpdateTexture(SDL_Renderer * renderer, SDL_Texture * texture,
 static int GL_LockTexture(SDL_Renderer * renderer, SDL_Texture * texture,
                           const SDL_Rect * rect, void **pixels, int *pitch);
 static void GL_UnlockTexture(SDL_Renderer * renderer, SDL_Texture * texture);
+static int GL_SetRenderTarget(SDL_Renderer * renderer, SDL_Texture * texture);
 static int GL_UpdateViewport(SDL_Renderer * renderer);
 static int GL_RenderClear(SDL_Renderer * renderer);
 static int GL_RenderDrawPoints(SDL_Renderer * renderer,
@@ -64,6 +65,9 @@ static int GL_RenderFillRects(SDL_Renderer * renderer,
                               const SDL_Rect * rects, int count);
 static int GL_RenderCopy(SDL_Renderer * renderer, SDL_Texture * texture,
                          const SDL_Rect * srcrect, const SDL_Rect * dstrect);
+static int GL_RenderCopyEx(SDL_Renderer * renderer, SDL_Texture * texture,
+                         const SDL_Rect * srcrect, const SDL_Rect * dstrect,
+                         const double angle, const SDL_Point *center, const SDL_RendererFlip flip);
 static int GL_RenderReadPixels(SDL_Renderer * renderer, const SDL_Rect * rect,
                                Uint32 pixel_format, void * pixels, int pitch);
 static void GL_RenderPresent(SDL_Renderer * renderer);
@@ -75,11 +79,20 @@ SDL_RenderDriver GL_RenderDriver = {
     GL_CreateRenderer,
     {
      "opengl",
-     (SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC),
+     (SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE),
      1,
      {SDL_PIXELFORMAT_ARGB8888},
      0,
      0}
+};
+
+typedef struct GL_FBOList GL_FBOList;
+
+struct GL_FBOList
+{
+    Uint32 w, h;
+    GLuint FBO;
+    GL_FBOList *next;
 };
 
 typedef struct
@@ -91,6 +104,9 @@ typedef struct
         Uint32 color;
         int blendMode;
     } current;
+    
+    SDL_bool GL_EXT_framebuffer_object_supported;
+    GL_FBOList *framebuffers;
 
     /* OpenGL functions */
 #define SDL_PROC(ret,func,params) ret (APIENTRY *func) params;
@@ -101,6 +117,12 @@ typedef struct
     SDL_bool GL_ARB_multitexture_supported;
     PFNGLACTIVETEXTUREARBPROC glActiveTextureARB;
     GLint num_texture_units;
+    
+    PFNGLGENFRAMEBUFFERSEXTPROC glGenFramebuffersEXT;
+    PFNGLDELETEFRAMEBUFFERSEXTPROC glDeleteFramebuffersEXT;
+    PFNGLFRAMEBUFFERTEXTURE2DEXTPROC glFramebufferTexture2DEXT;
+    PFNGLBINDFRAMEBUFFEREXTPROC glBindFramebufferEXT;
+    PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC glCheckFramebufferStatusEXT;
 
     /* Shader support */
     GL_ShaderContext *shaders;
@@ -123,6 +145,8 @@ typedef struct
     SDL_bool yuv;
     GLuint utexture;
     GLuint vtexture;
+    
+    GL_FBOList *fbo;
 } GL_TextureData;
 
 
@@ -227,6 +251,29 @@ GL_ResetState(SDL_Renderer *renderer)
     data->glLoadIdentity();
 }
 
+
+GL_FBOList *
+GL_GetFBO(GL_RenderData *data, Uint32 w, Uint32 h)
+{
+    GL_FBOList *result = data->framebuffers;
+
+    while (result && ((result->w != w) || (result->h != h))) {
+        result = result->next;
+    }
+
+    if (!result) {
+        result = SDL_malloc(sizeof(GL_FBOList));
+        if (result) {
+            result->w = w;
+            result->h = h;
+            data->glGenFramebuffersEXT(1, &result->FBO);
+            result->next = data->framebuffers;
+            data->framebuffers = result;
+        }
+    }
+    return result;
+}
+
 SDL_Renderer *
 GL_CreateRenderer(SDL_Window * window, Uint32 flags)
 {
@@ -263,12 +310,14 @@ GL_CreateRenderer(SDL_Window * window, Uint32 flags)
     renderer->UpdateTexture = GL_UpdateTexture;
     renderer->LockTexture = GL_LockTexture;
     renderer->UnlockTexture = GL_UnlockTexture;
+    renderer->SetRenderTarget = GL_SetRenderTarget;
     renderer->UpdateViewport = GL_UpdateViewport;
     renderer->RenderClear = GL_RenderClear;
     renderer->RenderDrawPoints = GL_RenderDrawPoints;
     renderer->RenderDrawLines = GL_RenderDrawLines;
     renderer->RenderFillRects = GL_RenderFillRects;
     renderer->RenderCopy = GL_RenderCopy;
+    renderer->RenderCopyEx = GL_RenderCopyEx;
     renderer->RenderReadPixels = GL_RenderReadPixels;
     renderer->RenderPresent = GL_RenderPresent;
     renderer->DestroyTexture = GL_DestroyTexture;
@@ -341,6 +390,22 @@ GL_CreateRenderer(SDL_Window * window, Uint32 flags)
         renderer->info.texture_formats[renderer->info.num_texture_formats++] = SDL_PIXELFORMAT_YV12;
         renderer->info.texture_formats[renderer->info.num_texture_formats++] = SDL_PIXELFORMAT_IYUV;
     }
+    
+    if (SDL_GL_ExtensionSupported("GL_EXT_framebuffer_object")) {
+        data->GL_EXT_framebuffer_object_supported = SDL_TRUE;
+        data->glGenFramebuffersEXT = (PFNGLGENFRAMEBUFFERSEXTPROC)
+            SDL_GL_GetProcAddress("glGenFramebuffersEXT");
+        data->glDeleteFramebuffersEXT = (PFNGLDELETEFRAMEBUFFERSEXTPROC)
+            SDL_GL_GetProcAddress("glDeleteFramebuffersEXT");
+        data->glFramebufferTexture2DEXT = (PFNGLFRAMEBUFFERTEXTURE2DEXTPROC)
+            SDL_GL_GetProcAddress("glFramebufferTexture2DEXT");
+        data->glBindFramebufferEXT = (PFNGLBINDFRAMEBUFFEREXTPROC)
+            SDL_GL_GetProcAddress("glBindFramebufferEXT");
+        data->glCheckFramebufferStatusEXT = (PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC)
+            SDL_GL_GetProcAddress("glCheckFramebufferStatusEXT");
+        renderer->info.flags |= SDL_RENDERER_TARGETTEXTURE;
+    }
+    data->framebuffers = NULL;
 
     /* Set up parameters for rendering */
     GL_ResetState(renderer);
@@ -351,7 +416,9 @@ GL_CreateRenderer(SDL_Window * window, Uint32 flags)
 static void
 GL_WindowEvent(SDL_Renderer * renderer, const SDL_WindowEvent *event)
 {
-    if (event->event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+    if (event->event == SDL_WINDOWEVENT_SIZE_CHANGED ||
+        event->event == SDL_WINDOWEVENT_SHOWN ||
+        event->event == SDL_WINDOWEVENT_HIDDEN) {
         /* Rebind the context to the window area and update matrices */
         SDL_CurrentContext = NULL;
     }
@@ -446,10 +513,17 @@ GL_CreateTexture(SDL_Renderer * renderer, SDL_Texture * texture)
     }
 
     texture->driverdata = data;
+    
+    if (texture->access == SDL_TEXTUREACCESS_TARGET) {
+        data->fbo = GL_GetFBO(renderdata, texture->w, texture->h);
+    } else {
+        data->fbo = NULL;
+    }
 
     renderdata->glGetError();
     renderdata->glGenTextures(1, &data->texture);
-    if (renderdata->GL_ARB_texture_rectangle_supported) {
+    if ((renderdata->GL_ARB_texture_rectangle_supported)
+        /*&& texture->access != SDL_TEXTUREACCESS_TARGET*/){
         data->type = GL_TEXTURE_RECTANGLE_ARB;
         texture_w = texture->w;
         texture_h = texture->h;
@@ -639,6 +713,33 @@ GL_UnlockTexture(SDL_Renderer * renderer, SDL_Texture * texture)
 }
 
 static int
+GL_SetRenderTarget(SDL_Renderer * renderer, SDL_Texture * texture)
+{
+    GL_RenderData *data = (GL_RenderData *) renderer->driverdata;    
+    GL_TextureData *texturedata;
+    GLenum status;
+
+    GL_ActivateRenderer(renderer);
+    
+    if (texture == NULL) {
+        data->glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        return 0;
+    }
+
+    texturedata = (GL_TextureData *) texture->driverdata;
+    data->glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, texturedata->fbo->FBO);
+    /* TODO: check if texture pixel format allows this operation */
+    data->glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, texturedata->type, texturedata->texture, 0);
+    /* Check FBO status */
+    status = data->glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+    if (status != GL_FRAMEBUFFER_COMPLETE_EXT) {
+        SDL_SetError("glFramebufferTexture2DEXT() failed");
+        return -1;
+    }
+    return 0;
+}
+
+static int
 GL_UpdateViewport(SDL_Renderer * renderer)
 {
     GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
@@ -653,10 +754,19 @@ GL_UpdateViewport(SDL_Renderer * renderer)
 
     data->glMatrixMode(GL_PROJECTION);
     data->glLoadIdentity();
-    data->glOrtho((GLdouble) 0,
-                  (GLdouble) renderer->viewport.w,
-                  (GLdouble) renderer->viewport.h,
-                  (GLdouble) 0, 0.0, 1.0);
+    if (renderer->target) {
+        data->glOrtho((GLdouble) 0,
+                      (GLdouble) renderer->viewport.w,
+                      (GLdouble) 0,
+                      (GLdouble) renderer->viewport.h,
+                       0.0, 1.0);
+    } else {
+        data->glOrtho((GLdouble) 0,
+                      (GLdouble) renderer->viewport.w,
+                      (GLdouble) renderer->viewport.h,
+                      (GLdouble) 0,
+                       0.0, 1.0);
+    }
     return 0;
 }
 
@@ -913,6 +1023,96 @@ GL_RenderCopy(SDL_Renderer * renderer, SDL_Texture * texture,
 }
 
 static int
+GL_RenderCopyEx(SDL_Renderer * renderer, SDL_Texture * texture,
+              const SDL_Rect * srcrect, const SDL_Rect * dstrect,
+              const double angle, const SDL_Point *center, const SDL_RendererFlip flip)
+{
+    GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
+    GL_TextureData *texturedata = (GL_TextureData *) texture->driverdata;
+    GLfloat minx, miny, maxx, maxy;
+    GLfloat centerx, centery;
+    GLfloat minu, maxu, minv, maxv;
+    GL_ActivateRenderer(renderer);
+
+    data->glEnable(texturedata->type);
+    if (texturedata->yuv) {
+        data->glActiveTextureARB(GL_TEXTURE2_ARB);
+        data->glBindTexture(texturedata->type, texturedata->vtexture);
+
+        data->glActiveTextureARB(GL_TEXTURE1_ARB);
+        data->glBindTexture(texturedata->type, texturedata->utexture);
+
+        data->glActiveTextureARB(GL_TEXTURE0_ARB);
+    }
+    data->glBindTexture(texturedata->type, texturedata->texture);
+
+    if (texture->modMode) {
+        GL_SetColor(data, texture->r, texture->g, texture->b, texture->a);
+    } else {
+        GL_SetColor(data, 255, 255, 255, 255);
+    }
+
+    GL_SetBlendMode(data, texture->blendMode);
+
+    if (texturedata->yuv) {
+        GL_SetShader(data, SHADER_YV12);
+    } else {
+        GL_SetShader(data, SHADER_RGB);
+    }
+
+    centerx = (GLfloat)center->x;
+    centery = (GLfloat)center->y;
+
+    if (flip & SDL_FLIP_HORIZONTAL) {
+        minx = (GLfloat) dstrect->w - centerx;
+        maxx = -centerx;
+    }
+    else {
+        minx = -centerx;
+        maxx = (GLfloat) dstrect->w - centerx;
+    }
+
+    if (flip & SDL_FLIP_VERTICAL) {
+        miny = (GLfloat) dstrect->h - centery;
+        maxy = -centery;
+    }
+    else {
+        miny = -centery;
+        maxy = (GLfloat) dstrect->h - centery;
+    }
+
+    minu = (GLfloat) srcrect->x / texture->w;
+    minu *= texturedata->texw;
+    maxu = (GLfloat) (srcrect->x + srcrect->w) / texture->w;
+    maxu *= texturedata->texw;
+    minv = (GLfloat) srcrect->y / texture->h;
+    minv *= texturedata->texh;
+    maxv = (GLfloat) (srcrect->y + srcrect->h) / texture->h;
+    maxv *= texturedata->texh;
+
+    // Translate to flip, rotate, translate to position
+    data->glPushMatrix();
+    data->glTranslatef((GLfloat)dstrect->x + centerx, (GLfloat)dstrect->y + centery, (GLfloat)0.0);    
+    data->glRotated(angle, (GLdouble)0.0, (GLdouble)0.0, (GLdouble)1.0);
+    
+    data->glBegin(GL_TRIANGLE_STRIP);
+    data->glTexCoord2f(minu, minv);
+    data->glVertex2f(minx, miny);
+    data->glTexCoord2f(maxu, minv);
+    data->glVertex2f(maxx, miny);
+    data->glTexCoord2f(minu, maxv);
+    data->glVertex2f(minx, maxy);
+    data->glTexCoord2f(maxu, maxv);
+    data->glVertex2f(maxx, maxy);
+    data->glEnd();
+    data->glPopMatrix();
+    
+    data->glDisable(texturedata->type);
+
+    return 0;
+}
+
+static int
 GL_RenderReadPixels(SDL_Renderer * renderer, const SDL_Rect * rect,
                     Uint32 pixel_format, void * pixels, int pitch)
 {
@@ -1013,6 +1213,13 @@ GL_DestroyRenderer(SDL_Renderer * renderer)
             GL_DestroyShaderContext(data->shaders);
         }
         if (data->context) {
+            while (data->framebuffers) {
+                GL_FBOList *nextnode = data->framebuffers->next;
+                /* delete the framebuffer object */
+                data->glDeleteFramebuffersEXT(1, &data->framebuffers->FBO);
+                SDL_free(data->framebuffers);
+                data->framebuffers = nextnode;
+            }            
             /* SDL_GL_MakeCurrent(0, NULL); *//* doesn't do anything */
             SDL_GL_DeleteContext(data->context);
         }

@@ -46,7 +46,7 @@ typedef enum tagPALDIRECTION
    kDirUnknown,
 } PALDIRECTION, *LPPALDIRECTION;
 
-typedef enum MOVE_DIRECTION
+typedef enum tagMOVE_DIRECTION
 {
 	eMoveDirUnknown,
 	eMoveDirNorth,
@@ -65,7 +65,7 @@ typedef enum MOVE_DIRECTION
 	eMoveDirEN,
 	eMoveDirES,
 	eMoveDirSE,
-};
+} MOVE_DIRECTION;
 
 INT
 PAL_RLEBlitToSurface(

@@ -574,7 +574,6 @@ VIDEO_SwitchScreen(
    const int         rgIndex[6] = {0, 3, 1, 5, 2, 4};
    SDL_Rect          dstrect;
 
-   short             offset = 240 - 200;
    short             screenRealHeight = gpScreenReal->h;
    short             screenRealY = 0;
 
@@ -628,7 +627,7 @@ VIDEO_FadeScreen(
    BYTE              a, b;
    const int         rgIndex[6] = {0, 3, 1, 5, 2, 4};
    SDL_Rect          dstrect;
-   short             offset = 240 - 200;
+
    short             screenRealHeight = gpScreenReal->h;
    short             screenRealY = 0;
 

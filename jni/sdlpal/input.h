@@ -38,11 +38,11 @@ extern "C"
 #define GAME_MODE_BATTLE 2
 #define GAME_MODE_MENU 3
 
-typedef enum CONTROL_TYPE
+typedef enum tagCONTROL_TYPE
 {
 	CONTROL_TYPE_NONE,
 	CONTROL_TYPE_MOUSE_WALK,
-};
+} CONTROL_TYPE;
 
 typedef struct tagPALINPUTSTATE
 {

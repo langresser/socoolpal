@@ -37,6 +37,7 @@
 }
 
 - (id)initWithFrame:(CGRect)frame
+      scale:(CGFloat)scale
       retainBacking:(BOOL)retained
       rBits:(int)rBits
       gBits:(int)gBits
@@ -79,10 +80,9 @@
             return nil;
         }
 
-        // !!! FIXME: use the screen this is on!
-        /* Use the main screen scale (for retina display support) */
+        /* Set the appropriate scale (for retina display support) */
         if ([self respondsToSelector:@selector(contentScaleFactor)])
-            self.contentScaleFactor = [UIScreen mainScreen].scale;
+            self.contentScaleFactor = scale;
 
         /* create the buffers */
         glGenFramebuffersOES(1, &viewFramebuffer);
@@ -145,6 +145,41 @@
         glBindRenderbufferOES(GL_RENDERBUFFER_OES, depthRenderbuffer);
         glRenderbufferStorageOES(GL_RENDERBUFFER_OES, depthBufferFormat, backingWidth, backingHeight);
     }
+}
+
+- (void)setAnimationCallback:(int)interval
+    callback:(void (*)(void*))callback
+    callbackParam:(void*)callbackParam
+{
+    [self stopAnimation];
+
+    animationInterval = interval;
+    animationCallback = callback;
+    animationCallbackParam = callbackParam;
+
+    if (animationCallback)
+        [self startAnimation];
+}
+
+- (void)startAnimation
+{
+    // CADisplayLink is API new to iPhone SDK 3.1. Compiling against earlier versions will result in a warning, but can be dismissed
+    // if the system version runtime check for CADisplayLink exists in -initWithCoder:. 
+    
+    displayLink = [NSClassFromString(@"CADisplayLink") displayLinkWithTarget:self selector:@selector(doLoop:)];
+    [displayLink setFrameInterval:animationInterval];
+    [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+}
+
+- (void)stopAnimation
+{
+    [displayLink invalidate];
+    displayLink = nil;
+}
+
+- (void)doLoop:(id)sender
+{
+    animationCallback(animationCallbackParam);
 }
 
 - (void)setCurrentContext

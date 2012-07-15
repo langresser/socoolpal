@@ -30,6 +30,7 @@
 #include "SDL_x11video.h"
 #include "SDL_x11mouse.h"
 #include "SDL_x11shape.h"
+#include "SDL_x11xinput2.h"
 
 #if SDL_VIDEO_OPENGL_ES || SDL_VIDEO_OPENGL_ES2
 #include "SDL_x11opengles.h"
@@ -268,14 +269,6 @@ X11_CreateWindow(_THIS, SDL_Window * window)
     Atom wmstate_atoms[3];
     Uint32 fevent = 0;
 
-#if SDL_VIDEO_DRIVER_X11_XINERAMA
-/* FIXME
-    if ( use_xinerama ) {
-        x = xinerama_info.x_org;
-        y = xinerama_info.y_org;
-    }
-*/
-#endif
 #if SDL_VIDEO_OPENGL_GLX
     if (window->flags & SDL_WINDOW_OPENGL) {
         XVisualInfo *vinfo;
@@ -501,10 +494,11 @@ X11_CreateWindow(_THIS, SDL_Window * window)
     }
 
     /* Setup the normal size hints */
+    sizehints.flags = 0;
     if (!(window->flags & SDL_WINDOW_RESIZABLE)) {
         sizehints.min_width = sizehints.max_width = window->w;
         sizehints.min_height = sizehints.max_height = window->h;
-        sizehints.flags = PMaxSize | PMinSize;
+        sizehints.flags |= (PMaxSize | PMinSize);
     }
     sizehints.x = window->x;
     sizehints.y = window->y;
@@ -559,6 +553,8 @@ X11_CreateWindow(_THIS, SDL_Window * window)
                       XNFilterEvents, &fevent, NULL);
     }
 #endif
+
+    X11_Xinput2SelectTouch(_this, window);
 
     XSelectInput(display, w,
                  (FocusChangeMask | EnterWindowMask | LeaveWindowMask |
@@ -758,7 +754,7 @@ X11_SetWindowSize(_THIS, SDL_Window * window)
 
          XGetWMNormalHints(display, data->xwindow, sizehints, &userhints);
 
-         sizehints->min_width = sizehints->max_height = window->w;
+         sizehints->min_width = sizehints->max_width = window->w;
          sizehints->min_height = sizehints->max_height = window->h;
 
          XSetWMNormalHints(display, data->xwindow, sizehints);
@@ -769,13 +765,27 @@ X11_SetWindowSize(_THIS, SDL_Window * window)
     XFlush(display);
 }
 
+static Bool isMapNotify(Display *dpy, XEvent *ev, XPointer win)
+{
+    return ev->type == MapNotify && ev->xmap.window == *((Window*)win);
+}
+static Bool isUnmapNotify(Display *dpy, XEvent *ev, XPointer win)
+{
+    return ev->type == UnmapNotify && ev->xunmap.window == *((Window*)win);
+}
+
 void
 X11_ShowWindow(_THIS, SDL_Window * window)
 {
     SDL_WindowData *data = (SDL_WindowData *) window->driverdata;
     Display *display = data->videodata->display;
+    XEvent event;
 
     XMapRaised(display, data->xwindow);
+    /* Blocking wait for "MapNotify" event.
+     * We use XIfEvent because XWindowEvent takes a mask rather than a type, 
+     * and XCheckTypedWindowEvent doesn't block */
+    XIfEvent(display, &event, &isMapNotify, (XPointer)&data->xwindow);
     XFlush(display);
 }
 
@@ -784,8 +794,11 @@ X11_HideWindow(_THIS, SDL_Window * window)
 {
     SDL_WindowData *data = (SDL_WindowData *) window->driverdata;
     Display *display = data->videodata->display;
+    XEvent event;
 
     XUnmapWindow(display, data->xwindow);
+    /* Blocking wait for "UnmapNotify" event */
+    XIfEvent(display, &event, &isUnmapNotify, (XPointer)&data->xwindow);    
     XFlush(display);
 }
 

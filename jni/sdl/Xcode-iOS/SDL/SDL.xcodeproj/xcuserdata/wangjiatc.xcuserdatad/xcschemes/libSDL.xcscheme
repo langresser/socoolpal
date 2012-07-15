@@ -14,7 +14,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "FD6526620DE8FCCB002AD96B"
-               BuildableName = "libSDL.a"
+               BuildableName = "libSDL2.a"
                BlueprintName = "libSDL"
                ReferencedContainer = "container:SDL.xcodeproj">
             </BuildableReference>

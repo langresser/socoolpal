@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="SDL"
+	Name="SDL2"
 	ProjectGUID="{81CE8DAF-EBB2-4761-8E45-B71ABCCA8C68}"
 	RootNamespace="SDL"
 	TargetFrameworkVersion="131072"
@@ -384,10 +384,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\SDL_compat.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\include\SDL_config.h"
 				>
 			</File>
@@ -521,6 +517,10 @@
 			</File>
 			<File
 				RelativePath="..\..\include\SDL_surface.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\SDL_system.h"
 				>
 			</File>
 			<File
@@ -769,10 +769,6 @@
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\SDL_compat.c"
-			>
-		</File>
-		<File
 			RelativePath="..\..\src\cpuinfo\SDL_cpuinfo.c"
 			>
 		</File>
@@ -1006,6 +1002,14 @@
 		</File>
 		<File
 			RelativePath="..\..\src\video\SDL_RLEaccel_c.h"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\render\software\SDL_rotate.c"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\render\software\SDL_rotate.h"
 			>
 		</File>
 		<File
@@ -1277,7 +1281,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Version.rc"
+			RelativePath="..\..\src\main\windows\version.rc"
 			>
 		</File>
 		<File

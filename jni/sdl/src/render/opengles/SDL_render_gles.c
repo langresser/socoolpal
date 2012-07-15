@@ -56,6 +56,8 @@ static int GLES_LockTexture(SDL_Renderer * renderer, SDL_Texture * texture,
                             const SDL_Rect * rect, void **pixels, int *pitch);
 static void GLES_UnlockTexture(SDL_Renderer * renderer,
                                SDL_Texture * texture);
+static int GLES_SetRenderTarget(SDL_Renderer * renderer,
+                                 SDL_Texture * texture);
 static int GLES_UpdateViewport(SDL_Renderer * renderer);
 static int GLES_RenderClear(SDL_Renderer * renderer);
 static int GLES_RenderDrawPoints(SDL_Renderer * renderer,
@@ -69,17 +71,29 @@ static int GLES_RenderCopy(SDL_Renderer * renderer, SDL_Texture * texture,
                            const SDL_Rect * dstrect);
 static int GLES_RenderReadPixels(SDL_Renderer * renderer, const SDL_Rect * rect,
                     Uint32 pixel_format, void * pixels, int pitch);
+static int GLES_RenderCopyEx(SDL_Renderer * renderer, SDL_Texture * texture,
+                         const SDL_Rect * srcrect, const SDL_Rect * dstrect,
+                         const double angle, const SDL_Point *center, const SDL_RendererFlip flip);
 static void GLES_RenderPresent(SDL_Renderer * renderer);
 static void GLES_DestroyTexture(SDL_Renderer * renderer,
                                 SDL_Texture * texture);
 static void GLES_DestroyRenderer(SDL_Renderer * renderer);
+
+typedef struct GLES_FBOList GLES_FBOList;
+
+struct GLES_FBOList
+{
+   Uint32 w, h;
+   GLuint FBO;
+   GLES_FBOList *next;
+};
 
 
 SDL_RenderDriver GLES_RenderDriver = {
     GLES_CreateRenderer,
     {
      "opengles",
-     (SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC),
+     (SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE),
      1,
      {SDL_PIXELFORMAT_ABGR8888},
      0,
@@ -98,6 +112,9 @@ typedef struct
 #define SDL_PROC(ret,func,params) ret (APIENTRY *func) params;
 #include "SDL_glesfuncs.h"
 #undef SDL_PROC
+    SDL_bool GL_OES_framebuffer_object_supported;
+    GLES_FBOList *framebuffers;
+    GLuint window_framebuffer;
 
     SDL_bool useDrawTexture;
     SDL_bool GL_OES_draw_texture_supported;
@@ -113,6 +130,7 @@ typedef struct
     GLenum formattype;
     void *pixels;
     int pitch;
+    GLES_FBOList *fbo;
 } GLES_TextureData;
 
 static void
@@ -178,6 +196,27 @@ static int GLES_LoadFunctions(GLES_RenderData * data)
 }
 
 static SDL_GLContext SDL_CurrentContext = NULL;
+
+GLES_FBOList *
+GLES_GetFBO(GLES_RenderData *data, Uint32 w, Uint32 h)
+{
+   GLES_FBOList *result = data->framebuffers;
+   while ((result) && ((result->w != w) || (result->h != h)) )
+   {
+       result = result->next;
+   }
+   if (result == NULL)
+   {
+       result = SDL_malloc(sizeof(GLES_FBOList));
+       result->w = w;
+       result->h = h;
+       data->glGenFramebuffersOES(1, &result->FBO);
+       result->next = data->framebuffers;
+       data->framebuffers = result;
+   }
+   return result;
+}
+
 
 static int
 GLES_ActivateRenderer(SDL_Renderer * renderer)
@@ -260,6 +299,7 @@ GLES_CreateRenderer(SDL_Window * window, Uint32 flags)
     renderer->UpdateTexture = GLES_UpdateTexture;
     renderer->LockTexture = GLES_LockTexture;
     renderer->UnlockTexture = GLES_UnlockTexture;
+    renderer->SetRenderTarget = GLES_SetRenderTarget;
     renderer->UpdateViewport = GLES_UpdateViewport;
     renderer->RenderClear = GLES_RenderClear;
     renderer->RenderDrawPoints = GLES_RenderDrawPoints;
@@ -267,6 +307,7 @@ GLES_CreateRenderer(SDL_Window * window, Uint32 flags)
     renderer->RenderFillRects = GLES_RenderFillRects;
     renderer->RenderCopy = GLES_RenderCopy;
     renderer->RenderReadPixels = GLES_RenderReadPixels;
+    renderer->RenderCopyEx = GLES_RenderCopyEx;
     renderer->RenderPresent = GLES_RenderPresent;
     renderer->DestroyTexture = GLES_DestroyTexture;
     renderer->DestroyRenderer = GLES_DestroyRenderer;
@@ -312,10 +353,22 @@ GLES_CreateRenderer(SDL_Window * window, Uint32 flags)
     }
 #endif
 
+    value = 0;
     data->glGetIntegerv(GL_MAX_TEXTURE_SIZE, &value);
     renderer->info.max_texture_width = value;
+    value = 0;
     data->glGetIntegerv(GL_MAX_TEXTURE_SIZE, &value);
     renderer->info.max_texture_height = value;
+
+    if (SDL_GL_ExtensionSupported("GL_OES_framebuffer_object")) {
+        data->GL_OES_framebuffer_object_supported = SDL_TRUE;
+        renderer->info.flags |= SDL_RENDERER_TARGETTEXTURE;
+
+        value = 0;
+        data->glGetIntegerv(GL_FRAMEBUFFER_BINDING_OES, &value);
+        data->window_framebuffer = (GLuint)value;
+    }
+    data->framebuffers = NULL;
 
     /* Set up parameters for rendering */
     GLES_ResetState(renderer);
@@ -328,14 +381,16 @@ GLES_WindowEvent(SDL_Renderer * renderer, const SDL_WindowEvent *event)
 {
     GLES_RenderData *data = (GLES_RenderData *) renderer->driverdata;
     
-    if (event->event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+    if (event->event == SDL_WINDOWEVENT_SIZE_CHANGED ||
+        event->event == SDL_WINDOWEVENT_SHOWN ||
+        event->event == SDL_WINDOWEVENT_HIDDEN) {
         /* Rebind the context to the window area and update matrices */
         SDL_CurrentContext = NULL;
     }
 
     if (event->event == SDL_WINDOWEVENT_MINIMIZED) {
         /* According to Apple documentation, we need to finish drawing NOW! */
-	data->glFinish();
+        data->glFinish();
     }
 }
 
@@ -403,6 +458,11 @@ GLES_CreateTexture(SDL_Renderer * renderer, SDL_Texture * texture)
     }
 
     texture->driverdata = data;
+    if (texture->access == SDL_TEXTUREACCESS_TARGET) {
+       data->fbo = GLES_GetFBO(renderer->driverdata, texture->w, texture->h);
+    } else {
+       data->fbo = NULL;
+    }
 
     renderdata->glGetError();
     renderdata->glEnable(GL_TEXTURE_2D);
@@ -525,6 +585,33 @@ GLES_UnlockTexture(SDL_Renderer * renderer, SDL_Texture * texture)
     rect.w = texture->w;
     rect.h = texture->h;
     GLES_UpdateTexture(renderer, texture, &rect, data->pixels, data->pitch);
+}
+
+static int
+GLES_SetRenderTarget(SDL_Renderer * renderer, SDL_Texture * texture)
+{
+    GLES_RenderData *data = (GLES_RenderData *) renderer->driverdata;
+    GLES_TextureData *texturedata = NULL;
+    GLenum status;
+
+    GLES_ActivateRenderer(renderer);
+
+    if (texture == NULL) {
+        data->glBindFramebufferOES(GL_FRAMEBUFFER_OES, data->window_framebuffer);
+        return 0;
+    }
+
+    texturedata = (GLES_TextureData *) texture->driverdata;
+    data->glBindFramebufferOES(GL_FRAMEBUFFER_OES, texturedata->fbo->FBO);
+    /* TODO: check if texture pixel format allows this operation */
+    data->glFramebufferTexture2DOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, texturedata->type, texturedata->texture, 0);
+    /* Check FBO status */
+    status = data->glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES);
+    if (status != GL_FRAMEBUFFER_COMPLETE_OES) {
+        SDL_SetError("glFramebufferTexture2DOES() failed");
+        return -1;
+    }
+    return 0;
 }
 
 static int
@@ -757,15 +844,26 @@ GLES_RenderCopy(SDL_Renderer * renderer, SDL_Texture * texture,
         SDL_Window *window = renderer->window;
 
         SDL_GetWindowSize(window, &w, &h);
-        cropRect[0] = srcrect->x;
-        cropRect[1] = srcrect->y + srcrect->h;
-        cropRect[2] = srcrect->w;
-        cropRect[3] = -srcrect->h;
-        data->glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_CROP_RECT_OES,
-                               cropRect);
-        data->glDrawTexiOES(renderer->viewport.x + dstrect->x,
-	              h - (renderer->viewport.y + dstrect->y) - dstrect->h, 0,
-                            dstrect->w, dstrect->h);
+        if (renderer->target) {
+            cropRect[0] = srcrect->x;
+            cropRect[1] = srcrect->y;
+            cropRect[2] = srcrect->w;
+            cropRect[3] = srcrect->h;
+            data->glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_CROP_RECT_OES,
+                                   cropRect);
+            data->glDrawTexiOES(renderer->viewport.x + dstrect->x, renderer->viewport.y + dstrect->y, 0,
+                                dstrect->w, dstrect->h);
+        } else {
+            cropRect[0] = srcrect->x;
+            cropRect[1] = srcrect->y + srcrect->h;
+            cropRect[2] = srcrect->w;
+            cropRect[3] = -srcrect->h;
+            data->glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_CROP_RECT_OES,
+                                   cropRect);
+            data->glDrawTexiOES(renderer->viewport.x + dstrect->x,
+                        h - (renderer->viewport.y + dstrect->y) - dstrect->h, 0,
+                        dstrect->w, dstrect->h);
+        }
     } else {
 
         minx = dstrect->x;
@@ -864,6 +962,98 @@ GLES_RenderReadPixels(SDL_Renderer * renderer, const SDL_Rect * rect,
     return status;
 }
 
+static int
+GLES_RenderCopyEx(SDL_Renderer * renderer, SDL_Texture * texture,
+                const SDL_Rect * srcrect, const SDL_Rect * dstrect,
+                const double angle, const SDL_Point *center, const SDL_RendererFlip flip)
+{
+
+    GLES_RenderData *data = (GLES_RenderData *) renderer->driverdata;
+    GLES_TextureData *texturedata = (GLES_TextureData *) texture->driverdata;
+    int minx, miny, maxx, maxy;
+    GLfloat minu, maxu, minv, maxv;
+    GLfloat centerx, centery;
+    
+    GLES_ActivateRenderer(renderer);
+
+    data->glEnable(GL_TEXTURE_2D);
+
+    data->glBindTexture(texturedata->type, texturedata->texture);
+
+    if (texture->modMode) {
+        GLES_SetColor(data, texture->r, texture->g, texture->b, texture->a);
+    } else {
+        GLES_SetColor(data, 255, 255, 255, 255);
+    }
+
+    GLES_SetBlendMode(data, texture->blendMode);
+
+    GLES_SetTexCoords(data, SDL_TRUE);
+
+    centerx = (GLfloat)center->x;
+    centery = (GLfloat)center->y;
+
+    // Rotate and translate
+    data->glPushMatrix();
+    data->glTranslatef((GLfloat)dstrect->x + centerx, (GLfloat)dstrect->y + centery, (GLfloat)0.0);
+    data->glRotatef((GLfloat)angle, (GLfloat)0.0, (GLfloat)0.0, (GLfloat)1.0);
+
+    if (flip & SDL_FLIP_HORIZONTAL) {
+        minx = (GLfloat) dstrect->w - centerx;
+        maxx = -centerx;
+    }
+    else {
+        minx = -centerx;
+        maxx = dstrect->w - centerx;
+    }
+
+    if (flip & SDL_FLIP_VERTICAL) {
+        miny = dstrect->h - centery;
+        maxy = -centery;
+    }
+    else {
+        miny = -centery;
+        maxy = dstrect->h - centery;
+    }
+
+    minu = (GLfloat) srcrect->x / texture->w;
+    minu *= texturedata->texw;
+    maxu = (GLfloat) (srcrect->x + srcrect->w) / texture->w;
+    maxu *= texturedata->texw;
+    minv = (GLfloat) srcrect->y / texture->h;
+    minv *= texturedata->texh;
+    maxv = (GLfloat) (srcrect->y + srcrect->h) / texture->h;
+    maxv *= texturedata->texh;
+
+    GLshort vertices[8];
+    GLfloat texCoords[8];
+
+    vertices[0] = minx;
+    vertices[1] = miny;
+    vertices[2] = maxx;
+    vertices[3] = miny;
+    vertices[4] = minx;
+    vertices[5] = maxy;
+    vertices[6] = maxx;
+    vertices[7] = maxy;
+
+    texCoords[0] = minu;
+    texCoords[1] = minv;
+    texCoords[2] = maxu;
+    texCoords[3] = minv;
+    texCoords[4] = minu;
+    texCoords[5] = maxv;
+    texCoords[6] = maxu;
+    texCoords[7] = maxv;
+    data->glVertexPointer(2, GL_SHORT, 0, vertices);
+    data->glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
+    data->glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    data->glPopMatrix();
+    data->glDisable(GL_TEXTURE_2D);
+
+    return 0;
+}
+
 static void
 GLES_RenderPresent(SDL_Renderer * renderer)
 {
@@ -901,6 +1091,12 @@ GLES_DestroyRenderer(SDL_Renderer * renderer)
 
     if (data) {
         if (data->context) {
+            while (data->framebuffers) {
+               GLES_FBOList *nextnode = data->framebuffers->next;
+               data->glDeleteFramebuffersOES(1, &data->framebuffers->FBO);
+               SDL_free(data->framebuffers);
+               data->framebuffers = nextnode;
+            }
             SDL_GL_DeleteContext(data->context);
         }
         SDL_free(data);

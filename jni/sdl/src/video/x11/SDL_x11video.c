@@ -33,6 +33,7 @@
 #include "SDL_x11framebuffer.h"
 #include "SDL_x11shape.h"
 #include "SDL_x11touch.h" 
+#include "SDL_x11xinput2.h"
 
 #if SDL_VIDEO_OPENGL_ES || SDL_VIDEO_OPENGL_ES2
 #include "SDL_x11opengles.h"
@@ -186,6 +187,7 @@ X11_CreateDevice(int devindex)
     device->VideoInit = X11_VideoInit;
     device->VideoQuit = X11_VideoQuit;
     device->GetDisplayModes = X11_GetDisplayModes;
+    device->GetDisplayBounds = X11_GetDisplayBounds;
     device->SetDisplayMode = X11_SetDisplayMode;
     device->SuspendScreenSaver = X11_SuspendScreenSaver;
     device->PumpEvents = X11_PumpEvents;
@@ -358,6 +360,8 @@ X11_VideoInit(_THIS)
     if (X11_InitModes(_this) < 0) {
         return -1;
     }
+
+    X11_InitXinput2(_this);
 
     if (X11_InitKeyboard(_this) != 0) {
         return -1;

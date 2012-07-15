@@ -22,6 +22,7 @@
 
 #include "main.h"
 #include <math.h>
+#include "SDL_events.h"
 
 PALINPUTSTATE            g_InputState;
 #ifdef PAL_HAS_JOYSTICKS
@@ -421,16 +422,13 @@ PAL_MouseEventFilter(
    double       thumbx;
    double       thumby;
    INT          gridIndex;
-   BOOL			isLeftMouseDBClick = FALSE;
-   BOOL			isLeftMouseClick = FALSE;
-   static INT   lastReleaseButtonTime, lastPressButtonTime, betweenTime;
+   static INT   lastReleaseButtonTime, lastPressButtonTime;
    static INT   lastPressx = 0;
    static INT   lastPressy = 0;
    static INT   lastReleasex = 0;
    static INT   lastReleasey = 0;
 
    if (lpEvent->type!= SDL_MOUSEBUTTONDOWN && lpEvent->type != SDL_MOUSEBUTTONUP
-	   && lpEvent->type != SDL_FINGERDOWN && lpEvent->type != SDL_FINGERUP
 	   && lpEvent->type != SDL_MOUSEMOTION)
       return;
    screenWidth = g_wInitialWidth;
@@ -760,8 +758,7 @@ PAL_EventFilter(
    const SDL_Event       *lpEvent
 )
 #else
-static int SDLCALL
-PAL_EventFilter(
+int PAL_EventFilter(
    void                  *userdata,
    const SDL_Event       *lpEvent
 )

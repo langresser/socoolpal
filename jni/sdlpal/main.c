@@ -37,7 +37,7 @@
 
 int g_game_state = GAME_STATE_PREINIT;
 
-static VOID
+VOID
 PAL_Init(
    WORD             wScreenWidth,
    WORD             wScreenHeight,
@@ -368,11 +368,12 @@ PAL_SplashScreen(
       PAL_RLEBlitToSurface(lpBitmapTitle, gpScreen, PAL_XY(255, 10));
 
       VIDEO_UpdateScreen(NULL);
-
+       
       //
       // Check for keypress...
       //
-      if (g_InputState.dwKeyPress & (kKeyMenu | kKeySearch))
+      if (g_InputState.touchEventType == TOUCH_UP ||
+          (g_InputState.dwKeyPress & (kKeyMenu | kKeySearch)))
       {
          //
          // User has pressed a key...

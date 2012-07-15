@@ -39,6 +39,7 @@ extern "C"
 
 #include "SDL.h"
 #include "SDL_endian.h"
+#include "SDL_compat.h"
 
 #ifdef _SDL_stdinc_h
 #define malloc       SDL_malloc
@@ -152,7 +153,7 @@ typedef unsigned char       UCHAR, *PUCHAR;
 
 typedef unsigned short      WORD, *LPWORD;
 typedef unsigned int        DWORD, *LPDWORD;
-typedef int                 INT, *LPINT, BOOL, *LPBOOL;
+typedef int                 INT, *LPINT;
 typedef unsigned int        UINT, *PUINT, UINT32, *PUINT32;
 typedef unsigned char       BYTE, *LPBYTE;
 typedef CONST BYTE         *LPCBYTE;
@@ -161,6 +162,10 @@ typedef void               *LPVOID;
 typedef const void         *LPCVOID;
 typedef CHAR               *LPSTR;
 typedef const CHAR         *LPCSTR;
+    
+#ifndef __OBJC__
+    typedef int            BOOL, *LPBOOL;
+#endif
 
 #endif
 

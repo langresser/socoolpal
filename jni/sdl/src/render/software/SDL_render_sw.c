@@ -24,6 +24,7 @@
 
 #include "../SDL_sysrender.h"
 #include "SDL_render_sw_c.h"
+#include "SDL_hints.h"
 
 #include "SDL_draw.h"
 #include "SDL_blendfillrect.h"
@@ -31,7 +32,7 @@
 #include "SDL_blendpoint.h"
 #include "SDL_drawline.h"
 #include "SDL_drawpoint.h"
-
+#include "SDL_rotate.h"
 
 /* SDL surface based renderer implementation */
 
@@ -51,6 +52,7 @@ static int SW_UpdateTexture(SDL_Renderer * renderer, SDL_Texture * texture,
 static int SW_LockTexture(SDL_Renderer * renderer, SDL_Texture * texture,
                           const SDL_Rect * rect, void **pixels, int *pitch);
 static void SW_UnlockTexture(SDL_Renderer * renderer, SDL_Texture * texture);
+static int SW_SetRenderTarget(SDL_Renderer * renderer, SDL_Texture * texture);
 static int SW_UpdateViewport(SDL_Renderer * renderer);
 static int SW_RenderClear(SDL_Renderer * renderer);
 static int SW_RenderDrawPoints(SDL_Renderer * renderer,
@@ -61,6 +63,9 @@ static int SW_RenderFillRects(SDL_Renderer * renderer,
                               const SDL_Rect * rects, int count);
 static int SW_RenderCopy(SDL_Renderer * renderer, SDL_Texture * texture,
                          const SDL_Rect * srcrect, const SDL_Rect * dstrect);
+static int SW_RenderCopyEx(SDL_Renderer * renderer, SDL_Texture * texture,
+                          const SDL_Rect * srcrect, const SDL_Rect * dstrect,
+                          const double angle, const SDL_Point * center, const SDL_RendererFlip flip);
 static int SW_RenderReadPixels(SDL_Renderer * renderer, const SDL_Rect * rect,
                                Uint32 format, void * pixels, int pitch);
 static void SW_RenderPresent(SDL_Renderer * renderer);
@@ -72,7 +77,7 @@ SDL_RenderDriver SW_RenderDriver = {
     SW_CreateRenderer,
     {
      "software",
-     SDL_RENDERER_SOFTWARE,
+     SDL_RENDERER_SOFTWARE | SDL_RENDERER_TARGETTEXTURE,
      8,
      {
       SDL_PIXELFORMAT_RGB555,
@@ -91,6 +96,7 @@ SDL_RenderDriver SW_RenderDriver = {
 typedef struct
 {
     SDL_Surface *surface;
+    SDL_Surface *window;
 } SW_RenderData;
 
 
@@ -100,7 +106,10 @@ SW_ActivateRenderer(SDL_Renderer * renderer)
     SW_RenderData *data = (SW_RenderData *) renderer->driverdata;
 
     if (!data->surface) {
-        data->surface = SDL_GetWindowSurface(renderer->window);
+        data->surface = data->window;
+    }
+    if (!data->surface) {
+        data->surface = data->window = SDL_GetWindowSurface(renderer->window);
 
         SW_UpdateViewport(renderer);
     }
@@ -140,15 +149,17 @@ SW_CreateRendererForSurface(SDL_Surface * surface)
     renderer->UpdateTexture = SW_UpdateTexture;
     renderer->LockTexture = SW_LockTexture;
     renderer->UnlockTexture = SW_UnlockTexture;
+    renderer->SetRenderTarget = SW_SetRenderTarget;
     renderer->UpdateViewport = SW_UpdateViewport;
-    renderer->DestroyTexture = SW_DestroyTexture;
     renderer->RenderClear = SW_RenderClear;
     renderer->RenderDrawPoints = SW_RenderDrawPoints;
     renderer->RenderDrawLines = SW_RenderDrawLines;
     renderer->RenderFillRects = SW_RenderFillRects;
     renderer->RenderCopy = SW_RenderCopy;
+    renderer->RenderCopyEx = SW_RenderCopyEx;
     renderer->RenderReadPixels = SW_RenderReadPixels;
     renderer->RenderPresent = SW_RenderPresent;
+    renderer->DestroyTexture = SW_DestroyTexture;
     renderer->DestroyRenderer = SW_DestroyRenderer;
     renderer->info = SW_RenderDriver.info;
     renderer->driverdata = data;
@@ -177,6 +188,7 @@ SW_WindowEvent(SDL_Renderer * renderer, const SDL_WindowEvent *event)
 
     if (event->event == SDL_WINDOWEVENT_SIZE_CHANGED) {
         data->surface = NULL;
+        data->window = NULL;
     }
 }
 
@@ -274,6 +286,19 @@ SW_LockTexture(SDL_Renderer * renderer, SDL_Texture * texture,
 static void
 SW_UnlockTexture(SDL_Renderer * renderer, SDL_Texture * texture)
 {
+}
+
+static int
+SW_SetRenderTarget(SDL_Renderer * renderer, SDL_Texture * texture)
+{
+    SW_RenderData *data = (SW_RenderData *) renderer->driverdata;
+
+    if (texture ) {
+        data->surface = (SDL_Surface *) texture->driverdata;
+    } else {
+        data->surface = data->window;
+    }
+    return 0;
 }
 
 static int
@@ -473,6 +498,101 @@ SW_RenderCopy(SDL_Renderer * renderer, SDL_Texture * texture,
     } else {
         return SDL_BlitScaled(src, srcrect, surface, &final_rect);
     }
+}
+
+static int
+GetScaleQuality(void)
+{
+    const char *hint = SDL_GetHint(SDL_HINT_RENDER_SCALE_QUALITY);
+
+    if (!hint || *hint == '0' || SDL_strcasecmp(hint, "nearest") == 0) {
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
+static int
+SW_RenderCopyEx(SDL_Renderer * renderer, SDL_Texture * texture,
+                const SDL_Rect * srcrect, const SDL_Rect * dstrect,
+                const double angle, const SDL_Point * center, const SDL_RendererFlip flip)
+{
+    SDL_Surface *surface = SW_ActivateRenderer(renderer);
+    SDL_Surface *src = (SDL_Surface *) texture->driverdata;
+    SDL_Rect final_rect = *dstrect, tmp_rect;
+    SDL_Surface *surface_rotated, *surface_scaled;
+    Uint32 colorkey;
+    int retval, dstwidth, dstheight, abscenterx, abscentery;
+    double cangle, sangle, px, py, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y;
+
+    if (!surface) {
+        return -1;
+    }
+
+    if (renderer->viewport.x || renderer->viewport.y) {
+        final_rect.x += renderer->viewport.x;
+        final_rect.y += renderer->viewport.y;
+    }
+
+    surface_scaled = SDL_CreateRGBSurface(SDL_SWSURFACE, final_rect.w, final_rect.h, src->format->BitsPerPixel,
+                                          src->format->Rmask, src->format->Gmask,
+                                          src->format->Bmask, src->format->Amask );
+    SDL_GetColorKey(src, &colorkey);
+    SDL_SetColorKey(surface_scaled, SDL_TRUE, colorkey);
+    tmp_rect = final_rect;
+    tmp_rect.x = 0;
+    tmp_rect.y = 0;
+    if (surface_scaled) {
+        retval = SDL_BlitScaled(src, srcrect, surface_scaled, &tmp_rect);
+        if (!retval) {
+            _rotozoomSurfaceSizeTrig(tmp_rect.w, tmp_rect.h, -angle, &dstwidth, &dstheight, &cangle, &sangle);
+            surface_rotated = _rotateSurface(surface_scaled, -angle, dstwidth/2, dstheight/2, GetScaleQuality(), flip & SDL_FLIP_HORIZONTAL, flip & SDL_FLIP_VERTICAL, dstwidth, dstheight, cangle, sangle);
+            if(surface_rotated) {
+                /* Find out where the new origin is by rotating the four final_rect points around the center and then taking the extremes */
+                abscenterx = final_rect.x + center->x;
+                abscentery = final_rect.y + center->y;
+                /* Compensate the angle inversion to match the behaviour of the other backends */
+                sangle = -sangle;
+
+                /* Top Left */
+                px = final_rect.x - abscenterx;
+                py = final_rect.y - abscentery;
+                p1x = px * cangle - py * sangle + abscenterx;
+                p1y = px * sangle + py * cangle + abscentery;
+
+                /* Top Right */
+                px = final_rect.x + final_rect.w - abscenterx;
+                py = final_rect.y - abscentery;
+                p2x = px * cangle - py * sangle + abscenterx;
+                p2y = px * sangle + py * cangle + abscentery;
+
+                /* Bottom Left */
+                px = final_rect.x - abscenterx;
+                py = final_rect.y + final_rect.h - abscentery;
+                p3x = px * cangle - py * sangle + abscenterx;
+                p3y = px * sangle + py * cangle + abscentery;
+
+                /* Bottom Right */
+                px = final_rect.x + final_rect.w - abscenterx;
+                py = final_rect.y + final_rect.h - abscentery;
+                p4x = px * cangle - py * sangle + abscenterx;
+                p4y = px * sangle + py * cangle + abscentery;
+
+                tmp_rect.x = (int)MIN(MIN(p1x, p2x), MIN(p3x, p4x));
+                tmp_rect.y = (int)MIN(MIN(p1y, p2y), MIN(p3y, p4y));
+                tmp_rect.w = dstwidth;
+                tmp_rect.h = dstheight;
+
+                retval = SDL_BlitSurface(surface_rotated, NULL, surface, &tmp_rect);
+                SDL_FreeSurface(surface_scaled);
+                SDL_FreeSurface(surface_rotated);
+                return retval;
+            }
+        }
+        return retval;
+    }
+
+    return -1;
 }
 
 static int

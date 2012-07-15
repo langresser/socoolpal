@@ -30,6 +30,7 @@
 
 #include "SDL_x11video.h"
 #include "SDL_x11touch.h"
+#include "SDL_x11xinput2.h"
 #include "../../events/SDL_events_c.h"
 #include "../../events/SDL_mouse_c.h"
 #include "../../events/SDL_touch_c.h"
@@ -44,7 +45,6 @@
 #include <linux/input.h>
 #include <fcntl.h>
 #endif
-/*#define DEBUG_XEVENTS*/
 
 /* Check to see if this is a repeated key.
    (idea shamelessly lifted from GII -- thanks guys! :)
@@ -95,6 +95,19 @@ static SDL_bool X11_IsWheelEvent(Display * display,XEvent * event,int * ticks)
     return SDL_FALSE;
 }
 
+
+#if SDL_VIDEO_DRIVER_X11_SUPPORTS_GENERIC_EVENTS
+static void X11_HandleGenericEvent(SDL_VideoData *videodata,XEvent event)
+{
+    XGenericEventCookie *cookie = &event.xcookie;
+    XGetEventData(videodata->display, cookie);
+    X11_HandleXinput2Event(videodata,cookie);
+    XFreeEventData(videodata->display,cookie);
+}
+#endif /* SDL_VIDEO_DRIVER_X11_SUPPORTS_GENERIC_EVENTS */
+
+
+
 static void
 X11_DispatchEvent(_THIS)
 {
@@ -126,6 +139,13 @@ X11_DispatchEvent(_THIS)
         wmmsg.msg.x11.event = xevent;
         SDL_SendSysWMEvent(&wmmsg);
     }
+
+#if SDL_VIDEO_DRIVER_X11_SUPPORTS_GENERIC_EVENTS
+    if(xevent.type == GenericEvent) {
+        X11_HandleGenericEvent(videodata,xevent);
+        return;
+    }
+#endif
 
     data = NULL;
     if (videodata && videodata->windowlist) {
@@ -245,7 +265,11 @@ X11_DispatchEvent(_THIS)
             if (videodata->key_layout[keycode] == SDL_SCANCODE_UNKNOWN) {
                 int min_keycode, max_keycode;
                 XDisplayKeycodes(display, &min_keycode, &max_keycode);
+#if SDL_VIDEO_DRIVER_X11_HAS_XKBKEYCODETOKEYSYM
+                keysym = XkbKeycodeToKeysym(display, keycode, 0, 0);
+#else
                 keysym = XKeycodeToKeysym(display, keycode, 0);
+#endif
                 fprintf(stderr,
                         "The key you just pressed is not recognized by SDL. To help get this fixed, please report this to the SDL mailing list <sdl@libsdl.org> X11 KeyCode %d (%d), X11 KeySym 0x%lX (%s).\n",
                         keycode, keycode - min_keycode, keysym,
@@ -337,10 +361,14 @@ X11_DispatchEvent(_THIS)
         break;
 
     case MotionNotify:{
+            SDL_Mouse *mouse = SDL_GetMouse();  
+            if(!mouse->relative_mode) {
 #ifdef DEBUG_MOTION
-            printf("X11 motion: %d,%d\n", xevent.xmotion.x, xevent.xmotion.y);
+                printf("X11 motion: %d,%d\n", xevent.xmotion.x, xevent.xmotion.y);
 #endif
-            SDL_SendMouseMotion(data->window, 0, xevent.xmotion.x, xevent.xmotion.y);
+
+                SDL_SendMouseMotion(data->window, 0, xevent.xmotion.x, xevent.xmotion.y);
+            }
         }
         break;
 
@@ -539,15 +567,19 @@ X11_PumpEvents(_THIS)
             XResetScreenSaver(data->display);
             data->screensaver_activity = now;
         }
-    }
+    }   
 
     /* Keep processing pending events */
     while (X11_Pending(data->display)) {
         X11_DispatchEvent(_this);
     }
+    /*Dont process evtouch events if XInput2 multitouch is supported*/
+    if(X11_Xinput2IsMutitouchSupported()) {
+        return;
+    }
 
 #ifdef SDL_INPUT_LINUXEV
-    /* Process Touch events - TODO When X gets touch support, use that instead*/
+    /* Process Touch events*/
     int i = 0,rd;
     struct input_event ev[64];
     int size = sizeof (struct input_event);

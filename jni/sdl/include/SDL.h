@@ -86,11 +86,11 @@
 #include "SDL_power.h"
 #include "SDL_render.h"
 #include "SDL_rwops.h"
+#include "SDL_system.h"
 #include "SDL_thread.h"
 #include "SDL_timer.h"
 #include "SDL_version.h"
 #include "SDL_video.h"
-#include "SDL_compat.h"
 
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */

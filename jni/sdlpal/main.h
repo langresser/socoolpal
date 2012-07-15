@@ -52,6 +52,19 @@
 #include "midi.h"
 #endif
 
+
+VOID
+PAL_Init(
+     WORD             wScreenWidth,
+     WORD             wScreenHeight,
+     BOOL             fFullScreen
+);
+
+VOID
+PAL_SplashScreen(
+     VOID
+);
+
 VOID
 PAL_Shutdown(
    VOID

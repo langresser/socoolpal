@@ -59,6 +59,7 @@ SDL_X11_SYM(Status,XGetWindowAttributes,(Display* a,Window b,XWindowAttributes* 
 SDL_X11_SYM(int,XGetWindowProperty,(Display* a,Window b,Atom c,long d,long e,Bool f,Atom g,Atom* h,int* i,unsigned long* j,unsigned long *k,unsigned char **l),(a,b,c,d,e,f,g,h,i,j,k,l),return)
 SDL_X11_SYM(XWMHints*,XGetWMHints,(Display* a,Window b),(a,b),return)
 SDL_X11_SYM(Status,XGetWMNormalHints,(Display *a,Window b, XSizeHints *c, long *d),(a,b,c,d),return)
+SDL_X11_SYM(int,XIfEvent,(Display* a,XEvent *b,Bool (*c)(Display*,XEvent*,XPointer),XPointer d),(a,b,c,d),return)
 SDL_X11_SYM(int,XGrabKeyboard,(Display* a,Window b,Bool c,int d,int e,Time f),(a,b,c,d,e,f),return)
 SDL_X11_SYM(int,XGrabPointer,(Display* a,Window b,Bool c,unsigned int d,int e,int f,Window g,Cursor h,Time i),(a,b,c,d,e,f,g,h,i),return)
 SDL_X11_SYM(int,XGrabServer,(Display* a),(a),return)
@@ -103,7 +104,11 @@ SDL_X11_SYM(int,XUngrabServer,(Display* a),(a),return)
 SDL_X11_SYM(int,XUnmapWindow,(Display* a,Window b),(a,b),return)
 SDL_X11_SYM(int,XWarpPointer,(Display* a,Window b,Window c,int d,int e,unsigned int f,unsigned int g,int h,int i),(a,b,c,d,e,f,g,h,i),return)
 SDL_X11_SYM(VisualID,XVisualIDFromVisual,(Visual* a),(a),return)
+#if SDL_VIDEO_DRIVER_X11_CONST_PARAM_XEXTADDDISPLAY
+SDL_X11_SYM(XExtDisplayInfo*,XextAddDisplay,(XExtensionInfo* a,Display* b,_Xconst char* c,XExtensionHooks* d,int e,XPointer f),(a,b,c,d,e,f),return)
+#else
 SDL_X11_SYM(XExtDisplayInfo*,XextAddDisplay,(XExtensionInfo* a,Display* b,char* c,XExtensionHooks* d,int e,XPointer f),(a,b,c,d,e,f),return)
+#endif
 SDL_X11_SYM(XExtensionInfo*,XextCreateExtension,(void),(),return)
 SDL_X11_SYM(void,XextDestroyExtension,(XExtensionInfo* a),(a),)
 SDL_X11_SYM(XExtDisplayInfo*,XextFindDisplay,(XExtensionInfo* a,Display* b),(a,b),return)
@@ -122,6 +127,19 @@ SDL_X11_SYM(unsigned long,_XSetLastRequestRead,(Display* a,xGenericReply* b),(a,
 SDL_X11_SYM(SDL_X11_XSynchronizeRetType,XSynchronize,(Display* a,Bool b),(a,b),return)
 SDL_X11_SYM(SDL_X11_XESetWireToEventRetType,XESetWireToEvent,(Display* a,int b,SDL_X11_XESetWireToEventRetType c),(a,b,c),return)
 SDL_X11_SYM(SDL_X11_XESetEventToWireRetType,XESetEventToWire,(Display* a,int b,SDL_X11_XESetEventToWireRetType c),(a,b,c),return)
+
+#if SDL_VIDEO_DRIVER_X11_SUPPORTS_GENERIC_EVENTS
+SDL_X11_SYM(Bool,XGetEventData,(Display* a,XGenericEventCookie* b),(a,b),return)
+SDL_X11_SYM(void,XFreeEventData,(Display* a,XGenericEventCookie* b),(a,b),)    
+#endif
+
+#if SDL_VIDEO_DRIVER_X11_HAS_XKBKEYCODETOKEYSYM
+#if NeedWidePrototypes
+SDL_X11_SYM(KeySym,XkbKeycodeToKeysym,(Display* a,unsigned int b,int c,int d),(a,b,c,d),return)
+#else
+SDL_X11_SYM(KeySym,XkbKeycodeToKeysym,(Display* a,KeyCode b,int c,int d),(a,b,c,d),return)
+#endif
+#endif
 
 #if NeedWidePrototypes
 SDL_X11_SYM(KeySym,XKeycodeToKeysym,(Display* a,unsigned int b,int c),(a,b,c),return)
@@ -190,14 +208,14 @@ SDL_X11_SYM(Status,XineramaQueryVersion,(Display *a,int *b,int *c),(a,b,c),retur
 SDL_X11_SYM(XineramaScreenInfo*,XineramaQueryScreens,(Display *a, int *b),(a,b),return)
 #endif
 
-/* XInput support for multiple mice, tablets, etc. */
-#if SDL_VIDEO_DRIVER_X11_XINPUT
-SDL_X11_MODULE(XINPUT)
-SDL_X11_SYM(XDeviceInfo*,XListInputDevices,(Display *a,int *b),(a,b),return)
-SDL_X11_SYM(void,XFreeDeviceList,(XDeviceInfo *a),(a),)
-SDL_X11_SYM(int,XSelectExtensionEvent,(Display *a,Window b,XEventClass *c,int d),(a,b,c,d),return)
-SDL_X11_SYM(XDevice*,XOpenDevice,(Display *a,XID b),(a,b),return)
-SDL_X11_SYM(int,XCloseDevice,(Display* a,XDevice* b),(a,b),return)
+/* XInput2 support for multiple mice, tablets, etc. */
+#if SDL_VIDEO_DRIVER_X11_XINPUT2
+SDL_X11_MODULE(XINPUT2)
+SDL_X11_SYM(XIDeviceInfo*,XIQueryDevice,(Display *a,int b,int *c),(a,b,c),return)
+SDL_X11_SYM(void,XIFreeDeviceInfo,(XIDeviceInfo *a),(a),)
+SDL_X11_SYM(int,XISelectEvents,(Display *a,Window b,XIEventMask *c,int d),(a,b,c,d),return)
+SDL_X11_SYM(Status,XIQueryVersion,(Display *a,int *b,int *c),(a,b,c),return)
+SDL_X11_SYM(XIEventMask*,XIGetSelectedEvents,(Display *a,Window b,int *c),(a,b,c),return)
 #endif
 
 /* XRandR support */

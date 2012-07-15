@@ -107,6 +107,11 @@ static SDL_VideoDevice *_this = NULL;
         return retval; \
     }
 
+#define INVALIDATE_GLCONTEXT() \
+    _this->current_glwin = NULL; \
+    _this->current_glctx = NULL;
+
+
 /* Support for framebuffer emulation using an accelerated renderer */
 
 #define SDL_WINDOWTEXTUREDATA   "_SDL_WindowTextureData"
@@ -495,6 +500,8 @@ SDL_VideoInit(const char *driver_name)
     _this->gl_config.major_version = 2;
     _this->gl_config.minor_version = 0;
 #endif
+    _this->gl_config.flags = 0;
+    _this->gl_config.profile_mask = 0;
 
     /* Initialize the video subsystem */
     if (_this->VideoInit(_this) < 0) {
@@ -1138,6 +1145,14 @@ SDL_CreateWindow(const char *title, int x, int y, int w, int h, Uint32 flags)
         if (SDL_VideoInit(NULL) < 0) {
             return NULL;
         }
+    }
+
+    /* Some platforms can't create zero-sized windows */
+    if (w < 1) {
+        w = 1;
+    }
+    if (h < 1) {
+        h = 1;
     }
 
     /* Some platforms have OpenGL enabled by default */
@@ -1846,12 +1861,14 @@ SDL_GetWindowGrab(SDL_Window * window)
 void
 SDL_OnWindowShown(SDL_Window * window)
 {
+    INVALIDATE_GLCONTEXT();
     SDL_OnWindowRestored(window);
 }
 
 void
 SDL_OnWindowHidden(SDL_Window * window)
 {
+    INVALIDATE_GLCONTEXT();
     SDL_UpdateFullscreenMode(window, SDL_FALSE);
 }
 
@@ -2285,6 +2302,12 @@ SDL_GL_SetAttribute(SDL_GLattr attr, int value)
     case SDL_GL_CONTEXT_MINOR_VERSION:
         _this->gl_config.minor_version = value;
         break;
+    case SDL_GL_CONTEXT_FLAGS:
+        _this->gl_config.flags = value;
+        break;
+    case SDL_GL_CONTEXT_PROFILE_MASK:
+        _this->gl_config.profile_mask = value;
+        break;
     default:
         SDL_SetError("Unknown OpenGL attribute");
         retval = -1;
@@ -2429,6 +2452,16 @@ SDL_GL_GetAttribute(SDL_GLattr attr, int *value)
     case SDL_GL_CONTEXT_MINOR_VERSION:
         {
             *value = _this->gl_config.minor_version;
+            return 0;
+        }
+    case SDL_GL_CONTEXT_FLAGS:
+        {
+            *value = _this->gl_config.flags;
+            return 0;
+        }
+    case SDL_GL_CONTEXT_PROFILE_MASK:
+        {
+            *value = _this->gl_config.profile_mask;
             return 0;
         }
     default:

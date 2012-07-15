@@ -1,12 +1,11 @@
-//
-//  ViewController.h
-//  ShenxiandaoHelper
-//
-//  Created by 王 佳 on 12-2-24.
-//  Copyright (c) 2012年 __MyCompanyName__. All rights reserved.
-//
-
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
+#include "video/SDL_sysvideo.h"
+
+@interface SDL_uikitviewcontroller : UIViewController {
+}
+
+- (id)initWithSDLWindow:(SDL_Window *)_window;
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)orient;
+- (void)loadView;
 @end

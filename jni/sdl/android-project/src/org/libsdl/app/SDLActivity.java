@@ -26,6 +26,9 @@ import java.lang.*;
 */
 public class SDLActivity extends Activity {
 
+    // Keep track of the paused state
+    public static boolean mIsPaused;
+
     // Main components
     private static SDLActivity mSingleton;
     private static SDLSurface mSurface;
@@ -46,10 +49,10 @@ public class SDLActivity extends Activity {
 
     // Load the .so
     static {
-        System.loadLibrary("SDL");
-        //System.loadLibrary("SDL_image");
-        //System.loadLibrary("SDL_mixer");
-        //System.loadLibrary("SDL_ttf");
+        System.loadLibrary("SDL2");
+        //System.loadLibrary("SDL2_image");
+        //System.loadLibrary("SDL2_mixer");
+        //System.loadLibrary("SDL2_ttf");
         System.loadLibrary("main");
     }
 
@@ -61,6 +64,9 @@ public class SDLActivity extends Activity {
         // So we can call stuff from static callbacks
         mSingleton = this;
 
+        // Keep track of the paused state
+        mIsPaused = false;
+
         // Set up the surface
         mSurface = new SDLSurface(getApplication());
         setContentView(mSurface);
@@ -68,17 +74,17 @@ public class SDLActivity extends Activity {
     }
 
     // Events
-    protected void onPause() {
+    /*protected void onPause() {
         Log.v("SDL", "onPause()");
         super.onPause();
-        SDLActivity.nativePause();
+        // Don't call SDLActivity.nativePause(); here, it will be called by SDLSurface::surfaceDestroyed
     }
 
     protected void onResume() {
         Log.v("SDL", "onResume()");
         super.onResume();
-        SDLActivity.nativeResume();
-    }
+        // Don't call SDLActivity.nativeResume(); here, it will be called via SDLSurface::surfaceChanged->SDLActivity::startApp
+    }*/
 
     protected void onDestroy() {
         super.onDestroy();
@@ -160,7 +166,14 @@ public class SDLActivity extends Activity {
             mSDLThread.start();
         }
         else {
-            SDLActivity.nativeResume();
+            /*
+             * Some Android variants may send multiple surfaceChanged events, so we don't need to resume every time
+             * every time we get one of those events, only if it comes after surfaceDestroyed
+             */
+            if (mIsPaused) {
+                SDLActivity.nativeResume();
+                SDLActivity.mIsPaused = false;
+            }
         }
     }
 
@@ -249,12 +262,15 @@ public class SDLActivity extends Activity {
                 return false;
             }
 
-            if (!egl.eglMakeCurrent(SDLActivity.mEGLDisplay, surface, surface, SDLActivity.mEGLContext)) {
-                Log.e("SDL", "Old EGL Context doesnt work, trying with a new one");
-                createEGLContext();
+            if (egl.eglGetCurrentContext() != SDLActivity.mEGLContext) {
                 if (!egl.eglMakeCurrent(SDLActivity.mEGLDisplay, surface, surface, SDLActivity.mEGLContext)) {
-                    Log.e("SDL", "Failed making EGL Context current");
-                    return false;
+                    Log.e("SDL", "Old EGL Context doesnt work, trying with a new one");
+                    // TODO: Notify the user via a message that the old context could not be restored, and that textures need to be manually restored.
+                    createEGLContext();
+                    if (!egl.eglMakeCurrent(SDLActivity.mEGLDisplay, surface, surface, SDLActivity.mEGLContext)) {
+                        Log.e("SDL", "Failed making EGL Context current");
+                        return false;
+                    }
                 }
             }
             SDLActivity.mEGLSurface = surface;
@@ -426,14 +442,16 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     public void surfaceCreated(SurfaceHolder holder) {
         Log.v("SDL", "surfaceCreated()");
         holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
-        SDLActivity.createEGLSurface();
         enableSensor(Sensor.TYPE_ACCELEROMETER, true);
     }
 
     // Called when we lose the surface
     public void surfaceDestroyed(SurfaceHolder holder) {
         Log.v("SDL", "surfaceDestroyed()");
-        SDLActivity.nativePause();
+        if (!SDLActivity.mIsPaused) {
+            SDLActivity.mIsPaused = true;
+            SDLActivity.nativePause();
+        }
         enableSensor(Sensor.TYPE_ACCELEROMETER, false);
     }
 

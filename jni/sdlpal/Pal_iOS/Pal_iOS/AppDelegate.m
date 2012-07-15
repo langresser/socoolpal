@@ -1,65 +1,106 @@
-//
-//  AppDelegate.m
-//  ShenxiandaoHelper
-//
-//  Created by 王 佳 on 12-2-24.
-//  Copyright (c) 2012年 __MyCompanyName__. All rights reserved.
-//
+#if 0
+#include "SDL_config.h"
 
+#if SDL_VIDEO_DRIVER_UIKIT
+
+#import "video/SDL_sysvideo.h"
+#import "SDL_assert.h"
+#import "SDL_hints.h"
+#import "SDL_hints_c.h"
+
+#import "video/uikit/SDL_uikitopenglview.h"
+#import "events/SDL_events_c.h"
+#import "video/uikit/jumphack.h"
 #import "AppDelegate.h"
+#include "main.h"
 
-#import "ViewController.h"
-#include "SDL.h"
+#ifdef main
+#undef main
+#endif
 
-@implementation AppDelegate
+int main(int argc, char **argv)
+{
+    @autoreleasepool {        
+        /* Give over control to run loop, SDLUIKitDelegate will handle most things from here */
+        int ret = UIApplicationMain(argc, argv, NULL, @"SDLUIKitDelegate");
+        return ret;
+    }
+}
 
-@synthesize window;
-@synthesize viewController;
+static void SDL_IdleTimerDisabledChanged(const char *name, const char *oldValue, const char *newValue)
+{
+    SDL_assert(SDL_strcmp(name, SDL_HINT_IDLE_TIMER_DISABLED) == 0);
+    
+    BOOL disable = (*newValue != '0');
+    [UIApplication sharedApplication].idleTimerDisabled = disable;
+}
+
+@implementation SDLUIKitDelegate
+- (id)init
+{
+    self = [super init];
+    return self;
+}
+
+- (void)postFinishLaunch
+{
+    /* register a callback for the idletimer hint */
+    SDL_SetHint(SDL_HINT_IDLE_TIMER_DISABLED, "0");
+    SDL_RegisterHintChangedCb(SDL_HINT_IDLE_TIMER_DISABLED, &SDL_IdleTimerDisabledChanged);
+    
+    WORD          wScreenWidth = 0, wScreenHeight = 0;
+    
+    UTIL_OpenLog();
+    
+    wScreenWidth = 480;
+    wScreenHeight = 320;
+    PAL_Init(wScreenWidth, wScreenHeight, TRUE);
+    
+    //
+    // Show the trademark screen and splash screen
+    //
+    //   PAL_TrademarkScreen();
+#ifndef _DEBUG
+    PAL_SplashScreen();
+#endif
+    
+    PAL_GameMain();
+    /* exit, passing the return status from the user's application */
+    // exit(exit_status);
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    /* Set working directory to resource path */
+    [[NSFileManager defaultManager] changeCurrentDirectoryPath: [[NSBundle mainBundle] resourcePath]];
     
-    self.viewController = [[ViewController alloc] initWithNibName:nil bundle:nil];
-    [self.window addSubview:viewController.view];
-    [self.window makeKeyAndVisible];
+    [self performSelector:@selector(postFinishLaunch) withObject:nil afterDelay:0.0];
     
-    SDL_main(0, 0);
-
-//    [MobClick setLogEnabled:YES];
-//    [MobClick setDelegate:self reportPolicy:BATCH];
-//    [MobClick updateOnlineConfig];
-//    [MobClick checkUpdate];
     return YES;
-}
-
-- (void)applicationWillResignActive:(UIApplication *)application
-{
-    /*
-     Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-     Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-     */
-}
-
-- (void)applicationDidEnterBackground:(UIApplication *)application
-{
-    /*
-     Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
-     If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-     */
-}
-
-- (void)applicationWillEnterForeground:(UIApplication *)application
-{
-    /*
-     Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-     */
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     SDL_SendQuit();
     /* hack to prevent automatic termination.  See SDL_uikitevents.m for details */
+    longjmp(*(jump_env()), 1);
+}
+
+- (void) applicationWillResignActive:(UIApplication*)application
+{
+    //NSLog(@"%@", NSStringFromSelector(_cmd));
+    
+    // Send every window on every screen a MINIMIZED event.
+    SDL_VideoDevice *_this = SDL_GetVideoDevice();
+    if (!_this) {
+        return;
+    }
+    
+    SDL_Window *window;
+    for (window = _this->windows; window != nil; window = window->next) {
+        SDL_SendWindowEvent(window, SDL_WINDOWEVENT_FOCUS_LOST, 0, 0);
+        SDL_SendWindowEvent(window, SDL_WINDOWEVENT_MINIMIZED, 0, 0);
+    }
 }
 
 - (void) applicationDidBecomeActive:(UIApplication*)application
@@ -67,41 +108,19 @@
     //NSLog(@"%@", NSStringFromSelector(_cmd));
     
     // Send every window on every screen a RESTORED event.
-}
-
-// 自定义appUpdate的实现
-- (void)appUpdate:(NSDictionary *)appInfo {
-//    if ([[appInfo objectForKey:@"update"] isEqualToString:@"YES"]) {
-//        ignoreUpdateFlag = [[NSString alloc]initWithFormat:@"UpadateFlag%@", [appInfo objectForKey:@"version"]];
-//        self.appStoreURL = [appInfo objectForKey:@"path"];
-//        BOOL ignore = [[NSUserDefaults standardUserDefaults]boolForKey:ignoreUpdateFlag];
-//        
-//        if (!ignore) {
-//            self.backupInfo = appInfo;
-//            // 防止网络阻塞
-//            [self performSelectorOnMainThread:@selector(showUpdateView:) withObject:backupInfo waitUntilDone:YES];
-//        }
-//    }
-}
-
--(void)showUpdateView:(NSDictionary*) appInfo{
-//    UIAlertView* alert = [[UIAlertView alloc]initWithTitle:[NSString stringWithFormat:@"有可用的新版本%@", [appInfo objectForKey:@"version"]] message:[appInfo objectForKey:@"update_log"] delegate:self cancelButtonTitle:@"下次再说" otherButtonTitles:@"访问App Store", @"忽略此版本", nil];
-//    [alert show];
-//    self.backupInfo = nil;
-}
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-//    if (buttonIndex == 1) {
-//        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.appStoreURL]];
-//    } else if (buttonIndex == 2) {
-//        [[NSUserDefaults standardUserDefaults]setBool:YES forKey:ignoreUpdateFlag];
-//        [[NSUserDefaults standardUserDefaults]synchronize];
-//    } else if (buttonIndex == 0) {
-//    }
-//
-//    self.appStoreURL = nil;
-//    self.ignoreUpdateFlag = nil;
+    SDL_VideoDevice *_this = SDL_GetVideoDevice();
+    if (!_this) {
+        return;
+    }
+    
+    SDL_Window *window;
+    for (window = _this->windows; window != nil; window = window->next) {
+        SDL_SendWindowEvent(window, SDL_WINDOWEVENT_FOCUS_GAINED, 0, 0);
+        SDL_SendWindowEvent(window, SDL_WINDOWEVENT_RESTORED, 0, 0);
+    }
 }
 
 @end
+
+#endif /* SDL_VIDEO_DRIVER_UIKIT */
+#endif

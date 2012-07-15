@@ -26,10 +26,11 @@
 #import "SDL_assert.h"
 #import "SDL_hints.h"
 #import "../../SDL_hints_c.h"
+#import "SDL_system.h"
 
 #import "SDL_uikitappdelegate.h"
 #import "SDL_uikitopenglview.h"
-#import "SDL_events_c.h"
+#import "../../events/SDL_events_c.h"
 #import "jumphack.h"
 
 #ifdef main
@@ -56,7 +57,7 @@ int main(int argc, char **argv)
     forward_argv[i] = NULL;
 
     /* Give over control to run loop, SDLUIKitDelegate will handle most things from here */
-    UIApplicationMain(argc, argv, NULL, @"SDLUIKitDelegate");
+    UIApplicationMain(argc, argv, NULL, [SDLUIKitDelegate getAppDelegateClassName]);
 
     /* free the memory we used to hold copies of argc and argv */
     for (i = 0; i < forward_argc; i++) {
@@ -100,14 +101,14 @@ static void SDL_IdleTimerDisabledChanged(const char *name, const char *oldValue,
 
 - (void)postFinishLaunch
 {
-    /* register a callback for the idletimer hint */
-    SDL_SetHint(SDL_HINT_IDLE_TIMER_DISABLED, "0");
-    SDL_RegisterHintChangedCb(SDL_HINT_IDLE_TIMER_DISABLED, &SDL_IdleTimerDisabledChanged);
-
     /* run the user's application, passing argc and argv */
+    SDL_iPhoneSetEventPump(SDL_TRUE);
     exit_status = SDL_main(forward_argc, forward_argv);
+    SDL_iPhoneSetEventPump(SDL_FALSE);
 
     /* exit, passing the return status from the user's application */
+    // We don't actually exit to support applications that do setup in
+    // their main function and then allow the Cocoa event loop to run.
     // exit(exit_status);
 }
 
@@ -115,6 +116,10 @@ static void SDL_IdleTimerDisabledChanged(const char *name, const char *oldValue,
 {
     /* Set working directory to resource path */
     [[NSFileManager defaultManager] changeCurrentDirectoryPath: [[NSBundle mainBundle] resourcePath]];
+
+    /* register a callback for the idletimer hint */
+    SDL_SetHint(SDL_HINT_IDLE_TIMER_DISABLED, "0");
+    SDL_RegisterHintChangedCb(SDL_HINT_IDLE_TIMER_DISABLED, &SDL_IdleTimerDisabledChanged);
 
     [self performSelector:@selector(postFinishLaunch) withObject:nil afterDelay:0.0];
 

@@ -1,69 +1,41 @@
-//
-//  ViewController.m
-//  ShenxiandaoHelper
-//
-//  Created by 王 佳 on 12-2-24.
-//  Copyright (c) 2012年 __MyCompanyName__. All rights reserved.
-//
+#if 0
+#include "SDL_config.h"
+
+#if SDL_VIDEO_DRIVER_UIKIT
+
+#include "SDL_video.h"
+#include "SDL_assert.h"
+#include "SDL_hints.h"
+#include "video/SDL_sysvideo.h"
+#include "events/SDL_events_c.h"
 
 #import "ViewController.h"
+#include "video/uikit/SDL_uikitvideo.h"
 
-@implementation ViewController
-
-- (void)didReceiveMemoryWarning
+@implementation SDL_uikitviewcontroller
+- (id)initWithSDLWindow:(SDL_Window *)_window
 {
-    [super didReceiveMemoryWarning];
-    // Release any cached data, images, etc that aren't in use.
+    self = [self init];
+    if (self == nil) {
+        return nil;
+    }
+    return self;
 }
 
--(void)loadView
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)orient
 {
-    CGRect rect = [UIScreen mainScreen].bounds;
-    UIView* view = [[UIView alloc]initWithFrame:rect];
-    self.view = view;
-}
-
-#pragma mark - View lifecycle
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-	[super viewWillDisappear:animated];
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-	[super viewDidDisappear:animated];
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    if (interfaceOrientation == UIInterfaceOrientationPortrait || interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown) {
+    if (orient == UIInterfaceOrientationLandscapeLeft || orient == UIInterfaceOrientationLandscapeLeft) {
         return YES;
     } else {
         return NO;
     }
 }
+
+- (void)loadView
+{
+    // do nothing.
+}
+#endif /* SDL_VIDEO_DRIVER_UIKIT */
+
 @end
+#endif
