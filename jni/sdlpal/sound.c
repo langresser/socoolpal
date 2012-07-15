@@ -357,11 +357,7 @@ SOUND_OpenAudio(
    gSndPlayer.lock = SDL_CreateMutex();
 #endif
 
-   //
-   // Let the callback function run so that musics will be played.
-   //
-   SDL_PauseAudio(0);
-
+    SDL_PauseAudio(1);
    return 0;
 }
 

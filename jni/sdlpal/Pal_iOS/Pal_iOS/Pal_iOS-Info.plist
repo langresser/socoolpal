@@ -5,11 +5,19 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>${PRODUCT_NAME}</string>
+	<string>仙剑98柔情版</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
+	<key>CFBundleIconFile</key>
+	<string>icon_57.png</string>
+	<key>CFBundleIconFiles</key>
+	<array>
+		<string>icon_57.png</string>
+		<string>icon_72.png</string>
+		<string>icon_114.png</string>
+	</array>
 	<key>CFBundleIdentifier</key>
-	<string>lancer.${PRODUCT_NAME:rfc1034identifier}</string>
+	<string>com.bananastudio.pal98</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -24,10 +32,14 @@
 	<string>1.0</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>UIApplicationExitsOnSuspend</key>
+	<true/>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
 	</array>
+	<key>UIStatusBarHidden</key>
+	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
@@ -38,9 +50,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>UIStatusBarHidden</key>
-	<true/>
-	<key>UIApplicationExitsOnSuspend</key>
-	<true/>
 </dict>
 </plist>

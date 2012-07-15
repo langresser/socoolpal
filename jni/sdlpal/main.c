@@ -21,6 +21,8 @@
 #include "main.h"
 #include "getopt.h"
 
+#include "iOSUtil.h"
+
 #ifdef PSP
 #include "main_PSP.h"
 #endif
@@ -36,6 +38,7 @@
 #define NUM_RIX_TITLE               0x5
 
 int g_game_state = GAME_STATE_PREINIT;
+BOOL g_hasInGame = FALSE;
 
 VOID
 PAL_Init(
@@ -145,7 +148,10 @@ PAL_Shutdown(
 
 --*/
 {
-	PAL_SaveGame("9.rpg", 0);
+    if (g_hasInGame) {
+        PAL_SaveGame("9.rpg", 0);
+    }
+	
    SOUND_CloseAudio();
    PAL_FreeFont();
    PAL_FreeResources();
@@ -454,7 +460,7 @@ main(
 
 --*/
 {
-   WORD          wScreenWidth = 0, wScreenHeight = 0;
+   int          wScreenWidth = 0, wScreenHeight = 0;
    int           c;
    BOOL          fFullScreen = FALSE;
 
@@ -586,6 +592,7 @@ main(
 #endif
    }
 
+    getScreenSize(&wScreenWidth, &wScreenHeight);
    //
    // Initialize everything
    //
@@ -593,6 +600,8 @@ main(
    sdlpal_psp_init();
 #endif
    PAL_Init(wScreenWidth, wScreenHeight, fFullScreen);
+    
+    initButton();
 
    //
    // Show the trademark screen and splash screen

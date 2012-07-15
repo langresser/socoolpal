@@ -90,7 +90,6 @@ RIX_FillBuffer(
       return;
    }
   
-   g_isPlayingMusic = true;
    //
    // fading in or fading out
    //
@@ -359,13 +358,20 @@ RIX_Play(
    //
    // Check for NULL pointer.
    //
-   if (gpRixPlayer == NULL)
-   {
-      return;
-   }
+    if (gpRixPlayer == NULL) {
+        return;
+    }
 
    DWORD t = SDL_GetTicks();
    gpRixPlayer->fNextLoop = fLoop;
+    
+    if (!g_isPlayingMusic) {
+        //
+        // Let the callback function run so that musics will be played.
+        //
+        SDL_PauseAudio(0);
+        g_isPlayingMusic = TRUE;
+    }
 
    if (iNumRIX == gpRixPlayer->iCurrentMusic && !g_fNoMusic)
    {

@@ -19,6 +19,7 @@
 //
 
 #include "main.h"
+#include "iOSUtil.h"
 
 static VOID
 PAL_GameStart(
@@ -73,16 +74,20 @@ PAL_GameMain(
 --*/
 {
    DWORD       dwTime;
+    extern BOOL g_hasInGame;
 
    //
    // Show the opening menu.
    //
    gpGlobals->bCurrentSaveSlot = (BYTE)PAL_OpeningMenu();
 
+    closeAds();
+
    //
    // Initialize game data and set the flags to load the game resources.
    //
    PAL_InitGameData(gpGlobals->bCurrentSaveSlot);
+    g_hasInGame = TRUE;
 
    //
    // Run the main game loop.
