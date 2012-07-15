@@ -572,8 +572,8 @@ main(
        wScreenHeight = 320;	
 #else
 #if SCREEN_TYPE == SCREEN_TYPE_SMALL
-	  wScreenWidth = 480;
-      wScreenHeight = 320;
+	  wScreenWidth = 640;
+      wScreenHeight = 400;
 #elif SCREEN_TYPE == SCREEN_TYPE_MIDDLE
 	  wScreenWidth = 480;
       wScreenHeight = 320;
