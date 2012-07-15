@@ -32,6 +32,8 @@ extern "C" INT  g_iVolume;
 
 #include "sound.h"
 
+static bool g_isPlayingMusic = false;
+
 typedef struct tagRIXPLAYER
 {
    tagRIXPLAYER() : iCurrentMusic(-1) {}
@@ -76,9 +78,7 @@ RIX_FillBuffer(
    INT       i, l, oldlen, volume = SDL_MIX_MAXVOLUME / 2;
    UINT      t = SDL_GetTicks();
 
-#ifdef __SYMBIAN32__
-   volume = g_iVolume / 2;
-#endif
+   volume = g_iVolume;
 
    oldlen = len;
 
@@ -89,7 +89,8 @@ RIX_FillBuffer(
       //
       return;
    }
-
+  
+   g_isPlayingMusic = true;
    //
    // fading in or fading out
    //

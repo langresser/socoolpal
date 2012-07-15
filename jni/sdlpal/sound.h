@@ -35,7 +35,7 @@
 extern "C"
 {
 #endif
-
+extern INT          g_iVolume;
 INT
 SOUND_OpenAudio(
    VOID

@@ -649,6 +649,12 @@ PAL_SystemMenu(
          }
       }
 #endif
+	  if (g_fNoMusic) {
+		  g_iVolume = 0;
+	  } else {
+		 g_iVolume = SDL_MIX_MAXVOLUME * 0.3;
+	  }
+	  
       break;
 
    case 4:

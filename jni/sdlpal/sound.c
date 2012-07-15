@@ -43,7 +43,7 @@ BOOL         g_fUseMidi = FALSE;
 
 static BOOL  g_fUseWav = FALSE;
 
-INT          g_iVolume  = SDL_MIX_MAXVOLUME * 0.1;
+INT          g_iVolume  = SDL_MIX_MAXVOLUME * 0.3;
 
 typedef struct tagSNDPLAYER
 {
@@ -204,8 +204,8 @@ SOUND_FillAudio(
    //
    // Play music
    //
-   if (!g_fNoMusic)
-   {
+//    if (!g_fNoMusic)
+//    {
 #ifdef PAL_HAS_MP3
       if (gSndPlayer.pMP3 != NULL)
       {
@@ -225,7 +225,7 @@ SOUND_FillAudio(
       }
 #endif
       RIX_FillBuffer(stream, len);
-   }
+//   }
 
    //
    // No current playing sound
