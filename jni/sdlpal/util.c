@@ -27,14 +27,6 @@
 #include "midi.h"
 #endif
 
-char g_application_dir[256] = {0};
-char g_resource_dir[256] = {0};
-
-void init_game_dir(const char* app_dir, const char* res_dir)
-{
-	strncpy(g_application_dir, app_dir, sizeof(g_application_dir) - 1);
-	strncpy(g_resource_dir, res_dir, sizeof(res_dir) - 1);
-}
 
 void
 trim(
@@ -442,22 +434,33 @@ char*   my_strlwr(   char*   str   )
     return   orig;
 }
 
+#ifdef __IPHONEOS__
+char g_application_dir[256] = {0};
+char g_resource_dir[256] = "../Documents/";
+#else
+char g_application_dir[256] = {0};
+char g_resource_dir[256] = {0};
+#endif
+
 FILE* open_file(const char* file_name, const char* read_mode)
 {
+    char szFileName[256] = {0};
+    strncpy(szFileName, file_name, sizeof(szFileName) - 1);
+
 	char szTemp[256] = {0};
 	FILE* fp = NULL;
+    my_strlwr(szFileName);
 
 	// 先查找资源目录，资源目录要求是可以读写的。如果有相同文件，优先读取资源目录下的。（更新文件）
-	snprintf(szTemp, sizeof(szTemp) - 1, "%s%s", g_resource_dir, file_name);
-	my_strlwr(szTemp);
+	snprintf(szTemp, sizeof(szTemp) - 1, "%s%s", g_resource_dir, szFileName);
+	
 	fp = fopen(szTemp, read_mode);
 
 	if (fp) {
 		return fp;
 	}
 
-	snprintf(szTemp, sizeof(szTemp) - 1, "%s%s", g_application_dir, file_name);
-	my_strlwr(szTemp);
+	snprintf(szTemp, sizeof(szTemp) - 1, "%s%s", g_application_dir, szFileName);
 	fp = fopen(szTemp, read_mode);
 	if (fp) {
 		return fp;

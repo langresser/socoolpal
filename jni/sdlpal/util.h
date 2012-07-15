@@ -30,11 +30,6 @@ extern "C"
 {
 #endif
 
-extern char g_resource_dir[256];
-extern char g_application_dir[256];
-
-void init_game_dir(const char* app_dir, const char* res_dir);
-
 void
 trim(
    char *str
