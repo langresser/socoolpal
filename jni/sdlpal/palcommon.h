@@ -43,8 +43,29 @@ typedef enum tagPALDIRECTION
    kDirWest,
    kDirNorth,
    kDirEast,
-   kDirUnknown
+   kDirUnknown,
 } PALDIRECTION, *LPPALDIRECTION;
+
+typedef enum MOVE_DIRECTION
+{
+	eMoveDirUnknown,
+	eMoveDirNorth,
+	eMoveDirRight,
+	eMoveDirEast,
+	eMoveDirDown,
+	eMoveDirSouth,
+	eMoveDirLeft,
+	eMoveDirWest,
+	eMoveDirUp,
+	eMoveDirSW,
+	eMoveDirWS,
+	eMoveDirWN,
+	eMoveDirNW,
+	eMoveDirNE,
+	eMoveDirEN,
+	eMoveDirES,
+	eMoveDirSE,
+};
 
 INT
 PAL_RLEBlitToSurface(

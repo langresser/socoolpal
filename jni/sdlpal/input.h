@@ -38,6 +38,12 @@ extern "C"
 #define GAME_MODE_BATTLE 2
 #define GAME_MODE_MENU 3
 
+typedef enum CONTROL_TYPE
+{
+	CONTROL_TYPE_NONE,
+	CONTROL_TYPE_MOUSE_WALK,
+};
+
 typedef struct tagPALINPUTSTATE
 {
    PALDIRECTION           dir;
@@ -47,6 +53,8 @@ typedef struct tagPALINPUTSTATE
    DWORD					touchX;
    DWORD					touchY;
    int					gameMode;
+   int nMoveDir;
+   int controlType;
 } PALINPUTSTATE;
 
 extern PALINPUTSTATE g_InputState;

@@ -320,6 +320,79 @@ PAL_KeyboardEventFilter(
    }
 }
 
+int GetMouseMoveDir(int nMouseX, int nMouseY)
+{
+	// why use initial ? Maybe fix later 
+	int nScrW = 320;
+	int nScrH = 200;
+
+	// 目前来看人物似乎总是在屏幕中心，即使走到地图边上;
+	int nHeroX = nScrW / 2;
+	int nHeroY = nScrH / 2;
+
+	int nDeltaX = nMouseX - nHeroX;
+	int nDeltaY = nMouseY - nHeroY;
+
+	int nAbsDeltaX = abs(nDeltaX);
+	int nAbsDeltaY = abs(nDeltaY);
+
+	int nDir = eMoveDirUnknown;
+
+	if (nDeltaX > 0) {
+		if (nDeltaY > 0) {
+			// 第一象限,N;
+			if (nAbsDeltaX > nAbsDeltaY) {
+				nDir = eMoveDirNE;
+			} else if (nAbsDeltaX == nAbsDeltaY) {
+				nDir = eMoveDirNorth;
+			} else {
+				nDir = eMoveDirNW;
+			}
+		} else if (nDeltaY == 0) {
+			nDir = eMoveDirRight;
+		} else {
+			// 第四象限,E;
+			if (nAbsDeltaX > nAbsDeltaY) {
+				nDir = eMoveDirEN;
+			} else if (nAbsDeltaX == nAbsDeltaY) {
+				nDir = eMoveDirEast;
+			} else {
+				nDir = eMoveDirES;
+			}
+		}
+	} else if (nDeltaX < 0) {
+		if (nDeltaY > 0) {
+			// 第二象限,W;
+			if (nAbsDeltaX > nAbsDeltaY) {
+				nDir = eMoveDirWS;
+			} else if (nAbsDeltaX == nAbsDeltaY) {
+				nDir = eMoveDirWest;
+			} else {
+				nDir = eMoveDirWN;
+			}
+		} else if (nDeltaY == 0) {
+			nDir = eMoveDirLeft;
+		} else {
+			// 第四象限,S;
+			if (nAbsDeltaX > nAbsDeltaY) {
+				nDir = eMoveDirSW;
+			} else if (nAbsDeltaX == nAbsDeltaY) {
+				nDir = eMoveDirSouth;
+			} else {
+				nDir = eMoveDirSE;
+			}
+		}
+	} else {
+		if (nDeltaY > 0) {
+			nDir = eMoveDirUp;
+		} else if (nDeltaY < 0) {
+			nDir = eMoveDirDown;
+		}
+	}
+
+	return nDir;
+}
+
 static VOID
 PAL_MouseEventFilter(
    const SDL_Event *lpEvent
@@ -357,7 +430,8 @@ PAL_MouseEventFilter(
    static INT   lastReleasey = 0;
 
    if (lpEvent->type!= SDL_MOUSEBUTTONDOWN && lpEvent->type != SDL_MOUSEBUTTONUP
-	   && lpEvent->type != SDL_FINGERDOWN && lpEvent->type != SDL_FINGERUP)
+	   && lpEvent->type != SDL_FINGERDOWN && lpEvent->type != SDL_FINGERUP
+	   && lpEvent->type != SDL_MOUSEMOTION)
       return;
    screenWidth = g_wInitialWidth;
    screenHeight = g_wInitialHeight;
@@ -365,6 +439,7 @@ PAL_MouseEventFilter(
    gridHeight = screenHeight / 3;
    mx = lpEvent->button.x;
    my = lpEvent->button.y;
+
    thumbx = ceil(mx / gridWidth);
    thumby = floor(my / gridHeight);
    gridIndex = thumbx + thumby * 3 - 1;
@@ -375,6 +450,9 @@ PAL_MouseEventFilter(
 3   4   5
 6   7   8
 */
+
+   g_InputState.controlType = CONTROL_TYPE_NONE;
+
    switch (lpEvent->type)
    {
    case SDL_MOUSEBUTTONDOWN:
@@ -385,22 +463,79 @@ PAL_MouseEventFilter(
 	  g_InputState.touchEventType = TOUCH_DOWN;
 	  g_InputState.touchX = lpEvent->button.x * 320.0 / g_wInitialWidth;
 	  g_InputState.touchY = lpEvent->button.y * 200.0 / g_wInitialHeight;
-      switch (gridIndex)
-      {
-      case 2:
-         g_InputState.dir = kDirNorth;
-         break;
-      case 6:
-         g_InputState.dir = kDirSouth;
-         break;
-      case 0:
-         g_InputState.dir = kDirWest;
-         break;
-      case 8:
-         g_InputState.dir = kDirEast;
-         break;
-      }
+      
+	  if (4 != gridIndex) {
+		  g_InputState.controlType = CONTROL_TYPE_MOUSE_WALK;
+		  g_InputState.nMoveDir = GetMouseMoveDir(g_InputState.touchX, g_InputState.touchY);
+	  }
+
+	  
+	  switch (gridIndex)
+	  {
+	  case 2:
+		  g_InputState.dir = kDirNorth;
+		  break;
+	  case 6:
+		  g_InputState.dir = kDirSouth;
+		  break;
+	  case 0:
+		  g_InputState.dir = kDirWest;
+		  break;
+	  case 8:
+		  g_InputState.dir = kDirEast;
+		  break;
+	  case 1:
+		  g_InputState.dir = kDirNorth;
+		  break;
+	  case 7:
+		  g_InputState.dir = kDirSouth; 
+		  break;
+	  case 3:
+		  g_InputState.dir = kDirWest;
+		  break;
+	  case 5:
+		  g_InputState.dir = kDirEast;
+		  break;
+	  }
       break;
+   case SDL_MOUSEMOTION:
+	   if (lpEvent->motion.state == 0) {
+		   break;
+	   }
+
+	  if (4 != gridIndex) {
+		  g_InputState.controlType = CONTROL_TYPE_MOUSE_WALK;
+		  g_InputState.nMoveDir = GetMouseMoveDir(lpEvent->button.x * 320.0 / g_wInitialWidth, lpEvent->button.y * 200.0 / g_wInitialHeight);
+	  }
+
+	  switch (gridIndex)
+	  {
+	  case 2:
+		  g_InputState.dir = kDirNorth;
+		  break;
+	  case 6:
+		  g_InputState.dir = kDirSouth;
+		  break;
+	  case 0:
+		  g_InputState.dir = kDirWest;
+		  break;
+	  case 8:
+		  g_InputState.dir = kDirEast;
+		  break;
+	  case 1:
+		  g_InputState.dir = kDirNorth;
+		  break;
+	  case 7:
+		  g_InputState.dir = kDirSouth; 
+		  break;
+	  case 3:
+		  g_InputState.dir = kDirWest;
+		  break;
+	  case 5:
+		  g_InputState.dir = kDirEast;
+		  break;
+	  }
+	   break;
    case SDL_MOUSEBUTTONUP:
       lastReleaseButtonTime = SDL_GetTicks();
       lastReleasex = lpEvent->button.x;
@@ -426,16 +561,8 @@ PAL_MouseEventFilter(
 		  }
 	  }
 
-      switch (gridIndex)
-      {
-	// 在方向区域，直接停止移动
-	  case 0:
-	  case 2:
-	  case 6:
-	  case 8:
-		  g_InputState.dir = kDirUnknown;
-		  break;
-      }
+	  g_InputState.dir = kDirUnknown;
+	  g_InputState.nMoveDir = eMoveDirUnknown;
       break;
    }
 #endif
@@ -658,10 +785,6 @@ PAL_EventFilter(
    switch (lpEvent->type)
    {
    case SDL_VIDEORESIZE:
-      //
-      // resized the window
-      //
-      VIDEO_Resize(lpEvent->resize.w, lpEvent->resize.h);
       break;
 
    case SDL_QUIT:
@@ -672,9 +795,6 @@ PAL_EventFilter(
       exit(0);
 	  break;
    case SDL_WINDOWEVENT:
-	   return 0;
-	   break;
-   case SDL_MOUSEMOTION:
 	   return 0;
 	   break;
    }
