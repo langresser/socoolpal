@@ -80,14 +80,21 @@ PAL_OpeningMenu(
 --*/
 {
    WORD          wItemSelected;
-   WORD          wDefaultItem     = 0;
+   WORD          wDefaultItem     = 1;
 
-   MENUITEM      rgMainMenuItem[2] = {
+   
+   MENUITEM      rgMainMenuItem[3] = {
       // value   label                     enabled   position
+	  {  2,      LABEL_CONTINUE,   FALSE,     PAL_XY(125, 68) },
       {  0,      MAINMENU_LABEL_NEWGAME,   TRUE,     PAL_XY(125, 95)  },
-      {  1,      MAINMENU_LABEL_LOADGAME,  TRUE,     PAL_XY(125, 112) }
+      {  1,      MAINMENU_LABEL_LOADGAME,  TRUE,     PAL_XY(125, 122) }
    };
 
+   FILE* fp = open_file("9.rpg", "rb");
+   if (fp != NULL) {
+	   rgMainMenuItem[0].fEnabled = TRUE;
+	   wDefaultItem = 0;
+   }
    //
    // Play the background music
    //
@@ -107,7 +114,7 @@ PAL_OpeningMenu(
       //
       // Activate the menu
       //
-      wItemSelected = PAL_ReadMenu(NULL, rgMainMenuItem, 2, wDefaultItem, MENUITEM_COLOR, FALSE);
+      wItemSelected = PAL_ReadMenu(NULL, rgMainMenuItem, 3, wDefaultItem, MENUITEM_COLOR, FALSE);
 
       if (wItemSelected == 0 || wItemSelected == MENUITEM_VALUE_CANCELLED)
       {
@@ -116,6 +123,11 @@ PAL_OpeningMenu(
          //
          wItemSelected = 0;
          break;
+      } else if (wItemSelected == 2) {
+		  if (fp != NULL) {
+			  wItemSelected = 9;
+			  break;
+		  }
       }
       else
       {

@@ -145,6 +145,7 @@ PAL_Shutdown(
 
 --*/
 {
+	PAL_SaveGame("9.rpg", 0);
    SOUND_CloseAudio();
    PAL_FreeFont();
    PAL_FreeResources();
