@@ -2989,11 +2989,14 @@ PAL_RunTriggerScript(
    LPEVENTOBJECT     pEvtObj = NULL;
    int               i;
 
+    
+    extern BOOL      g_hasInGame;
    extern BOOL       g_fUpdatedInBattle; // HACKHACK
 
    wNextScriptEntry = wScriptEntry;
    fEnded = FALSE;
    g_fUpdatedInBattle = FALSE;
+    g_hasInGame = FALSE;
 
    if (wEventObjectID == 0xFFFF)
    {
@@ -3280,6 +3283,7 @@ PAL_RunTriggerScript(
 
    PAL_EndDialog();
    g_iCurEquipPart = -1;
+    g_hasInGame = TRUE;
 
    return wNextScriptEntry;
 }
