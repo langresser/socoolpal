@@ -318,6 +318,7 @@ PAL_BattleMain(
 {
    int         i;
    DWORD       dwTime;
+    extern BOOL g_hasInGame;
    
    VIDEO_BackupScreen();
 
@@ -379,6 +380,7 @@ PAL_BattleMain(
 
    PAL_ClearKeyState();
 
+    g_hasInGame = FALSE;
    //
    // Run the main battle loop.
    //
@@ -1401,6 +1403,7 @@ PAL_StartBattle(
    //
    // Run the main battle routine.
    //
+   g_hasInGame = FALSE;
    i = PAL_BattleMain();
 
 #ifdef PAL_ALLOW_KEYREPEAT
@@ -1459,6 +1462,5 @@ PAL_StartBattle(
    gpGlobals->sWaveProgression = sPrevWaveProgression;
    gpGlobals->wScreenWave = wPrevWaveLevel;
 
-    g_hasInGame = TRUE;
    return i;
 }

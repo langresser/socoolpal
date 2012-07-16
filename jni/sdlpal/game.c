@@ -87,7 +87,6 @@ PAL_GameMain(
    // Initialize game data and set the flags to load the game resources.
    //
    PAL_InitGameData(gpGlobals->bCurrentSaveSlot);
-    g_hasInGame = TRUE;
 
    //
    // Run the main game loop.
@@ -114,6 +113,7 @@ PAL_GameMain(
       // Clear the input state of previous frame.
       //
       PAL_ClearKeyState();
+       g_hasInGame = TRUE;
 
       //
       // Wait for the time of one frame. Accept input here.

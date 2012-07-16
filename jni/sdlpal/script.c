@@ -3283,7 +3283,6 @@ PAL_RunTriggerScript(
 
    PAL_EndDialog();
    g_iCurEquipPart = -1;
-    g_hasInGame = TRUE;
 
    return wNextScriptEntry;
 }
