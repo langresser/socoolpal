@@ -1146,6 +1146,8 @@ PAL_StartBattle(
    int            i;
    WORD           w, wPrevWaveLevel;
    SHORT          sPrevWaveProgression;
+    extern BOOL g_hasInGame;
+    g_hasInGame = FALSE;
 
    //
    // Set the screen waving effects
@@ -1457,5 +1459,6 @@ PAL_StartBattle(
    gpGlobals->sWaveProgression = sPrevWaveProgression;
    gpGlobals->wScreenWave = wPrevWaveLevel;
 
+    g_hasInGame = TRUE;
    return i;
 }
