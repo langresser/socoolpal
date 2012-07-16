@@ -24,3 +24,5 @@ jni/sdl/.hg/cache/branchheads
 jni/sdl/Xcode-iOS/Test/TestiPhoneOS.xcodeproj/project.xcworkspace/xcuserdata/wangjiatc.xcuserdatad/UserInterfaceState.xcuserstate
 jni/sdl/Xcode-iOS/Test/TestiPhoneOS.xcodeproj/xcuserdata/wangjiatc.xcuserdatad/xcdebugger/Breakpoints.xcbkptlist
 jni/sdl/Xcode-iOS/Test/.DS_Store
+jni/sdlpal/Pal_iOS/Pal_iOS.xcodeproj/project.xcworkspace/xcuserdata/wangjiatc.xcuserdatad/WorkspaceSettings.xcsettings
+jni/sdlpal/Pal_iOS/Pal_iOS.xcodeproj/xcuserdata/wangjiatc.xcuserdatad/xcschemes/Pal_iOS.xcscheme

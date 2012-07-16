@@ -466,6 +466,10 @@ PAL_MouseEventFilter(
 		  g_InputState.controlType = CONTROL_TYPE_MOUSE_WALK;
 		  g_InputState.nMoveDir = GetMouseMoveDir(g_InputState.touchX, g_InputState.touchY);
 	  }
+           
+#if 0
+           printf("mouse down: %d  %d\n", g_InputState.touchX, g_InputState.touchY);
+#endif
 
 	  
 	  switch (gridIndex)
@@ -547,6 +551,11 @@ PAL_MouseEventFilter(
 	  } else {
 		g_InputState.touchEventType = TOUCH_NONE;
 	  }
+           
+           
+#if 0
+           printf("mouse up: %d  %d\n", g_InputState.touchX, g_InputState.touchY);
+#endif
 
 	  if (gridIndex == 4) {
 		  if (abs(lastReleasex - lastPressx) <= 25
@@ -825,8 +834,20 @@ PAL_ClearKeyState(
 
 --*/
 {
+#if 0
+    if (g_InputState.touchEventType != TOUCH_NONE) {
+        printf("clear touch: %d\n", g_InputState.touchEventType);
+        
+        if (g_InputState.touchEventType == TOUCH_UP) {
+            int x = 0;
+            int y = 0;
+            y = x + 1;
+        }
+    }
+#endif
+    
    g_InputState.dwKeyPress = 0;
-   g_InputState.touchEventType = TOUCH_NONE;
+    g_InputState.touchEventType = TOUCH_NONE;   
 }
 
 VOID

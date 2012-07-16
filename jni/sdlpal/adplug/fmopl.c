@@ -1137,22 +1137,22 @@ FM_OPL *OPLCreate(int type, int clock, int rate) {
    OPL_initalize(OPL);
    /* reset chip */
    OPLResetChip(OPL);
-#ifdef OPL_OUTPUT_LOG
-   if (!opl_dbg_fp) {
-      opl_dbg_fp = fopen("opllog.opl","wb");
-      opl_dbg_maxchip = 0;
-   }
-   if (opl_dbg_fp) {
-      opl_dbg_opl[opl_dbg_maxchip] = OPL;
-      fprintf(opl_dbg_fp,"%c%c%c%c%c%c",0x00+opl_dbg_maxchip,
-              type,
-              clock&0xff,
-              (clock/0x100)&0xff,
-              (clock/0x10000)&0xff,
-              (clock/0x1000000)&0xff);
-      opl_dbg_maxchip++;
-   }
-#endif
+//#ifdef OPL_OUTPUT_LOG
+//   if (!opl_dbg_fp) {
+//      opl_dbg_fp = fopen("opllog.opl","wb");
+//      opl_dbg_maxchip = 0;
+//   }
+//   if (opl_dbg_fp) {
+//      opl_dbg_opl[opl_dbg_maxchip] = OPL;
+//      fprintf(opl_dbg_fp,"%c%c%c%c%c%c",0x00+opl_dbg_maxchip,
+//              type,
+//              clock&0xff,
+//              (clock/0x100)&0xff,
+//              (clock/0x10000)&0xff,
+//              (clock/0x1000000)&0xff);
+//      opl_dbg_maxchip++;
+//   }
+//#endif
    return OPL;
 }
 

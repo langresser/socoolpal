@@ -55,6 +55,12 @@ PAL_ItemSelectMenuUpdate(
    SDL_Rect     mainBox;
    SDL_Rect   upPage, downPage;
    int currentPage, pageAmount;
+    
+#ifdef DEBUG
+    if (g_InputState.touchEventType == TOUCH_UP) {
+        printf("in item:\n");
+    }
+#endif
 
    //
    // Process input
@@ -323,11 +329,17 @@ PAL_ItemSelectMenuUpdate(
 			   ++i;
 		   }
 	   }
+#ifdef DEBUG
+        printf("item touch down: %d  %d\n", g_InputState.touchX, g_InputState.touchY);
+#endif
    } else if (g_InputState.touchEventType == TOUCH_UP) {
 	   i = g_iCurMenuItem % PAGE_ITEM_AMOUNT;
 
 	   j = i / 3;
        k = i % 3;
+#ifdef DEBUG
+       printf("item touch up: %d  %d\n", g_InputState.touchX, g_InputState.touchY);
+#endif
 	   if (PAL_IsTouch(15 + k * 100, 12 + j * 18, 100, 18)) {
 		   if (g_currentSelectItem != g_iCurMenuItem) {
 			   g_currentSelectItem = g_iCurMenuItem;
@@ -492,15 +504,15 @@ PAL_ItemSelectMenu(
       }
 
       w = PAL_ItemSelectMenuUpdate();
-      VIDEO_UpdateScreen(NULL);
+       PAL_ClearKeyState();
 
-      PAL_ClearKeyState();
+      VIDEO_UpdateScreen(NULL);
 
       PAL_ProcessEvent();
       while (SDL_GetTicks() < dwTime)
       {
          PAL_ProcessEvent();
-         if (g_InputState.dwKeyPress != 0)
+         if (g_InputState.touchEventType != TOUCH_NONE || g_InputState.dwKeyPress != 0)
          {
             break;
          }

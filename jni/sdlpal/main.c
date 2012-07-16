@@ -22,6 +22,7 @@
 #include "getopt.h"
 
 #include "iOSUtil.h"
+#include "CQCrashReport.h"
 
 #ifdef PSP
 #include "main_PSP.h"
@@ -460,6 +461,8 @@ main(
 
 --*/
 {
+    InitCrashReport();
+
    int          wScreenWidth = 0, wScreenHeight = 0;
    int           c;
    BOOL          fFullScreen = FALSE;

@@ -11,15 +11,15 @@
 #include "main.h"
 
 #import "video/uikit/SDL_uikitwindow.h"
-#import "AdViewDelegateProtocol.h"
-#import "AdViewView.h"
+#import "AdMoGoView.h"
+//#import "MobClick.h"
 
-@interface MyDelegate : NSObject<AdViewDelegate>
+@interface MyDelegate : NSObject<AdMoGoDelegate>
 {
     UIButton* helpBtn;
     UITextView* textView;
     
-    AdViewView *adView;
+    AdMoGoView *adView;
 }
 @property(retain, nonatomic) UIButton* helpBtn;
 
@@ -61,6 +61,11 @@ MyDelegate* g_delegate = nil;
     }
 }
 
+- (NSString *)adMoGoApplicationKey {
+	return @"3f0b839ef319410e993198c0fe4a772d"; //测试用ID
+    //此字符串为您的App在芒果上的唯一标识
+}
+
 - (UIViewController *)viewControllerForPresentingModalView {
     SDL_Window* window = SDL_GetWindowFromID(g_windowId);
     if (!window) {
@@ -71,16 +76,11 @@ MyDelegate* g_delegate = nil;
     return windowData->viewcontroller;
 }
 
-- (NSString *)adViewApplicationKey {
-    return @"SDK20122315110722t9kwandrzfnrr1i";
-}
-
-
 -(void)initAds
 {
-    adView = [AdViewView requestAdViewViewWithDelegate:self];
-	adView.autoresizingMask =
-    UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;	
+    adView = [AdMoGoView requestAdMoGoViewWithDelegate:self AndAdType:AdViewTypeNormalBanner
+                                                ExpressMode:NO];
+    [adView setFrame:CGRectZero];
 
     SDL_Window* window = SDL_GetWindowFromID(g_windowId);
     if (!window) {
@@ -105,54 +105,33 @@ MyDelegate* g_delegate = nil;
         return;
     }
     adView.hidden = YES;
+    [adView pauseAdRequest];
+    [adView removeFromSuperview];
+    adView.delegate = nil;
+    adView = nil;
 }
 
-- (BOOL)adGpsMode {
-    return NO;
-}
-
--(AdviewBannerSize)PreferBannerSize {
-    return AdviewBannerSize_320x50; 
-}
-
-- (void)adjustAdSize {
+- (void)adjustAdSize {	
 	[UIView beginAnimations:@"AdResize" context:nil];
 	[UIView setAnimationDuration:0.7];
 	CGSize adSize = [adView actualAdSize];
 	CGRect newFrame = adView.frame;
 	newFrame.size.height = adSize.height;
 	newFrame.size.width = adSize.width;
-    CGRect rectMain = [UIScreen mainScreen].bounds;
-    int width = rectMain.size.height > rectMain.size.width ? rectMain.size.height : rectMain.size.width;
-
-	newFrame.origin.x = (width - adSize.width);
-    //newFrame.origin.y = (self.view.bounds.size.height - adSize.height);
+    int width, height;
+    getScreenSize(&width, &height);
+	newFrame.origin.x = (width - adSize.width)/2 - 20;
+    newFrame.origin.y = 0;
 	adView.frame = newFrame;
+    
 	[UIView commitAnimations];
-}
+} 
 
-- (void)adViewDidReceiveAd:(AdViewView *)adViewView {
-	[self adjustAdSize];
-}
 
-#warning modify when release
-#ifdef DEBUG
-- (BOOL)adViewTestMode {
-	return YES;
+- (void)adMoGoDidReceiveAd:(AdMoGoView *)adMoGoView {
+	//广告成功展示时调用
+    [self adjustAdSize];
 }
-
-- (BOOL)adViewLogMode {
-    return YES;
-}
-#else
-- (BOOL)adViewTestMode {
-	return NO;
-}
-
-- (BOOL)adViewLogMode {
-    return NO;
-}
-#endif
 
 +(MyDelegate*)sharedInstance
 {
@@ -182,6 +161,9 @@ void initButton()
     [mainView addSubview:button];
     
     [MyDelegate sharedInstance].helpBtn = button;
+    
+//    [MobClick setLogEnabled:YES];
+//    [MobClick startWithAppkey:@"50045626527015611900001a"];
     
     showAds();
 }

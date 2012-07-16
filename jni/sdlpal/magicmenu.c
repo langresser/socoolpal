@@ -498,9 +498,9 @@ PAL_MagicSelectionMenu(
       }
 
       w = PAL_MagicSelectionMenuUpdate();
-      VIDEO_UpdateScreen(NULL);
+       PAL_ClearKeyState();
 
-      PAL_ClearKeyState();
+      VIDEO_UpdateScreen(NULL);
 
       if (w != 0xFFFF)
       {

@@ -1212,13 +1212,10 @@ PAL_BattleUIUpdate(
 						  g_Battle.UI.state = kBattleUIWait;
 					   }
 					} else {
-						// 点击右侧屏幕自动战斗，点击左侧屏幕重复上个指令，点击屏幕中央选择技能战斗
-						if (PAL_IsTouch(210, 0, 110, 200)) {
-							g_Battle.UI.fAutoAttack = !g_Battle.UI.fAutoAttack;
-							g_Battle.UI.MenuState = kBattleMenuMain;
-						} else if (PAL_IsTouch(0, 0, 110, 200)) {
+						// 点击左侧屏幕重复上个指令，点击屏幕右侧选择技能战斗
+						if (PAL_IsTouch(0, 0, 160, 200)) {
 							g_InputState.dwKeyPress |= kKeyRepeat;
-						} else if (PAL_IsTouch(110, 0, 100, 200)) {
+						} else if (PAL_IsTouch(160, 0, 160, 200)) {
 							g_InputState.dwKeyPress |= kKeyForce;
 						}
 					}
