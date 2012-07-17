@@ -138,16 +138,16 @@ static void SDL_IdleTimerDisabledChanged(const char *name, const char *oldValue,
     //NSLog(@"%@", NSStringFromSelector(_cmd));
 
     // Send every window on every screen a MINIMIZED event.
-    SDL_VideoDevice *_this = SDL_GetVideoDevice();
-    if (!_this) {
-        return;
-    }
-
-    SDL_Window *window;
-    for (window = _this->windows; window != nil; window = window->next) {
-        SDL_SendWindowEvent(window, SDL_WINDOWEVENT_FOCUS_LOST, 0, 0);
-        SDL_SendWindowEvent(window, SDL_WINDOWEVENT_MINIMIZED, 0, 0);
-    }
+//    SDL_VideoDevice *_this = SDL_GetVideoDevice();
+//    if (!_this) {
+//        return;
+//    }
+//
+//    SDL_Window *window;
+//    for (window = _this->windows; window != nil; window = window->next) {
+//        SDL_SendWindowEvent(window, SDL_WINDOWEVENT_FOCUS_LOST, 0, 0);
+//        SDL_SendWindowEvent(window, SDL_WINDOWEVENT_MINIMIZED, 0, 0);
+//    }
 }
 
 - (void) applicationDidBecomeActive:(UIApplication*)application
@@ -155,16 +155,16 @@ static void SDL_IdleTimerDisabledChanged(const char *name, const char *oldValue,
     //NSLog(@"%@", NSStringFromSelector(_cmd));
 
     // Send every window on every screen a RESTORED event.
-    SDL_VideoDevice *_this = SDL_GetVideoDevice();
-    if (!_this) {
-        return;
-    }
-
-    SDL_Window *window;
-    for (window = _this->windows; window != nil; window = window->next) {
-        SDL_SendWindowEvent(window, SDL_WINDOWEVENT_FOCUS_GAINED, 0, 0);
-        SDL_SendWindowEvent(window, SDL_WINDOWEVENT_RESTORED, 0, 0);
-    }
+//    SDL_VideoDevice *_this = SDL_GetVideoDevice();
+//    if (!_this) {
+//        return;
+//    }
+//
+//    SDL_Window *window;
+//    for (window = _this->windows; window != nil; window = window->next) {
+//        SDL_SendWindowEvent(window, SDL_WINDOWEVENT_FOCUS_GAINED, 0, 0);
+//        SDL_SendWindowEvent(window, SDL_WINDOWEVENT_RESTORED, 0, 0);
+//    }
 }
 
 @end
