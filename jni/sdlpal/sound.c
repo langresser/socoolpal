@@ -43,7 +43,7 @@ BOOL         g_fUseMidi = FALSE;
 
 static BOOL  g_fUseWav = FALSE;
 
-INT          g_iVolume  = SDL_MIX_MAXVOLUME * 0.3;
+INT          g_iVolume  = SDL_MIX_MAXVOLUME * 0.2;
 
 typedef struct tagSNDPLAYER
 {

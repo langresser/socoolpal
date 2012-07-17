@@ -62,6 +62,7 @@ const char* GetSingalName(int nSignal)
 // =======================================================================================================================
 void SendErrorLogToHttp(const char* pszLog)
 {
+#if 0
 	if (!pszLog || pszLog[0] == 0) {
 		return;
 	}
@@ -89,6 +90,7 @@ void SendErrorLogToHttp(const char* pszLog)
     NSURLResponse* respone;
     NSError* error;
     [NSURLConnection sendSynchronousRequest:request returningResponse:&respone error:&error];
+#endif
 }
 
 // =====================================================================================================================

@@ -120,8 +120,13 @@ PAL_GameUpdate(
             //
             // This event object can be triggered without manually exploring
             //
+//             int xxx = abs(PAL_X(gpGlobals->viewport) + PAL_X(gpGlobals->partyoffset) - p->x);
+//             int yyy = abs(PAL_Y(gpGlobals->viewport) + PAL_Y(gpGlobals->partyoffset) - p->y);
+//             int www = (p->wTriggerMode - kTriggerTouchNear) * 32 + 16;
+             
+             
             if (abs(PAL_X(gpGlobals->viewport) + PAL_X(gpGlobals->partyoffset) - p->x) +
-               abs(PAL_Y(gpGlobals->viewport) + PAL_Y(gpGlobals->partyoffset) - p->y) * 2 <
+               abs(PAL_Y(gpGlobals->viewport) + PAL_Y(gpGlobals->partyoffset) - p->y) * 2 <=
                (p->wTriggerMode - kTriggerTouchNear) * 32 + 16)
             {
                //
@@ -364,6 +369,101 @@ PAL_GameEquipItem(
    }
 }
 
+
+BOOL do_search(PAL_POS rgPos[13], BOOL front)
+{
+    int                dx, dy, dh, ex, ey, eh, i, k, l;
+    LPEVENTOBJECT      p;
+    for (i = 0; i < 13; i++)
+    {
+        //
+        // Convert to map location
+        //
+        dh = ((PAL_X(rgPos[i]) % 32) ? 1 : 0);
+        dx = PAL_X(rgPos[i]) / 32;
+        dy = PAL_Y(rgPos[i]) / 16;
+        
+        //
+        // Loop through all event objects
+        //
+        for (k = gpGlobals->g.rgScene[gpGlobals->wNumScene - 1].wEventObjectIndex;
+             k < gpGlobals->g.rgScene[gpGlobals->wNumScene].wEventObjectIndex; k++)
+        {
+            p = &(gpGlobals->g.lprgEventObject[k]);
+            ex = p->x / 32;
+            ey = p->y / 16;
+            eh = ((p->x % 32) ? 1 : 0);
+            
+            if (p->sState <= 0 || p->wTriggerMode >= kTriggerTouchNear ||
+                p->wTriggerMode * 6 - 4 < i || dx != ex || dy != ey || dh != eh)
+            {
+                continue;
+            }
+            
+            //
+            // Adjust direction/gesture for party members and the event object
+            //
+            if (front) {
+                if (p->nSpriteFrames * 4 > p->wCurrentFrameNum)
+                {
+                    p->wCurrentFrameNum = 0; // use standing gesture
+                    p->wDirection = (gpGlobals->wPartyDirection + 2) % 4; // face the party
+                    
+                    for (l = 0; l <= gpGlobals->wMaxPartyMemberIndex; l++)
+                    {
+                        //
+                        // All party members should face the event object
+                        //
+                        gpGlobals->rgParty[l].wFrame = gpGlobals->wPartyDirection * 3;
+                    }
+                    
+                    //
+                    // Redraw everything
+                    //
+                    PAL_MakeScene();
+                    VIDEO_UpdateScreen(NULL);
+                }
+            } else {
+                if (p->nSpriteFrames * 4 > p->wCurrentFrameNum)
+                {
+                    p->wCurrentFrameNum = 0; // use standing gesture
+                    gpGlobals->wPartyDirection = (gpGlobals->wPartyDirection + 2) % 4;
+                    p->wDirection = (gpGlobals->wPartyDirection + 2) % 4; // face the party
+                    
+                    for (l = 0; l <= gpGlobals->wMaxPartyMemberIndex; l++)
+                    {
+                        //
+                        // All party members should face the event object
+                        //
+                        gpGlobals->rgParty[l].wFrame = gpGlobals->wPartyDirection * 3;
+                    }
+                    
+                    //
+                    // Redraw everything
+                    //
+                    PAL_MakeScene();
+                    VIDEO_UpdateScreen(NULL);
+                }
+            }
+            
+            //
+            // Execute the script
+            //
+            p->wTriggerScript = PAL_RunTriggerScript(p->wTriggerScript, k + 1);
+            
+            //
+            // Clear inputs and delay for a short time
+            //
+            UTIL_Delay(50);
+            PAL_ClearKeyState();
+            
+            return TRUE; // don't go further
+        }
+    }
+    
+    return FALSE;
+}
+
 VOID
 PAL_Search(
    VOID
@@ -385,7 +485,9 @@ PAL_Search(
 {
    int                x, y, xOffset, yOffset, dx, dy, dh, ex, ey, eh, i, k, l;
    LPEVENTOBJECT      p;
+    BOOL ret = FALSE;
    PAL_POS            rgPos[13];
+    PAL_POS           rgPosBack[13];
 
    //
    // Get the party location
@@ -411,6 +513,7 @@ PAL_Search(
       yOffset = -8;
    }
 
+    // 检查身前
    rgPos[0] = PAL_XY(x, y);
 
    for (i = 0; i < 4; i++)
@@ -421,71 +524,31 @@ PAL_Search(
       x += xOffset;
       y += yOffset;
    }
-
-   for (i = 0; i < 13; i++)
-   {
-      //
-      // Convert to map location
-      //
-      dh = ((PAL_X(rgPos[i]) % 32) ? 1 : 0);
-      dx = PAL_X(rgPos[i]) / 32;
-      dy = PAL_Y(rgPos[i]) / 16;
-
-      //
-      // Loop through all event objects
-      //
-      for (k = gpGlobals->g.rgScene[gpGlobals->wNumScene - 1].wEventObjectIndex;
-         k < gpGlobals->g.rgScene[gpGlobals->wNumScene].wEventObjectIndex; k++)
-      {
-         p = &(gpGlobals->g.lprgEventObject[k]);
-         ex = p->x / 32;
-         ey = p->y / 16;
-         eh = ((p->x % 32) ? 1 : 0);
-
-         if (p->sState <= 0 || p->wTriggerMode >= kTriggerTouchNear ||
-            p->wTriggerMode * 6 - 4 < i || dx != ex || dy != ey || dh != eh)
-         {
-            continue;
-         }
-
-         //
-         // Adjust direction/gesture for party members and the event object
-         //
-         if (p->nSpriteFrames * 4 > p->wCurrentFrameNum)
-         {
-            p->wCurrentFrameNum = 0; // use standing gesture
-            p->wDirection = (gpGlobals->wPartyDirection + 2) % 4; // face the party
-
-            for (l = 0; l <= gpGlobals->wMaxPartyMemberIndex; l++)
-            {
-               //
-               // All party members should face the event object
-               //
-               gpGlobals->rgParty[l].wFrame = gpGlobals->wPartyDirection * 3;
-            }
-
-            //
-            // Redraw everything
-            //
-            PAL_MakeScene();
-            VIDEO_UpdateScreen(NULL);
-         }
-
-         //
-         // Execute the script
-         //
-         p->wTriggerScript = PAL_RunTriggerScript(p->wTriggerScript, k + 1);
-
-         //
-         // Clear inputs and delay for a short time
-         //
-         UTIL_Delay(50);
-         PAL_ClearKeyState();
-
-         return; // don't go further
-      }
-   }
+    ret = do_search(rgPos, TRUE);
+//    printf("check font: %d\n", ret);
+    if (ret) {
+        return;
+    }
+    
+    // 检查身后
+    x = PAL_X(gpGlobals->viewport) + PAL_X(gpGlobals->partyoffset);
+    y = PAL_Y(gpGlobals->viewport) + PAL_Y(gpGlobals->partyoffset);
+    rgPosBack[0] = PAL_XY(x, y);
+    
+    for (i = 0; i < 4; i++)
+    {
+        rgPosBack[i * 3 + 1] = PAL_XY(x - xOffset, y - yOffset);
+        rgPosBack[i * 3 + 2] = PAL_XY(x, y - yOffset * 2);
+        rgPosBack[i * 3 + 3] = PAL_XY(x - xOffset, y);
+        x -= xOffset;
+        y -= yOffset;
+    }
+    
+    ret = do_search(rgPosBack, FALSE);
+    
+//    printf("check back: %d\n", ret);
 }
+
 
 VOID
 PAL_StartFrame(

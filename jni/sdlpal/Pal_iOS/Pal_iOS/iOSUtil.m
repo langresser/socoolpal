@@ -151,7 +151,6 @@ MyDelegate* g_delegate = nil;
     adView.hidden = YES;
     [adView pauseAdRequest];
     [adView removeFromSuperview];
-    adView.delegate = nil;
     adView = nil;
 }
 
@@ -206,7 +205,7 @@ void initButton()
     
     [MyDelegate sharedInstance].helpBtn = button;
     
-    [MobClick setLogEnabled:YES];
+//    [MobClick setLogEnabled:YES];
     [MobClick startWithAppkey:@"50045626527015611900001a"];
     
     showAds();

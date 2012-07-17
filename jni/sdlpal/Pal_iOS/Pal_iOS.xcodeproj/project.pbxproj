@@ -67,11 +67,6 @@
 		3B2D119215B4829500DE7816 /* CSerializedJSONData.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B2D118815B4829500DE7816 /* CSerializedJSONData.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		3B2D119615B4831400DE7816 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B2D119515B4831400DE7816 /* ImageIO.framework */; };
 		3B37ECD615B300A80091E824 /* 0.rpg in Resources */ = {isa = PBXBuildFile; fileRef = 3B37ECB915B300A80091E824 /* 0.rpg */; };
-		3B37ECD715B300A80091E824 /* 1.rpg in Resources */ = {isa = PBXBuildFile; fileRef = 3B37ECBA15B300A80091E824 /* 1.rpg */; };
-		3B37ECD815B300A80091E824 /* 2.rpg in Resources */ = {isa = PBXBuildFile; fileRef = 3B37ECBB15B300A80091E824 /* 2.rpg */; };
-		3B37ECD915B300A80091E824 /* 3.rpg in Resources */ = {isa = PBXBuildFile; fileRef = 3B37ECBC15B300A80091E824 /* 3.rpg */; };
-		3B37ECDA15B300A80091E824 /* 4.rpg in Resources */ = {isa = PBXBuildFile; fileRef = 3B37ECBD15B300A80091E824 /* 4.rpg */; };
-		3B37ECDB15B300A80091E824 /* 5.rpg in Resources */ = {isa = PBXBuildFile; fileRef = 3B37ECBE15B300A80091E824 /* 5.rpg */; };
 		3B37ECDC15B300A80091E824 /* abc.mkf in Resources */ = {isa = PBXBuildFile; fileRef = 3B37ECBF15B300A80091E824 /* abc.mkf */; };
 		3B37ECDD15B300A80091E824 /* ball.mkf in Resources */ = {isa = PBXBuildFile; fileRef = 3B37ECC015B300A80091E824 /* ball.mkf */; };
 		3B37ECDE15B300A80091E824 /* data.mkf in Resources */ = {isa = PBXBuildFile; fileRef = 3B37ECC115B300A80091E824 /* data.mkf */; };
@@ -314,11 +309,6 @@
 		3B2D118815B4829500DE7816 /* CSerializedJSONData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSerializedJSONData.m; sourceTree = "<group>"; };
 		3B2D119515B4831400DE7816 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		3B37ECB915B300A80091E824 /* 0.rpg */ = {isa = PBXFileReference; lastKnownFileType = file; name = 0.rpg; path = ../../res/0.rpg; sourceTree = "<group>"; };
-		3B37ECBA15B300A80091E824 /* 1.rpg */ = {isa = PBXFileReference; lastKnownFileType = file; name = 1.rpg; path = ../../res/1.rpg; sourceTree = "<group>"; };
-		3B37ECBB15B300A80091E824 /* 2.rpg */ = {isa = PBXFileReference; lastKnownFileType = file; name = 2.rpg; path = ../../res/2.rpg; sourceTree = "<group>"; };
-		3B37ECBC15B300A80091E824 /* 3.rpg */ = {isa = PBXFileReference; lastKnownFileType = file; name = 3.rpg; path = ../../res/3.rpg; sourceTree = "<group>"; };
-		3B37ECBD15B300A80091E824 /* 4.rpg */ = {isa = PBXFileReference; lastKnownFileType = file; name = 4.rpg; path = ../../res/4.rpg; sourceTree = "<group>"; };
-		3B37ECBE15B300A80091E824 /* 5.rpg */ = {isa = PBXFileReference; lastKnownFileType = file; name = 5.rpg; path = ../../res/5.rpg; sourceTree = "<group>"; };
 		3B37ECBF15B300A80091E824 /* abc.mkf */ = {isa = PBXFileReference; lastKnownFileType = file; name = abc.mkf; path = ../../res/abc.mkf; sourceTree = "<group>"; };
 		3B37ECC015B300A80091E824 /* ball.mkf */ = {isa = PBXFileReference; lastKnownFileType = file; name = ball.mkf; path = ../../res/ball.mkf; sourceTree = "<group>"; };
 		3B37ECC115B300A80091E824 /* data.mkf */ = {isa = PBXFileReference; lastKnownFileType = file; name = data.mkf; path = ../../res/data.mkf; sourceTree = "<group>"; };
@@ -1048,11 +1038,6 @@
 			isa = PBXGroup;
 			children = (
 				3B37ECB915B300A80091E824 /* 0.rpg */,
-				3B37ECBA15B300A80091E824 /* 1.rpg */,
-				3B37ECBB15B300A80091E824 /* 2.rpg */,
-				3B37ECBC15B300A80091E824 /* 3.rpg */,
-				3B37ECBD15B300A80091E824 /* 4.rpg */,
-				3B37ECBE15B300A80091E824 /* 5.rpg */,
 				3B37ECBF15B300A80091E824 /* abc.mkf */,
 				3B37ECC015B300A80091E824 /* ball.mkf */,
 				3B37ECC115B300A80091E824 /* data.mkf */,
@@ -1164,11 +1149,6 @@
 				3B713D6D15A9F7D900A63662 /* rq_table.dat in Resources */,
 				3B713D6E15A9F7D900A63662 /* sf_table.dat in Resources */,
 				3B37ECD615B300A80091E824 /* 0.rpg in Resources */,
-				3B37ECD715B300A80091E824 /* 1.rpg in Resources */,
-				3B37ECD815B300A80091E824 /* 2.rpg in Resources */,
-				3B37ECD915B300A80091E824 /* 3.rpg in Resources */,
-				3B37ECDA15B300A80091E824 /* 4.rpg in Resources */,
-				3B37ECDB15B300A80091E824 /* 5.rpg in Resources */,
 				3B37ECDC15B300A80091E824 /* abc.mkf in Resources */,
 				3B37ECDD15B300A80091E824 /* ball.mkf in Resources */,
 				3B37ECDE15B300A80091E824 /* data.mkf in Resources */,
@@ -1400,7 +1380,7 @@
 					../../sdl/src,
 				);
 				INFOPLIST_FILE = "Pal_iOS/Pal_iOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/AdViewSDK/AdNetworks/Adwo\"",
@@ -1446,7 +1426,7 @@
 					../../sdl/src,
 				);
 				INFOPLIST_FILE = "Pal_iOS/Pal_iOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/AdViewSDK/AdNetworks/Adwo\"",
