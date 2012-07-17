@@ -440,7 +440,7 @@ PAL_SplashScreen(
 
 // 此处的main会被定义为SDL_main，进行sdl的初始化流程
 int
-main(
+SDL_main(
    int      argc,
    char    *argv[]
 )
@@ -461,140 +461,9 @@ main(
 
 --*/
 {
-    InitCrashReport();
-
-   int          wScreenWidth = 0, wScreenHeight = 0;
-   int           c;
-   BOOL          fFullScreen = FALSE;
+   int wScreenWidth = 0, wScreenHeight = 0;
 
    UTIL_OpenLog();
-
-#ifdef _WIN32
-#if SDL_MAJOR_VERSION == 1 && SDL_MINOR_VERSION <= 2
-   putenv("SDL_VIDEODRIVER=directx");
-#else
-   putenv("SDL_VIDEODRIVER=windows");
-#endif
-#endif
-
-#ifndef __SYMBIAN32__
-   //
-   // Parse parameters.
-   //
-   while ((c = getopt(argc, argv, "w:h:fjm")) != -1)
-   {
-      switch (c)
-      {
-//       case 'm':
-//     	  m = atoi(optarg);
-//     	  switch(m)
-//     	  {
-//     	  case 0://320*240
-//     		  wScreenWidth = 320;
-//     		  wScreenHeight = 240;
-//     		  break;
-//     	  case 1://400*240
-//     		  wScreenWidth = 400;
-// 			  wScreenHeight = 240;
-// 			  break;
-//     	  case 2://432*240
-//     		  wScreenWidth = 432;
-// 			  wScreenHeight = 240;
-// 			  break;
-//     	  case 3://480*320
-// 			  wScreenWidth = 480;
-// 			  wScreenHeight = 320;
-// 			  break;
-//     	  case 4://800*480
-// 			  wScreenWidth = 800;
-// 			  wScreenHeight = 480;
-// 			  break;
-//     	  case 5://854*480
-// 			  wScreenWidth = 854;
-// 			  wScreenHeight = 480;
-// 			  break;
-//     	  }
-//     	  break;
-      case 'w':
-         //
-         // Set the width of the screen
-         //
-         wScreenWidth = atoi(optarg);
-         if (wScreenHeight == 0)
-         {
-            wScreenHeight = wScreenWidth * 200 / 320;
-         }
-         break;
-
-      case 'h':
-         //
-         // Set the height of the screen
-         //
-         wScreenHeight = atoi(optarg);
-         if (wScreenWidth == 0)
-         {
-            wScreenWidth = wScreenHeight * 320 / 200;
-         }
-         break;
-
-      case 'f':
-         //
-         // Fullscreen Mode
-         //
-         fFullScreen = TRUE;
-         break;
-
-      case 'j':
-         //
-         // Disable joystick
-         //
-         g_fUseJoystick = FALSE;
-         break;
-
-#ifdef PAL_HAS_NATIVEMIDI
-      case 'm':
-         g_fUseMidi = TRUE;
-         break;
-#endif
-      }
-   }
-#endif
-
-   if (wScreenWidth == 0)
-   {
-#ifdef __SYMBIAN32__
-#ifdef __S60_5X__
-      wScreenWidth = 640;
-      wScreenHeight = 360;
-#else
-      wScreenWidth = 320;
-      wScreenHeight = 240;
-#endif
-#else
-#if defined(GPH) || defined(DINGOO)
-      wScreenWidth = 320;
-      wScreenHeight = 240;
-#elif defined (ANDROID)
-      wScreenWidth = 480;
-      wScreenHeight = 320;
-#elif defined (__IPHONEOS__)
-       wScreenWidth = 480;
-       wScreenHeight = 320;	
-#else
-#if SCREEN_TYPE == SCREEN_TYPE_SMALL
-	  wScreenWidth = 640;
-      wScreenHeight = 400;
-#elif SCREEN_TYPE == SCREEN_TYPE_MIDDLE
-	  wScreenWidth = 480;
-      wScreenHeight = 320;
-#elif SCREEN_TYPE == SCREEN_TYPE_LARGE
-      wScreenWidth = 640;
-      wScreenHeight = fFullScreen ? 480 : 400;
-#endif
-#endif
-#endif
-   }
-
     getScreenSize(&wScreenWidth, &wScreenHeight);
    //
    // Initialize everything
@@ -602,20 +471,23 @@ main(
 #ifdef PSP
    sdlpal_psp_init();
 #endif
-   PAL_Init(wScreenWidth, wScreenHeight, fFullScreen);
+   PAL_Init(wScreenWidth, wScreenHeight, TRUE);
     
     initButton();
 
-   //
-   // Show the trademark screen and splash screen
-   //
-//   PAL_TrademarkScreen();
-#ifndef _DEBUG
-   PAL_SplashScreen();
-#endif
-
-   PAL_GameMain();
-
-   assert(FALSE);
    return 255;
+}
+
+int SDL_mainLoop()
+{
+    //
+    // Show the trademark screen and splash screen
+    //
+    //   PAL_TrademarkScreen();
+#ifndef _DEBUG
+    PAL_SplashScreen();
+#endif
+    
+    PAL_GameMain();
+    return -1;
 }

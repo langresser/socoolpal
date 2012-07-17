@@ -1,38 +1,36 @@
-/*
- Simple DirectMedia Layer
- Copyright (C) 1997-2012 Sam Lantinga <slouken@libsdl.org>
- 
- This software is provided 'as-is', without any express or implied
- warranty.  In no event will the authors be held liable for any damages
- arising from the use of this software.
- 
- Permission is granted to anyone to use this software for any purpose,
- including commercial applications, and to alter it and redistribute it
- freely, subject to the following restrictions:
- 
- 1. The origin of this software must not be misrepresented; you must not
- claim that you wrote the original software. If you use this software
- in a product, an acknowledgment in the product documentation would be
- appreciated but is not required.
- 2. Altered source versions must be plainly marked as such, and must not be
- misrepresented as being the original software.
- 3. This notice may not be removed or altered from any source distribution.
- */
-#if 0
+ /*
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2012 Sam Lantinga <slouken@libsdl.org>
+
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
+
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
+
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
+*/
 #include "SDL_config.h"
 
 #if SDL_VIDEO_DRIVER_UIKIT
 
 #import "SDL_uikitview.h"
 
-#include "../../events/SDL_keyboard_c.h"
-#include "../../events/SDL_mouse_c.h"
-#include "../../events/SDL_touch_c.h"
+#include "events/SDL_keyboard_c.h"
+#include "events/SDL_mouse_c.h"
+#include "events/SDL_touch_c.h"
 
 #if SDL_IPHONE_KEYBOARD
 #import "keyinfotable.h"
 #import "SDL_uikitappdelegate.h"
-#import "SDL_uikitkeyboard.h"
 #import "SDL_uikitwindow.h"
 #endif
 
@@ -46,20 +44,20 @@
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame: frame];
-    
+
 #if SDL_IPHONE_KEYBOARD
     [self initializeKeyboard];
 #endif
-    
+
 #ifdef FIXED_MULTITOUCH
     self.multipleTouchEnabled = YES;
-    
+
     SDL_Touch touch;
     touch.id = 0; //TODO: Should be -1?
-    
+
     //touch.driverdata = SDL_malloc(sizeof(EventTouchData));
     //EventTouchData* data = (EventTouchData*)(touch.driverdata);
-    
+
     touch.x_min = 0;
     touch.x_max = 1;
     touch.native_xres = touch.x_max - touch.x_min;
@@ -69,20 +67,20 @@
     touch.pressure_min = 0;
     touch.pressure_max = 1;
     touch.native_pressureres = touch.pressure_max - touch.pressure_min;
-    
-    
+
+
     touchId = SDL_AddTouch(&touch, "IPHONE SCREEN");
 #endif
-    
+
     return self;
-    
+
 }
 
 - (CGPoint)touchLocation:(UITouch *)touch
 {
     CGPoint point = [touch locationInView: self];
     CGRect frame = [self frame];
-    
+
     frame = CGRectApplyAffineTransform(frame, [self transform]);
     point.x /= frame.size.width;
     point.y /= frame.size.height;
@@ -93,21 +91,21 @@
 {
     NSEnumerator *enumerator = [touches objectEnumerator];
     UITouch *touch = (UITouch*)[enumerator nextObject];
-    
+
     if (touch) {
         CGPoint locationInView = [touch locationInView: self];
-        
+
         /* send moved event */
         SDL_SendMouseMotion(NULL, 0, locationInView.x, locationInView.y);
-        
+
         /* send mouse down event */
         SDL_SendMouseButton(NULL, SDL_PRESSED, SDL_BUTTON_LEFT);
     }
-    
+
 #ifdef FIXED_MULTITOUCH
     while(touch) {
         CGPoint locationInView = [self touchLocation:touch];
-        
+
 #ifdef IPHONE_TOUCH_EFFICIENT_DANGEROUS
         //FIXME: TODO: Using touch as the fingerId is potentially dangerous
         //It is also much more efficient than storing the UITouch pointer
@@ -127,7 +125,7 @@
             }
         }
 #endif
-        
+
         touch = (UITouch*)[enumerator nextObject];
     }
 #endif
@@ -137,16 +135,16 @@
 {
     NSEnumerator *enumerator = [touches objectEnumerator];
     UITouch *touch = (UITouch*)[enumerator nextObject];
-    
+
     if (touch) {
         /* send mouse up */
         SDL_SendMouseButton(NULL, SDL_RELEASED, SDL_BUTTON_LEFT);
     }
-    
+
 #ifdef FIXED_MULTITOUCH
     while(touch) {
         CGPoint locationInView = [self touchLocation:touch];
-        
+
 #ifdef IPHONE_TOUCH_EFFICIENT_DANGEROUS
         SDL_SendFingerDown(touchId, (long)touch,
                            SDL_FALSE, locationInView.x, locationInView.y,
@@ -163,7 +161,7 @@
             }
         }
 #endif
-        
+
         touch = (UITouch*)[enumerator nextObject];
     }
 #endif
@@ -172,10 +170,10 @@
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
     /*
-     this can happen if the user puts more than 5 touches on the screen
-     at once, or perhaps in other circumstances.  Usually (it seems)
-     all active touches are canceled.
-     */
+        this can happen if the user puts more than 5 touches on the screen
+        at once, or perhaps in other circumstances.  Usually (it seems)
+        all active touches are canceled.
+    */
     [self touchesEnded: touches withEvent: event];
 }
 
@@ -183,18 +181,18 @@
 {
     NSEnumerator *enumerator = [touches objectEnumerator];
     UITouch *touch = (UITouch*)[enumerator nextObject];
-    
+
     if (touch) {
         CGPoint locationInView = [touch locationInView: self];
-        
+
         /* send moved event */
         SDL_SendMouseMotion(NULL, 0, locationInView.x, locationInView.y);
     }
-    
+
 #ifdef FIXED_MULTITOUCH
     while(touch) {
         CGPoint locationInView = [self touchLocation:touch];
-        
+
 #ifdef IPHONE_TOUCH_EFFICIENT_DANGEROUS
         SDL_SendTouchMotion(touchId, (long)touch,
                             SDL_FALSE, locationInView.x, locationInView.y,
@@ -210,15 +208,15 @@
             }
         }
 #endif
-        
+
         touch = (UITouch*)[enumerator nextObject];
     }
 #endif
 }
 
 /*
- ---- Keyboard related functionality below this line ----
- */
+    ---- Keyboard related functionality below this line ----
+*/
 #if SDL_IPHONE_KEYBOARD
 
 /* Is the iPhone virtual keyboard visible onscreen? */
@@ -234,7 +232,7 @@
     textField.delegate = self;
     /* placeholder so there is something to delete! */
     textField.text = @" ";
-    
+
     /* set UITextInputTrait properties, mostly to defaults */
     textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     textField.autocorrectionType = UITextAutocorrectionTypeNo;
@@ -243,7 +241,7 @@
     textField.keyboardType = UIKeyboardTypeDefault;
     textField.returnKeyType = UIReturnKeyDefault;
     textField.secureTextEntry = NO;
-    
+
     textField.hidden = YES;
     keyboardVisible = NO;
     /* add the UITextField (hidden) to our view */
@@ -275,15 +273,15 @@
     }
     else {
         /* go through all the characters in the string we've been sent
-         and convert them to key presses */
+           and convert them to key presses */
         int i;
         for (i = 0; i < [string length]; i++) {
-            
+
             unichar c = [string characterAtIndex: i];
-            
+
             Uint16 mod = 0;
             SDL_Scancode code;
-            
+
             if (c < 127) {
                 /* figure out the SDL_Scancode and SDL_keymod for this unichar */
                 code = unicharToUIKeyInfoTable[c].code;
@@ -294,7 +292,7 @@
                 code = SDL_SCANCODE_UNKNOWN;
                 mod = 0;
             }
-            
+
             if (mod & KMOD_SHIFT) {
                 /* If character uses shift, press shift down */
                 SDL_SendKeyboardKey(SDL_PRESSED, SDL_SCANCODE_LSHIFT);
@@ -334,14 +332,14 @@ static SDL_uikitview * getWindowView(SDL_Window * window)
         SDL_SetError("Window does not exist");
         return nil;
     }
-    
+
     SDL_WindowData *data = (SDL_WindowData *)window->driverdata;
     SDL_uikitview *view = data != NULL ? data->view : nil;
-    
+
     if (view == nil) {
         SDL_SetError("Window has no view");
     }
-    
+
     return view;
 }
 
@@ -351,7 +349,7 @@ int SDL_iPhoneKeyboardShow(SDL_Window * window)
     if (view == nil) {
         return -1;
     }
-    
+
     [view showKeyboard];
     return 0;
 }
@@ -362,7 +360,7 @@ int SDL_iPhoneKeyboardHide(SDL_Window * window)
     if (view == nil) {
         return -1;
     }
-    
+
     [view hideKeyboard];
     return 0;
 }
@@ -373,7 +371,7 @@ SDL_bool SDL_iPhoneKeyboardIsShown(SDL_Window * window)
     if (view == nil) {
         return 0;
     }
-    
+
     return view.keyboardVisible;
 }
 
@@ -383,7 +381,7 @@ int SDL_iPhoneKeyboardToggle(SDL_Window * window)
     if (view == nil) {
         return -1;
     }
-    
+
     if (SDL_iPhoneKeyboardIsShown(window)) {
         SDL_iPhoneKeyboardHide(window);
     }
@@ -425,4 +423,3 @@ int SDL_iPhoneKeyboardToggle(SDL_Window * window)
 #endif /* SDL_VIDEO_DRIVER_UIKIT */
 
 /* vi: set ts=4 sw=4 expandtab: */
-#endif

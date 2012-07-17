@@ -12,11 +12,14 @@
 
 #import "video/uikit/SDL_uikitwindow.h"
 #import "AdMoGoView.h"
-//#import "MobClick.h"
+#import "MobClick.h"
+#import "UMFeedback.h"
 
 @interface MyDelegate : NSObject<AdMoGoDelegate>
 {
     UIButton* helpBtn;
+    UIButton* feedBack;
+    UIButton* btnBBS;
     UITextView* textView;
     
     AdMoGoView *adView;
@@ -25,6 +28,8 @@
 
 +(MyDelegate*)sharedInstance;
 -(void)onClickHelp;
+-(void)onClickFeedBack;
+-(void)onClickBBS;
 
 -(void)initAds;
 -(void)showAds;
@@ -37,6 +42,14 @@ MyDelegate* g_delegate = nil;
 @synthesize helpBtn;
 -(void)onClickHelp
 {
+    SDL_Window* window = SDL_GetWindowFromID(g_windowId);
+    if (!window) {
+        return;
+    }
+    
+    SDL_WindowData* windowData = (SDL_WindowData*)window->driverdata;
+    UIView* mainView = windowData->viewcontroller.view;
+
     if (textView == nil) {
         textView = [[UITextView alloc]initWithFrame:CGRectMake(80, 0, 300, 320)];
         NSString* text = [NSString stringWithContentsOfFile:@"gl.txt" encoding:NSUTF8StringEncoding error:nil];
@@ -45,20 +58,51 @@ MyDelegate* g_delegate = nil;
             textView.editable = NO;
             textView.alpha = 0.8;
         }
+        
+        feedBack = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        feedBack.frame = CGRectMake(1, 40, 70, 24);
+        [feedBack setTitle:@"bug反馈" forState:UIControlStateNormal];
+        [feedBack setTitle:@"bug反馈" forState:UIControlStateHighlighted];
+        feedBack.alpha = 0.8;
+        [feedBack addTarget:self  action:@selector(onClickFeedBack) forControlEvents:UIControlEventTouchUpInside];
+
+        [mainView addSubview:feedBack];
+        
+        btnBBS = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        btnBBS.frame = CGRectMake(1, 70, 70, 24);
+        [btnBBS setTitle:@"论坛" forState:UIControlStateNormal];
+        [btnBBS setTitle:@"论坛" forState:UIControlStateHighlighted];
+        btnBBS.alpha = 0.8;
+        [btnBBS addTarget:self  action:@selector(onClickBBS) forControlEvents:UIControlEventTouchUpInside];
+        
+        [mainView addSubview:btnBBS];
     }
     
     if (textView.superview == nil) {
-        SDL_Window* window = SDL_GetWindowFromID(g_windowId);
-        if (!window) {
-            return;
-        }
-        
-        SDL_WindowData* windowData = (SDL_WindowData*)window->driverdata;
-        UIView* mainView = windowData->viewcontroller.view;
         [mainView addSubview:textView];
     } else {
         [textView removeFromSuperview];
     }
+    
+    feedBack.hidden = (textView.superview == nil);
+    btnBBS.hidden = (textView.superview == nil);
+}
+
+-(void)onClickFeedBack
+{
+    SDL_Window* window = SDL_GetWindowFromID(g_windowId);
+    if (!window) {
+        return;
+    }
+    
+    SDL_WindowData* windowData = (SDL_WindowData*)window->driverdata;
+
+    [UMFeedback showFeedback:windowData->viewcontroller withAppkey:@"50045626527015611900001a"];
+}
+
+-(void)onClickBBS
+{
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://bananastudio.cn/bbs/forum.php"]]; 
 }
 
 - (NSString *)adMoGoApplicationKey {
@@ -162,10 +206,18 @@ void initButton()
     
     [MyDelegate sharedInstance].helpBtn = button;
     
-//    [MobClick setLogEnabled:YES];
-//    [MobClick startWithAppkey:@"50045626527015611900001a"];
+    [MobClick setLogEnabled:YES];
+    [MobClick startWithAppkey:@"50045626527015611900001a"];
     
     showAds();
+    
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    if (defaults && [defaults boolForKey:@"Tip"] == NO) {
+        [defaults setBool:YES forKey:@"Tip"];
+        
+        UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"点击左上角的按钮可以查看触屏操作方式和游戏攻略" delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil,nil];
+        [alert show];
+    }
 }
 
 void hideButton()

@@ -96,8 +96,6 @@
 		56EA86FC13E9EC2B002E47EB /* SDL_coreaudio.h in Headers */ = {isa = PBXBuildFile; fileRef = 56EA86FA13E9EC2B002E47EB /* SDL_coreaudio.h */; };
 		56ED04E1118A8EE200A56AA6 /* SDL_power.c in Sources */ = {isa = PBXBuildFile; fileRef = 56ED04E0118A8EE200A56AA6 /* SDL_power.c */; };
 		56ED04E3118A8EFD00A56AA6 /* SDL_syspower.m in Sources */ = {isa = PBXBuildFile; fileRef = 56ED04E2118A8EFD00A56AA6 /* SDL_syspower.m */; };
-		93CB792313FC5E5200BD3E05 /* SDL_uikitviewcontroller.h in Headers */ = {isa = PBXBuildFile; fileRef = 93CB792213FC5E5200BD3E05 /* SDL_uikitviewcontroller.h */; };
-		93CB792613FC5F5300BD3E05 /* SDL_uikitviewcontroller.m in Sources */ = {isa = PBXBuildFile; fileRef = 93CB792513FC5F5300BD3E05 /* SDL_uikitviewcontroller.m */; };
 		AA628ADB159369E3005138DD /* SDL_rotate.c in Sources */ = {isa = PBXBuildFile; fileRef = AA628AD9159369E3005138DD /* SDL_rotate.c */; };
 		AA628ADC159369E3005138DD /* SDL_rotate.h in Headers */ = {isa = PBXBuildFile; fileRef = AA628ADA159369E3005138DD /* SDL_rotate.h */; };
 		AA7558981595D55500BBD41B /* begin_code.h in Headers */ = {isa = PBXBuildFile; fileRef = AA7558651595D55500BBD41B /* begin_code.h */; };
@@ -187,19 +185,6 @@
 		FD689F030E26E5B600F90B21 /* SDL_sysjoystick.m in Sources */ = {isa = PBXBuildFile; fileRef = FD689F000E26E5B600F90B21 /* SDL_sysjoystick.m */; };
 		FD689F040E26E5B600F90B21 /* SDLUIAccelerationDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = FD689F010E26E5B600F90B21 /* SDLUIAccelerationDelegate.h */; };
 		FD689F050E26E5B600F90B21 /* SDLUIAccelerationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FD689F020E26E5B600F90B21 /* SDLUIAccelerationDelegate.m */; };
-		FD689F1C0E26E5D900F90B21 /* SDL_uikitevents.h in Headers */ = {isa = PBXBuildFile; fileRef = FD689F0C0E26E5D900F90B21 /* SDL_uikitevents.h */; };
-		FD689F1D0E26E5D900F90B21 /* SDL_uikitevents.m in Sources */ = {isa = PBXBuildFile; fileRef = FD689F0D0E26E5D900F90B21 /* SDL_uikitevents.m */; };
-		FD689F1E0E26E5D900F90B21 /* SDL_uikitopengles.h in Headers */ = {isa = PBXBuildFile; fileRef = FD689F0E0E26E5D900F90B21 /* SDL_uikitopengles.h */; };
-		FD689F1F0E26E5D900F90B21 /* SDL_uikitopengles.m in Sources */ = {isa = PBXBuildFile; fileRef = FD689F0F0E26E5D900F90B21 /* SDL_uikitopengles.m */; };
-		FD689F200E26E5D900F90B21 /* SDL_uikitvideo.h in Headers */ = {isa = PBXBuildFile; fileRef = FD689F100E26E5D900F90B21 /* SDL_uikitvideo.h */; };
-		FD689F210E26E5D900F90B21 /* SDL_uikitvideo.m in Sources */ = {isa = PBXBuildFile; fileRef = FD689F110E26E5D900F90B21 /* SDL_uikitvideo.m */; };
-		FD689F230E26E5D900F90B21 /* SDL_uikitview.m in Sources */ = {isa = PBXBuildFile; fileRef = FD689F130E26E5D900F90B21 /* SDL_uikitview.m */; };
-		FD689F240E26E5D900F90B21 /* SDL_uikitwindow.h in Headers */ = {isa = PBXBuildFile; fileRef = FD689F140E26E5D900F90B21 /* SDL_uikitwindow.h */; };
-		FD689F250E26E5D900F90B21 /* SDL_uikitwindow.m in Sources */ = {isa = PBXBuildFile; fileRef = FD689F150E26E5D900F90B21 /* SDL_uikitwindow.m */; };
-		FD689F260E26E5D900F90B21 /* SDL_uikitopenglview.h in Headers */ = {isa = PBXBuildFile; fileRef = FD689F160E26E5D900F90B21 /* SDL_uikitopenglview.h */; };
-		FD689F270E26E5D900F90B21 /* SDL_uikitopenglview.m in Sources */ = {isa = PBXBuildFile; fileRef = FD689F170E26E5D900F90B21 /* SDL_uikitopenglview.m */; };
-		FD689FCE0E26E9D400F90B21 /* SDL_uikitappdelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FD689FCC0E26E9D400F90B21 /* SDL_uikitappdelegate.m */; };
-		FD689FCF0E26E9D400F90B21 /* SDL_uikitappdelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = FD689FCD0E26E9D400F90B21 /* SDL_uikitappdelegate.h */; };
 		FD8BD8250E27E25900B52CD5 /* SDL_sysloadso.c in Sources */ = {isa = PBXBuildFile; fileRef = FD8BD8190E27E25900B52CD5 /* SDL_sysloadso.c */; };
 		FDA6844D0DF2374E00F98A1A /* SDL_blit.c in Sources */ = {isa = PBXBuildFile; fileRef = FDA683000DF2374E00F98A1A /* SDL_blit.c */; };
 		FDA6844E0DF2374E00F98A1A /* SDL_blit.h in Headers */ = {isa = PBXBuildFile; fileRef = FDA683010DF2374E00F98A1A /* SDL_blit.h */; };
@@ -226,8 +211,6 @@
 		FDA685FC0DF244C800F98A1A /* SDL_nullevents_c.h in Headers */ = {isa = PBXBuildFile; fileRef = FDA685F60DF244C800F98A1A /* SDL_nullevents_c.h */; };
 		FDA685FF0DF244C800F98A1A /* SDL_nullvideo.c in Sources */ = {isa = PBXBuildFile; fileRef = FDA685F90DF244C800F98A1A /* SDL_nullvideo.c */; };
 		FDA686000DF244C800F98A1A /* SDL_nullvideo.h in Headers */ = {isa = PBXBuildFile; fileRef = FDA685FA0DF244C800F98A1A /* SDL_nullvideo.h */; };
-		FDC656480E560DF800311C8E /* jumphack.c in Sources */ = {isa = PBXBuildFile; fileRef = FDC656440E560DF800311C8E /* jumphack.c */; };
-		FDC656490E560DF800311C8E /* jumphack.h in Headers */ = {isa = PBXBuildFile; fileRef = FDC656450E560DF800311C8E /* jumphack.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -347,8 +330,6 @@
 		56EA86FA13E9EC2B002E47EB /* SDL_coreaudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_coreaudio.h; path = coreaudio/SDL_coreaudio.h; sourceTree = "<group>"; };
 		56ED04E0118A8EE200A56AA6 /* SDL_power.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = SDL_power.c; path = ../../src/power/SDL_power.c; sourceTree = SOURCE_ROOT; };
 		56ED04E2118A8EFD00A56AA6 /* SDL_syspower.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDL_syspower.m; path = ../../src/power/uikit/SDL_syspower.m; sourceTree = SOURCE_ROOT; };
-		93CB792213FC5E5200BD3E05 /* SDL_uikitviewcontroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_uikitviewcontroller.h; sourceTree = "<group>"; };
-		93CB792513FC5F5300BD3E05 /* SDL_uikitviewcontroller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDL_uikitviewcontroller.m; sourceTree = "<group>"; };
 		AA628AD9159369E3005138DD /* SDL_rotate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_rotate.c; sourceTree = "<group>"; };
 		AA628ADA159369E3005138DD /* SDL_rotate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_rotate.h; sourceTree = "<group>"; };
 		AA7558651595D55500BBD41B /* begin_code.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = begin_code.h; sourceTree = "<group>"; };
@@ -402,7 +383,6 @@
 		AA7558951595D55500BBD41B /* SDL_version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_version.h; sourceTree = "<group>"; };
 		AA7558961595D55500BBD41B /* SDL_video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_video.h; sourceTree = "<group>"; };
 		AA7558971595D55500BBD41B /* SDL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL.h; sourceTree = "<group>"; };
-		FD0BBFEF0E3933DD00D833B1 /* SDL_uikitview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_uikitview.h; sourceTree = "<group>"; };
 		FD3F4A700DEA620800C5B771 /* SDL_getenv.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_getenv.c; sourceTree = "<group>"; };
 		FD3F4A710DEA620800C5B771 /* SDL_iconv.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_iconv.c; sourceTree = "<group>"; };
 		FD3F4A720DEA620800C5B771 /* SDL_malloc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_malloc.c; sourceTree = "<group>"; };
@@ -416,19 +396,6 @@
 		FD689F000E26E5B600F90B21 /* SDL_sysjoystick.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDL_sysjoystick.m; sourceTree = "<group>"; };
 		FD689F010E26E5B600F90B21 /* SDLUIAccelerationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLUIAccelerationDelegate.h; sourceTree = "<group>"; };
 		FD689F020E26E5B600F90B21 /* SDLUIAccelerationDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDLUIAccelerationDelegate.m; sourceTree = "<group>"; };
-		FD689F0C0E26E5D900F90B21 /* SDL_uikitevents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_uikitevents.h; sourceTree = "<group>"; };
-		FD689F0D0E26E5D900F90B21 /* SDL_uikitevents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDL_uikitevents.m; sourceTree = "<group>"; };
-		FD689F0E0E26E5D900F90B21 /* SDL_uikitopengles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_uikitopengles.h; sourceTree = "<group>"; };
-		FD689F0F0E26E5D900F90B21 /* SDL_uikitopengles.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDL_uikitopengles.m; sourceTree = "<group>"; };
-		FD689F100E26E5D900F90B21 /* SDL_uikitvideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_uikitvideo.h; sourceTree = "<group>"; };
-		FD689F110E26E5D900F90B21 /* SDL_uikitvideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDL_uikitvideo.m; sourceTree = "<group>"; };
-		FD689F130E26E5D900F90B21 /* SDL_uikitview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDL_uikitview.m; sourceTree = "<group>"; };
-		FD689F140E26E5D900F90B21 /* SDL_uikitwindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_uikitwindow.h; sourceTree = "<group>"; };
-		FD689F150E26E5D900F90B21 /* SDL_uikitwindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDL_uikitwindow.m; sourceTree = "<group>"; };
-		FD689F160E26E5D900F90B21 /* SDL_uikitopenglview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_uikitopenglview.h; sourceTree = "<group>"; };
-		FD689F170E26E5D900F90B21 /* SDL_uikitopenglview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDL_uikitopenglview.m; sourceTree = "<group>"; };
-		FD689FCC0E26E9D400F90B21 /* SDL_uikitappdelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDL_uikitappdelegate.m; sourceTree = "<group>"; };
-		FD689FCD0E26E9D400F90B21 /* SDL_uikitappdelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_uikitappdelegate.h; sourceTree = "<group>"; };
 		FD8BD8190E27E25900B52CD5 /* SDL_sysloadso.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_sysloadso.c; sourceTree = "<group>"; };
 		FD99B91D0DD52EDC00FB1D6B /* SDL_dummyaudio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_dummyaudio.c; sourceTree = "<group>"; };
 		FD99B91E0DD52EDC00FB1D6B /* SDL_dummyaudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_dummyaudio.h; sourceTree = "<group>"; };
@@ -500,9 +467,6 @@
 		FDA685F60DF244C800F98A1A /* SDL_nullevents_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_nullevents_c.h; sourceTree = "<group>"; };
 		FDA685F90DF244C800F98A1A /* SDL_nullvideo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_nullvideo.c; sourceTree = "<group>"; };
 		FDA685FA0DF244C800F98A1A /* SDL_nullvideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_nullvideo.h; sourceTree = "<group>"; };
-		FDC261780E3A3FC8001C4554 /* keyinfotable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = keyinfotable.h; sourceTree = "<group>"; };
-		FDC656440E560DF800311C8E /* jumphack.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = jumphack.c; sourceTree = "<group>"; };
-		FDC656450E560DF800311C8E /* jumphack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jumphack.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -834,32 +798,6 @@
 			path = iphoneos;
 			sourceTree = "<group>";
 		};
-		FD689F090E26E5D900F90B21 /* uikit */ = {
-			isa = PBXGroup;
-			children = (
-				FDC656450E560DF800311C8E /* jumphack.h */,
-				FDC656440E560DF800311C8E /* jumphack.c */,
-				FD689F0C0E26E5D900F90B21 /* SDL_uikitevents.h */,
-				FD689F0D0E26E5D900F90B21 /* SDL_uikitevents.m */,
-				FD689F0E0E26E5D900F90B21 /* SDL_uikitopengles.h */,
-				FD689F0F0E26E5D900F90B21 /* SDL_uikitopengles.m */,
-				FD689F100E26E5D900F90B21 /* SDL_uikitvideo.h */,
-				FD689F110E26E5D900F90B21 /* SDL_uikitvideo.m */,
-				FDC261780E3A3FC8001C4554 /* keyinfotable.h */,
-				FD0BBFEF0E3933DD00D833B1 /* SDL_uikitview.h */,
-				FD689F130E26E5D900F90B21 /* SDL_uikitview.m */,
-				FD689F140E26E5D900F90B21 /* SDL_uikitwindow.h */,
-				FD689F150E26E5D900F90B21 /* SDL_uikitwindow.m */,
-				FD689F160E26E5D900F90B21 /* SDL_uikitopenglview.h */,
-				FD689F170E26E5D900F90B21 /* SDL_uikitopenglview.m */,
-				FD689FCD0E26E9D400F90B21 /* SDL_uikitappdelegate.h */,
-				FD689FCC0E26E9D400F90B21 /* SDL_uikitappdelegate.m */,
-				93CB792213FC5E5200BD3E05 /* SDL_uikitviewcontroller.h */,
-				93CB792513FC5F5300BD3E05 /* SDL_uikitviewcontroller.m */,
-			);
-			path = uikit;
-			sourceTree = "<group>";
-		};
 		FD8BD8150E27E25900B52CD5 /* loadso */ = {
 			isa = PBXGroup;
 			children = (
@@ -1091,7 +1029,6 @@
 		FDA682420DF2374D00F98A1A /* video */ = {
 			isa = PBXGroup;
 			children = (
-				FD689F090E26E5D900F90B21 /* uikit */,
 				FDA685F40DF244C800F98A1A /* dummy */,
 				FDA683000DF2374E00F98A1A /* SDL_blit.c */,
 				FDA683010DF2374E00F98A1A /* SDL_blit.h */,
@@ -1153,13 +1090,6 @@
 				FD5F9D300E0E08B3008E885B /* SDL_joystick_c.h in Headers */,
 				FD5F9D310E0E08B3008E885B /* SDL_sysjoystick.h in Headers */,
 				FD689F040E26E5B600F90B21 /* SDLUIAccelerationDelegate.h in Headers */,
-				FD689F1C0E26E5D900F90B21 /* SDL_uikitevents.h in Headers */,
-				FD689F1E0E26E5D900F90B21 /* SDL_uikitopengles.h in Headers */,
-				FD689F200E26E5D900F90B21 /* SDL_uikitvideo.h in Headers */,
-				FD689F240E26E5D900F90B21 /* SDL_uikitwindow.h in Headers */,
-				FD689F260E26E5D900F90B21 /* SDL_uikitopenglview.h in Headers */,
-				FD689FCF0E26E9D400F90B21 /* SDL_uikitappdelegate.h in Headers */,
-				FDC656490E560DF800311C8E /* jumphack.h in Headers */,
 				047677BD0EA76A31008ABAF1 /* SDL_syshaptic.h in Headers */,
 				046387420F0B5B7D0041FD65 /* SDL_blit_slow.h in Headers */,
 				006E9888119552DD001DE610 /* SDL_rwopsbundlesupport.h in Headers */,
@@ -1181,7 +1111,6 @@
 				04BAC09C1300C1290055DE28 /* SDL_assert_c.h in Headers */,
 				22C905CD13A22646003FE4E4 /* SDL_hints_c.h in Headers */,
 				56EA86FC13E9EC2B002E47EB /* SDL_coreaudio.h in Headers */,
-				93CB792313FC5E5200BD3E05 /* SDL_uikitviewcontroller.h in Headers */,
 				AA628ADC159369E3005138DD /* SDL_rotate.h in Headers */,
 				AA7558981595D55500BBD41B /* begin_code.h in Headers */,
 				AA7558991595D55500BBD41B /* close_code.h in Headers */,
@@ -1409,15 +1338,7 @@
 				FD5F9D2F0E0E08B3008E885B /* SDL_joystick.c in Sources */,
 				FD689F030E26E5B600F90B21 /* SDL_sysjoystick.m in Sources */,
 				FD689F050E26E5B600F90B21 /* SDLUIAccelerationDelegate.m in Sources */,
-				FD689F1D0E26E5D900F90B21 /* SDL_uikitevents.m in Sources */,
-				FD689F1F0E26E5D900F90B21 /* SDL_uikitopengles.m in Sources */,
-				FD689F210E26E5D900F90B21 /* SDL_uikitvideo.m in Sources */,
-				FD689F230E26E5D900F90B21 /* SDL_uikitview.m in Sources */,
-				FD689F250E26E5D900F90B21 /* SDL_uikitwindow.m in Sources */,
-				FD689F270E26E5D900F90B21 /* SDL_uikitopenglview.m in Sources */,
-				FD689FCE0E26E9D400F90B21 /* SDL_uikitappdelegate.m in Sources */,
 				FD8BD8250E27E25900B52CD5 /* SDL_sysloadso.c in Sources */,
-				FDC656480E560DF800311C8E /* jumphack.c in Sources */,
 				047677BB0EA76A31008ABAF1 /* SDL_syshaptic.c in Sources */,
 				047677BC0EA76A31008ABAF1 /* SDL_haptic.c in Sources */,
 				047AF1B30EA98D6C00811173 /* SDL_sysloadso.c in Sources */,
@@ -1448,7 +1369,6 @@
 				0402A85912FE70C600CECEE3 /* SDL_shaders_gles2.c in Sources */,
 				04BAC09D1300C1290055DE28 /* SDL_log.c in Sources */,
 				56EA86FB13E9EC2B002E47EB /* SDL_coreaudio.c in Sources */,
-				93CB792613FC5F5300BD3E05 /* SDL_uikitviewcontroller.m in Sources */,
 				AA628ADB159369E3005138DD /* SDL_rotate.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
