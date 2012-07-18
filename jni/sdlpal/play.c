@@ -120,13 +120,16 @@ PAL_GameUpdate(
             //
             // This event object can be triggered without manually exploring
             //
-//             int xxx = abs(PAL_X(gpGlobals->viewport) + PAL_X(gpGlobals->partyoffset) - p->x);
-//             int yyy = abs(PAL_Y(gpGlobals->viewport) + PAL_Y(gpGlobals->partyoffset) - p->y);
-//             int www = (p->wTriggerMode - kTriggerTouchNear) * 32 + 16;
+            int xxx = abs(PAL_X(gpGlobals->viewport) + PAL_X(gpGlobals->partyoffset) - p->x);
+            int yyy = abs(PAL_Y(gpGlobals->viewport) + PAL_Y(gpGlobals->partyoffset) - p->y);
+            int www = (p->wTriggerMode - kTriggerTouchNear) * 32 + 16;
              
+			if (p->wTriggerScript == 4643) {
+				xxx = xxx;
+			}
              
             if (abs(PAL_X(gpGlobals->viewport) + PAL_X(gpGlobals->partyoffset) - p->x) +
-               abs(PAL_Y(gpGlobals->viewport) + PAL_Y(gpGlobals->partyoffset) - p->y) * 2 <=
+               abs(PAL_Y(gpGlobals->viewport) + PAL_Y(gpGlobals->partyoffset) - p->y) * 2 <
                (p->wTriggerMode - kTriggerTouchNear) * 32 + 16)
             {
                //
@@ -483,8 +486,7 @@ PAL_Search(
 
 --*/
 {
-   int                x, y, xOffset, yOffset, dx, dy, dh, ex, ey, eh, i, k, l;
-   LPEVENTOBJECT      p;
+   int                x, y, xOffset, yOffset, i;
     BOOL ret = FALSE;
    PAL_POS            rgPos[13];
     PAL_POS           rgPosBack[13];

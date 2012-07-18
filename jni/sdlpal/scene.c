@@ -503,6 +503,7 @@ PAL_MakeScene(
 BOOL checkIsEventObjects(PAL_POS pos)
 {
     int x, y, h, xr, yr;
+	int i;
     
     if (PAL_X(pos) < 0 || PAL_X(pos) >= 2048 || PAL_Y(pos) < 0 || PAL_Y(pos) >= 2048)
     {
@@ -543,7 +544,7 @@ BOOL checkIsEventObjects(PAL_POS pos)
     //
     // Loop through all event objects in the current scene
     //
-    int i;
+    
     for (i = gpGlobals->g.rgScene[gpGlobals->wNumScene - 1].wEventObjectIndex;
          i < gpGlobals->g.rgScene[gpGlobals->wNumScene].wEventObjectIndex; i++)
     {
@@ -601,6 +602,7 @@ PAL_CheckObstacle(
 --*/
 {
    int x, y, h, xr, yr;
+   int tempx, tempy;
 
    if (PAL_X(pos) < 0 || PAL_X(pos) >= 2048 || PAL_Y(pos) < 0 || PAL_Y(pos) >= 2048)
    {
@@ -610,6 +612,8 @@ PAL_CheckObstacle(
    //
    // Check if the map tile at the specified position is blocking
    //
+   tempx = PAL_X(pos);
+   tempy = PAL_Y(pos);
    x = PAL_X(pos) / 32;
    y = PAL_Y(pos) / 16;
    h = 0;

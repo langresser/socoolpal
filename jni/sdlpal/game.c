@@ -19,7 +19,10 @@
 //
 
 #include "main.h"
+
+#ifdef __IPHONEOS__
 #include "iOSUtil.h"
+#endif
 
 static VOID
 PAL_GameStart(

@@ -21,8 +21,10 @@
 #include "main.h"
 #include "getopt.h"
 
+#ifdef __IPHONEOS__
 #include "iOSUtil.h"
 #include "CQCrashReport.h"
+#endif
 
 #ifdef PSP
 #include "main_PSP.h"
@@ -462,7 +464,11 @@ SDL_main(
 --*/
 {
    int wScreenWidth = 0, wScreenHeight = 0;
+   BOOL fullScreen = TRUE;
 
+#ifdef __WIN32__
+   fullScreen = FALSE;
+#endif
    UTIL_OpenLog();
     getScreenSize(&wScreenWidth, &wScreenHeight);
    //
@@ -471,7 +477,7 @@ SDL_main(
 #ifdef PSP
    sdlpal_psp_init();
 #endif
-   PAL_Init(wScreenWidth, wScreenHeight, TRUE);
+   PAL_Init(wScreenWidth, wScreenHeight, fullScreen);
     
     initButton();
 

@@ -445,10 +445,10 @@ char g_resource_dir[256] = {0};
 FILE* open_file(const char* file_name, const char* read_mode)
 {
     char szFileName[256] = {0};
-    strncpy(szFileName, file_name, sizeof(szFileName) - 1);
-
 	char szTemp[256] = {0};
 	FILE* fp = NULL;
+
+	strncpy(szFileName, file_name, sizeof(szFileName) - 1);
     my_strlwr(szFileName);
 
 	// 先查找资源目录，资源目录要求是可以读写的。如果有相同文件，优先读取资源目录下的。（更新文件）
@@ -530,4 +530,26 @@ UTIL_WriteLog(
    va_end(vaa);
 }
 
+#endif
+
+
+#ifdef __WIN32__
+void closeAds()
+{
+}
+
+void initButton()
+{
+}
+
+void getScreenSize(int* width, int* height)
+{
+	if (width) {
+		*width = 480;
+	}
+
+	if (height) {
+		*height = 320;
+	}
+}
 #endif

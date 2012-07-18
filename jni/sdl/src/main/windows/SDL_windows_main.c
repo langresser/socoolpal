@@ -135,6 +135,8 @@ OutOfMemory(void)
 #define console_main main
 #endif
 
+extern int SDL_mainLoop();
+
 /* This is where execution begins [console apps] */
 int
 console_main(int argc, char *argv[])
@@ -143,6 +145,7 @@ console_main(int argc, char *argv[])
 
     /* Run the application main() code */
     status = SDL_main(argc, argv);
+	SDL_mainLoop();
 
     /* Exit cleanly, calling atexit() functions */
     exit(status);
