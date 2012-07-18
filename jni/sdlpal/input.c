@@ -332,7 +332,7 @@ int GetMouseMoveDir(int nMouseX, int nMouseY)
 	int nHeroY = nScrH / 2;
 
 	int nDeltaX = nMouseX - nHeroX;
-	int nDeltaY = nMouseY - nHeroY;
+	int nDeltaY = nHeroY - nMouseY;
 
 	int nAbsDeltaX = abs(nDeltaX);
 	int nAbsDeltaY = abs(nDeltaY);
@@ -349,8 +349,6 @@ int GetMouseMoveDir(int nMouseX, int nMouseY)
 			} else {
 				nDir = eMoveDirNW;
 			}
-		} else if (nDeltaY == 0) {
-			nDir = eMoveDirRight;
 		} else {
 			// 第四象限,E;
 			if (nAbsDeltaX > nAbsDeltaY) {
@@ -361,7 +359,7 @@ int GetMouseMoveDir(int nMouseX, int nMouseY)
 				nDir = eMoveDirES;
 			}
 		}
-	} else if (nDeltaX < 0) {
+	} else {
 		if (nDeltaY > 0) {
 			// 第二象限,W;
 			if (nAbsDeltaX > nAbsDeltaY) {
@@ -371,10 +369,8 @@ int GetMouseMoveDir(int nMouseX, int nMouseY)
 			} else {
 				nDir = eMoveDirWN;
 			}
-		} else if (nDeltaY == 0) {
-			nDir = eMoveDirLeft;
 		} else {
-			// 第四象限,S;
+			// 第三象限,S;
 			if (nAbsDeltaX > nAbsDeltaY) {
 				nDir = eMoveDirSW;
 			} else if (nAbsDeltaX == nAbsDeltaY) {
@@ -382,12 +378,6 @@ int GetMouseMoveDir(int nMouseX, int nMouseY)
 			} else {
 				nDir = eMoveDirSE;
 			}
-		}
-	} else {
-		if (nDeltaY > 0) {
-			nDir = eMoveDirUp;
-		} else if (nDeltaY < 0) {
-			nDir = eMoveDirDown;
 		}
 	}
 
@@ -466,12 +456,7 @@ PAL_MouseEventFilter(
 		  g_InputState.controlType = CONTROL_TYPE_MOUSE_WALK;
 		  g_InputState.nMoveDir = GetMouseMoveDir(g_InputState.touchX, g_InputState.touchY);
 	  }
-           
-#if 0
-           printf("mouse down: %d  %d\n", g_InputState.touchX, g_InputState.touchY);
-#endif
-
-	  
+           	  
 	  switch (gridIndex)
 	  {
 	  case 2:
@@ -553,10 +538,6 @@ PAL_MouseEventFilter(
 	  }
            
            
-#if 0
-           printf("mouse up: %d  %d\n", g_InputState.touchX, g_InputState.touchY);
-#endif
-
 	  if (gridIndex == 4) {
 		  if (abs(lastReleasex - lastPressx) <= 25
 			  && abs(lastReleasey - lastPressy) <= 25) {
@@ -833,19 +814,7 @@ PAL_ClearKeyState(
     None.
 
 --*/
-{
-#if 0
-    if (g_InputState.touchEventType != TOUCH_NONE) {
-        printf("clear touch: %d\n", g_InputState.touchEventType);
-        
-        if (g_InputState.touchEventType == TOUCH_UP) {
-            int x = 0;
-            int y = 0;
-            y = x + 1;
-        }
-    }
-#endif
-    
+{   
    g_InputState.dwKeyPress = 0;
     g_InputState.touchEventType = TOUCH_NONE;   
 }

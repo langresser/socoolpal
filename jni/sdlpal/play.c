@@ -372,11 +372,17 @@ PAL_GameEquipItem(
    }
 }
 
-
-BOOL do_search(PAL_POS rgPos[13], BOOL front)
+BOOL do_search(PAL_POS rgPos[13])
 {
     int                dx, dy, dh, ex, ey, eh, i, k, l;
     LPEVENTOBJECT      p;
+	int heroX, heroY;
+	int offsetX, offsetY;
+	int npcDir;
+	int dir;
+	heroX = PAL_X(rgPos[0]);
+	heroY = PAL_Y(rgPos[0]);
+
     for (i = 0; i < 13; i++)
     {
         //
@@ -403,50 +409,58 @@ BOOL do_search(PAL_POS rgPos[13], BOOL front)
                 continue;
             }
             
+			offsetX = p->x - heroX;
+			offsetY = p->y - heroY;
+
+			dir = gpGlobals->wPartyDirection;
+			if (offsetX < 0 && offsetY < 0) {
+				dir = kDirWest;
+			}
+
+			if (offsetX >0 && offsetY > 0) {
+				dir = kDirEast;
+			}
+
+			if (offsetX < 0 && offsetY > 0) {
+				dir = kDirSouth;
+			}
+
+			if (offsetX > 0 && offsetY < 0) {
+				dir = kDirNorth;
+			}
+
+			if (offsetX == 0 && offsetY < 0) {
+				dir = (dir + 2) % 4;
+			}
+
+			if (offsetY == 0 && offsetX < 0) {
+				dir = (dir + 2) % 4;
+			}
+
+			gpGlobals->wPartyDirection = dir;
+			npcDir = (gpGlobals->wPartyDirection + 2) % 4; // face the party
             //
             // Adjust direction/gesture for party members and the event object
             //
-            if (front) {
-                if (p->nSpriteFrames * 4 > p->wCurrentFrameNum)
+
+			if (p->nSpriteFrames * 4 > p->wCurrentFrameNum)
+            {
+                p->wCurrentFrameNum = 0; // use standing gesture
+                p->wDirection = npcDir;
+                    
+                for (l = 0; l <= gpGlobals->wMaxPartyMemberIndex; l++)
                 {
-                    p->wCurrentFrameNum = 0; // use standing gesture
-                    p->wDirection = (gpGlobals->wPartyDirection + 2) % 4; // face the party
-                    
-                    for (l = 0; l <= gpGlobals->wMaxPartyMemberIndex; l++)
-                    {
-                        //
-                        // All party members should face the event object
-                        //
-                        gpGlobals->rgParty[l].wFrame = gpGlobals->wPartyDirection * 3;
-                    }
-                    
                     //
-                    // Redraw everything
+                    // All party members should face the event object
                     //
-                    PAL_MakeScene();
-                    VIDEO_UpdateScreen(NULL);
+                    gpGlobals->rgParty[l].wFrame = gpGlobals->wPartyDirection * 3;
                 }
-            } else {
-                if (p->nSpriteFrames * 4 > p->wCurrentFrameNum)
-                {
-                    p->wCurrentFrameNum = 0; // use standing gesture
-                    gpGlobals->wPartyDirection = (gpGlobals->wPartyDirection + 2) % 4;
-                    p->wDirection = (gpGlobals->wPartyDirection + 2) % 4; // face the party
                     
-                    for (l = 0; l <= gpGlobals->wMaxPartyMemberIndex; l++)
-                    {
-                        //
-                        // All party members should face the event object
-                        //
-                        gpGlobals->rgParty[l].wFrame = gpGlobals->wPartyDirection * 3;
-                    }
-                    
-                    //
-                    // Redraw everything
-                    //
-                    PAL_MakeScene();
-                    VIDEO_UpdateScreen(NULL);
-                }
+                //
+                // Redraw everything
+                //
+                PAL_MakeScene();
+                VIDEO_UpdateScreen(NULL);
             }
             
             //
@@ -467,7 +481,7 @@ BOOL do_search(PAL_POS rgPos[13], BOOL front)
     return FALSE;
 }
 
-VOID
+BOOL
 PAL_Search(
    VOID
 )
@@ -490,6 +504,8 @@ PAL_Search(
     BOOL ret = FALSE;
    PAL_POS            rgPos[13];
     PAL_POS           rgPosBack[13];
+	PAL_POS rgPosLeft[13];
+	PAL_POS rgPosRight[13];
 
    //
    // Get the party location
@@ -526,13 +542,49 @@ PAL_Search(
       x += xOffset;
       y += yOffset;
    }
-    ret = do_search(rgPos, TRUE);
-//    printf("check font: %d\n", ret);
+    ret = do_search(rgPos);
     if (ret) {
-        return;
+        return TRUE;
     }
+
+	// 检查左侧
+	x = PAL_X(gpGlobals->viewport) + PAL_X(gpGlobals->partyoffset);
+    y = PAL_Y(gpGlobals->viewport) + PAL_Y(gpGlobals->partyoffset);
+    rgPosLeft[0] = PAL_XY(x, y);
     
-    // 检查身后
+    for (i = 0; i < 4; i++)
+    {
+        rgPosLeft[i * 3 + 1] = PAL_XY(x + xOffset, y - yOffset);
+        rgPosLeft[i * 3 + 2] = PAL_XY(x, y - yOffset * 2);
+        rgPosLeft[i * 3 + 3] = PAL_XY(x + xOffset, y);
+        x += xOffset;
+        y -= yOffset;
+    }
+	ret = do_search(rgPosLeft);
+	if (ret) {
+		return TRUE;
+	}
+
+	// 检查右侧
+	x = PAL_X(gpGlobals->viewport) + PAL_X(gpGlobals->partyoffset);
+    y = PAL_Y(gpGlobals->viewport) + PAL_Y(gpGlobals->partyoffset);
+    rgPosRight[0] = PAL_XY(x, y);
+    
+    for (i = 0; i < 4; i++)
+    {
+        rgPosRight[i * 3 + 1] = PAL_XY(x - xOffset, y + yOffset);
+        rgPosRight[i * 3 + 2] = PAL_XY(x, y + yOffset * 2);
+        rgPosRight[i * 3 + 3] = PAL_XY(x - xOffset, y);
+        x -= xOffset;
+        y += yOffset;
+    }
+	ret = do_search(rgPosRight);
+    
+	if (ret) {
+		return TRUE;
+	}
+
+	// 检查身后
     x = PAL_X(gpGlobals->viewport) + PAL_X(gpGlobals->partyoffset);
     y = PAL_Y(gpGlobals->viewport) + PAL_Y(gpGlobals->partyoffset);
     rgPosBack[0] = PAL_XY(x, y);
@@ -546,9 +598,12 @@ PAL_Search(
         y -= yOffset;
     }
     
-    ret = do_search(rgPosBack, FALSE);
-    
-//    printf("check back: %d\n", ret);
+    ret = do_search(rgPosBack);
+	if (ret) {
+		return TRUE;
+	}
+
+	return FALSE;
 }
 
 

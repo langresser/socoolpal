@@ -50,13 +50,9 @@ typedef enum tagMOVE_DIRECTION
 {
 	eMoveDirUnknown,
 	eMoveDirNorth,
-	eMoveDirRight,
 	eMoveDirEast,
-	eMoveDirDown,
 	eMoveDirSouth,
-	eMoveDirLeft,
 	eMoveDirWest,
-	eMoveDirUp,
 	eMoveDirSW,
 	eMoveDirWS,
 	eMoveDirWN,

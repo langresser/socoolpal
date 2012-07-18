@@ -833,8 +833,8 @@ int GetMouseMoveDirOffset(int nDir, int* pOffsetX, int* pOffsetY)
 	int ySource = PAL_Y(gpGlobals->viewport) + PAL_Y(gpGlobals->partyoffset);
 	int nDir1 = nDir;
 	int nDir2 = nDir;
-	int nArrOffsetX[] = { 0, 1, 1, 1, 0, -1, -1, -1, 0 };
-	int nArrOffsetY[] = { 0, 1, 0, -1, -1, -1, 0, 1, 1 };
+	int nArrOffsetX[] = { 0, 1, 1, -1, -1};
+	int nArrOffsetY[] = { 0, -1, 1, 1, -1};
 	int nOffsetX = 0;
 	int nOffsetY = 0;
 	int nTargetX;
@@ -968,7 +968,6 @@ PAL_UpdateParty(
 
       xTarget = xSource + xOffset;
       yTarget = ySource + yOffset;
-
 
       //
       // Check for obstacles on the destination location
