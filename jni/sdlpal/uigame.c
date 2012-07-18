@@ -652,7 +652,7 @@ PAL_SystemMenu(
 	  if (g_fNoMusic) {
 		  g_iVolume = 0;
 	  } else {
-		 g_iVolume = SDL_MIX_MAXVOLUME * 0.2;
+		 g_iVolume = SDL_MIX_MAXVOLUME * 0.5;
 	  }
 	  
       break;

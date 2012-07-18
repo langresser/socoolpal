@@ -7,7 +7,6 @@
 //
 #if 1
 #import <Foundation/Foundation.h>
-#import "iOSUtil.h"
 #include "main.h"
 
 #import "video/uikit/SDL_uikitwindow.h"
@@ -15,11 +14,15 @@
 #import "MobClick.h"
 #import "UMFeedback.h"
 
+extern BOOL g_showSystemMenu;
+
 @interface MyDelegate : NSObject<AdMoGoDelegate>
 {
     UIButton* helpBtn;
     UIButton* feedBack;
     UIButton* btnBBS;
+    UIButton* btnMenu;
+    UIButton* btnSearch;
     UITextView* textView;
     
     AdMoGoView *adView;
@@ -30,16 +33,95 @@
 -(void)onClickHelp;
 -(void)onClickFeedBack;
 -(void)onClickBBS;
+-(void)onClickMenu;
 
 -(void)initAds;
 -(void)showAds;
 -(void)closeAds;
+
+-(void)showMenuBtn;
+-(void)hideMenuBtn;
 @end
 
 MyDelegate* g_delegate = nil;
 
 @implementation MyDelegate
 @synthesize helpBtn;
+-(void)showMenuBtn
+{
+    if (btnMenu == nil) {
+        btnMenu = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        btnMenu.frame = CGRectMake(-10, 296, 60, 24);
+        [btnMenu setTitle:@"菜单" forState:UIControlStateNormal];
+        [btnMenu setTitle:@"菜单" forState:UIControlStateHighlighted];
+        btnMenu.alpha = 0.5;
+        [btnMenu addTarget:self action:@selector(onClickMenu) forControlEvents:UIControlEventTouchUpInside];
+        
+        SDL_Window* window = SDL_GetWindowFromID(g_windowId);
+        if (!window) {
+            return;
+        }
+        
+        SDL_WindowData* windowData = (SDL_WindowData*)window->driverdata;
+        UIView* mainView = windowData->viewcontroller.view;
+        [mainView addSubview:btnMenu];
+    }
+    
+    if (btnMenu.hidden == YES) {
+        btnMenu.hidden = NO;
+    }
+    
+//    if (btnSearch == nil) {
+//        btnSearch = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+//        btnSearch.frame = CGRectMake(430, 296, 60, 24);
+//        [btnSearch setTitle:@"调查" forState:UIControlStateNormal];
+//        [btnSearch setTitle:@"调查" forState:UIControlStateHighlighted];
+//        btnSearch.alpha = 0.5;
+//        [btnSearch addTarget:self action:@selector(onClickSearch) forControlEvents:UIControlEventTouchUpInside];
+//        
+//        SDL_Window* window = SDL_GetWindowFromID(g_windowId);
+//        if (!window) {
+//            return;
+//        }
+//        
+//        SDL_WindowData* windowData = (SDL_WindowData*)window->driverdata;
+//        UIView* mainView = windowData->viewcontroller.view;
+//        [mainView addSubview:btnSearch];
+//    }
+//    
+//    if (btnSearch.hidden == YES) {
+//        btnSearch.hidden = NO;
+//    }
+}
+
+-(void)hideMenuBtn
+{
+    if (!btnMenu || btnMenu.hidden == YES) {
+        return;
+    }
+    
+    btnMenu.hidden = YES;
+    
+//    if (!btnSearch || btnSearch.hidden == YES) {
+//        return;
+//    }
+//    btnSearch.hidden = YES;
+}
+
+-(void)onClickMenu
+{
+    if (g_showSystemMenu) {
+        g_InputState.dwKeyPress |= kKeyMenu;
+    } else {
+        g_InputState.dwKeyPress |= kKeyMainMenu;
+    }
+}
+
+-(void)onClickSearch
+{
+    g_InputState.dwKeyPress |= kKeyMainSearch;
+}
+
 -(void)onClickHelp
 {
     SDL_Window* window = SDL_GetWindowFromID(g_windowId);
@@ -70,8 +152,8 @@ MyDelegate* g_delegate = nil;
         
         btnBBS = [UIButton buttonWithType:UIButtonTypeRoundedRect];
         btnBBS.frame = CGRectMake(1, 70, 70, 24);
-        [btnBBS setTitle:@"论坛" forState:UIControlStateNormal];
-        [btnBBS setTitle:@"论坛" forState:UIControlStateHighlighted];
+        [btnBBS setTitle:@"论坛交流" forState:UIControlStateNormal];
+        [btnBBS setTitle:@"论坛交流" forState:UIControlStateHighlighted];
         btnBBS.alpha = 0.8;
         [btnBBS addTarget:self  action:@selector(onClickBBS) forControlEvents:UIControlEventTouchUpInside];
         
@@ -225,6 +307,16 @@ void hideButton()
     if (btn) {
         [btn removeFromSuperview];
     }
+}
+
+void showMenu()
+{
+    [[MyDelegate sharedInstance] showMenuBtn];
+}
+
+void hideMenu()
+{
+    [[MyDelegate sharedInstance] hideMenuBtn];
 }
 
 void showAds()

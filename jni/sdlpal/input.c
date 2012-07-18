@@ -490,10 +490,8 @@ PAL_MouseEventFilter(
 		   break;
 	   }
 
-	  if (4 != gridIndex) {
-		  g_InputState.controlType = CONTROL_TYPE_MOUSE_WALK;
-		  g_InputState.nMoveDir = GetMouseMoveDir(lpEvent->button.x * 320.0 / g_wInitialWidth, lpEvent->button.y * 200.0 / g_wInitialHeight);
-	  }
+       g_InputState.controlType = CONTROL_TYPE_MOUSE_WALK;
+       g_InputState.nMoveDir = GetMouseMoveDir(lpEvent->button.x * 320.0 / g_wInitialWidth, lpEvent->button.y * 200.0 / g_wInitialHeight);
 
 	  switch (gridIndex)
 	  {
@@ -543,8 +541,6 @@ PAL_MouseEventFilter(
 			  && abs(lastReleasey - lastPressy) <= 25) {
 			if (lastReleaseButtonTime - lastPressButtonTime <= 500) {
 				g_InputState.dwKeyPress |= kKeyMainSearch;
-			} else {
-				g_InputState.dwKeyPress |= kKeyMainMenu;
 			}
 		  }
 	  }

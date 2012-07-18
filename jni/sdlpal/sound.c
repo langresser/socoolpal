@@ -43,7 +43,7 @@ BOOL         g_fUseMidi = FALSE;
 
 static BOOL  g_fUseWav = FALSE;
 
-INT          g_iVolume  = SDL_MIX_MAXVOLUME * 0.2;
+INT          g_iVolume  = SDL_MIX_MAXVOLUME * 0.5;
 
 typedef struct tagSNDPLAYER
 {
@@ -259,11 +259,8 @@ SOUND_FillAudio(
       // Mix as much data as possible
       //
       len = (len > gSndPlayer.audio_len[i]) ? gSndPlayer.audio_len[i] : len;
-#ifdef __SYMBIAN32__
+
       SDL_MixAudio(stream, gSndPlayer.pos[i], len, g_iVolume);
-#else
-      SDL_MixAudio(stream, gSndPlayer.pos[i], len, SDL_MIX_MAXVOLUME);
-#endif
       gSndPlayer.pos[i] += len;
       gSndPlayer.audio_len[i] -= len;
    }

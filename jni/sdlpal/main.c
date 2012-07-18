@@ -21,11 +21,6 @@
 #include "main.h"
 #include "getopt.h"
 
-#ifdef __IPHONEOS__
-#include "iOSUtil.h"
-#include "CQCrashReport.h"
-#endif
-
 #ifdef PSP
 #include "main_PSP.h"
 #endif

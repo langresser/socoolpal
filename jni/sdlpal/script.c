@@ -2997,6 +2997,7 @@ PAL_RunTriggerScript(
    fEnded = FALSE;
    g_fUpdatedInBattle = FALSE;
     g_hasInGame = FALSE;
+    hideMenu();
 
    if (wEventObjectID == 0xFFFF)
    {

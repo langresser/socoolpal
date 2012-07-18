@@ -460,7 +460,6 @@
 		3B79C64015B4839800CE706A /* LBSSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = LBSSDK.framework; sourceTree = "<group>"; };
 		3B79C64F15B4A86100CE706A /* CQCrashReport.h */ = {isa = PBXFileReference; fileEncoding = 2147486000; lastKnownFileType = sourcecode.c.h; path = CQCrashReport.h; sourceTree = "<group>"; };
 		3B79C65015B4A86100CE706A /* CQCrashReport.mm */ = {isa = PBXFileReference; fileEncoding = 2147486000; lastKnownFileType = sourcecode.cpp.objcpp; path = CQCrashReport.mm; sourceTree = "<group>"; };
-		3BB3E43315B32DA8007B9657 /* iOSUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iOSUtil.h; sourceTree = "<group>"; };
 		3BB3E43415B32DA8007B9657 /* iOSUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iOSUtil.m; sourceTree = "<group>"; };
 		3BB3E4E215B342CE007B9657 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		3BB3E52A15B34382007B9657 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -798,7 +797,6 @@
 			children = (
 				3B79C64F15B4A86100CE706A /* CQCrashReport.h */,
 				3B79C65015B4A86100CE706A /* CQCrashReport.mm */,
-				3BB3E43315B32DA8007B9657 /* iOSUtil.h */,
 				3BB3E43415B32DA8007B9657 /* iOSUtil.m */,
 			);
 			name = Classes;

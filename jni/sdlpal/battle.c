@@ -381,6 +381,7 @@ PAL_BattleMain(
    PAL_ClearKeyState();
 
     g_hasInGame = FALSE;
+    hideMenu();
    //
    // Run the main battle loop.
    //
@@ -1150,6 +1151,7 @@ PAL_StartBattle(
    SHORT          sPrevWaveProgression;
     extern BOOL g_hasInGame;
     g_hasInGame = FALSE;
+    hideMenu();
 
    //
    // Set the screen waving effects
@@ -1404,6 +1406,7 @@ PAL_StartBattle(
    // Run the main battle routine.
    //
    g_hasInGame = FALSE;
+    hideMenu();
    i = PAL_BattleMain();
 
 #ifdef PAL_ALLOW_KEYREPEAT

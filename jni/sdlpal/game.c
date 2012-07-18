@@ -20,10 +20,6 @@
 
 #include "main.h"
 
-#ifdef __IPHONEOS__
-#include "iOSUtil.h"
-#endif
-
 static VOID
 PAL_GameStart(
    VOID
@@ -137,5 +133,9 @@ PAL_GameMain(
       // Run the main frame routine.
       //
       PAL_StartFrame();
+       
+       if (g_hasInGame && g_InputState.touchEventType == TOUCH_NONE) {
+           showMenu();
+       }
    }
 }

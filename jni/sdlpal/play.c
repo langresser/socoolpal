@@ -23,6 +23,8 @@
 
 #include "main.h"
 
+BOOL g_showSystemMenu = FALSE;
+
 VOID
 PAL_GameUpdate(
    BOOL       fTrigger
@@ -120,14 +122,11 @@ PAL_GameUpdate(
             //
             // This event object can be triggered without manually exploring
             //
-            int xxx = abs(PAL_X(gpGlobals->viewport) + PAL_X(gpGlobals->partyoffset) - p->x);
-            int yyy = abs(PAL_Y(gpGlobals->viewport) + PAL_Y(gpGlobals->partyoffset) - p->y);
-            int www = (p->wTriggerMode - kTriggerTouchNear) * 32 + 16;
+//            int xxx = abs(PAL_X(gpGlobals->viewport) + PAL_X(gpGlobals->partyoffset) - p->x);
+//            int yyy = abs(PAL_Y(gpGlobals->viewport) + PAL_Y(gpGlobals->partyoffset) - p->y);
+//            int www = (p->wTriggerMode - kTriggerTouchNear) * 32 + 16;
              
-			if (p->wTriggerScript == 4643) {
-				xxx = xxx;
-			}
-             
+            
             if (abs(PAL_X(gpGlobals->viewport) + PAL_X(gpGlobals->partyoffset) - p->x) +
                abs(PAL_Y(gpGlobals->viewport) + PAL_Y(gpGlobals->partyoffset) - p->y) * 2 <
                (p->wTriggerMode - kTriggerTouchNear) * 32 + 16)
@@ -658,7 +657,9 @@ PAL_StartFrame(
       //
       // Show the in-game menu
       //
+       g_showSystemMenu = TRUE;
       PAL_InGameMenu();
+       g_showSystemMenu = FALSE;
    }
    else if (g_InputState.dwKeyPress & kKeyUseItem)
    {

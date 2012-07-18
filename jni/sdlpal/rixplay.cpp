@@ -75,10 +75,8 @@ RIX_FillBuffer(
 
 --*/
 {
-   INT       i, l, oldlen, volume = SDL_MIX_MAXVOLUME / 2;
+   INT       i, l, oldlen, volume = g_iVolume;
    UINT      t = SDL_GetTicks();
-
-   volume = g_iVolume;
 
    oldlen = len;
 
