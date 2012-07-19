@@ -542,6 +542,14 @@ void initButton()
 {
 }
 
+void hideMenu()
+{
+}
+
+void showMenu()
+{
+}
+
 void getScreenSize(int* width, int* height)
 {
 	if (width) {

@@ -488,6 +488,8 @@ SDL_RunAudio(void *devicep)
                 }
             }
 
+			SDL_memset(stream, silence, stream_len);
+
             SDL_mutexP(device->mixer_lock);
             (*fill) (udata, stream, stream_len);
             SDL_mutexV(device->mixer_lock);

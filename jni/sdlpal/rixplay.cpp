@@ -363,14 +363,6 @@ RIX_Play(
    DWORD t = SDL_GetTicks();
    gpRixPlayer->fNextLoop = fLoop;
     
-    if (!g_isPlayingMusic) {
-        //
-        // Let the callback function run so that musics will be played.
-        //
-        SDL_PauseAudio(0);
-        g_isPlayingMusic = TRUE;
-    }
-
    if (iNumRIX == gpRixPlayer->iCurrentMusic && !g_fNoMusic)
    {
       return;
