@@ -269,24 +269,20 @@ X11_CreateWindow(_THIS, SDL_Window * window)
     Atom wmstate_atoms[3];
     Uint32 fevent = 0;
 
-#if SDL_VIDEO_OPENGL_GLX
+#if SDL_VIDEO_OPENGL_GLX || SDL_VIDEO_OPENGL_ES || SDL_VIDEO_OPENGL_ES2
     if (window->flags & SDL_WINDOW_OPENGL) {
         XVisualInfo *vinfo;
 
-        vinfo = X11_GL_GetVisual(_this, display, screen);
-        if (!vinfo) {
-            return -1;
-        }
-        visual = vinfo->visual;
-        depth = vinfo->depth;
-        XFree(vinfo);
-    } else
+#if SDL_VIDEO_OPENGL_ES || SDL_VIDEO_OPENGL_ES2        
+        if (_this->gl_config.use_egl == 1) {
+            vinfo = X11_GLES_GetVisual(_this, display, screen);
+        } else
 #endif
-#if SDL_VIDEO_OPENGL_ES || SDL_VIDEO_OPENGL_ES2
-    if (window->flags & SDL_WINDOW_OPENGL) {
-        XVisualInfo *vinfo;
-
-        vinfo = X11_GLES_GetVisual(_this, display, screen);
+        {
+#if SDL_VIDEO_OPENGL_GLX
+            vinfo = X11_GL_GetVisual(_this, display, screen);
+#endif
+        }
         if (!vinfo) {
             return -1;
         }

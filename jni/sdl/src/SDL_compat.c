@@ -464,8 +464,13 @@ SDL_SetVideoMode(int width, int height, int bpp, Uint32 flags)
 {
     SDL_DisplayMode desktop_mode;
     int display = GetVideoDisplay();
-    int window_x = 0;//SDL_WINDOWPOS_UNDEFINED_DISPLAY(display);
-    int window_y = 0;//SDL_WINDOWPOS_UNDEFINED_DISPLAY(display);
+#ifdef __WIN32__
+    int window_x = SDL_WINDOWPOS_UNDEFINED_DISPLAY(display);
+    int window_y = SDL_WINDOWPOS_UNDEFINED_DISPLAY(display);
+#else
+	int window_x = 0;//SDL_WINDOWPOS_UNDEFINED_DISPLAY(display);
+	int window_y = 0;//SDL_WINDOWPOS_UNDEFINED_DISPLAY(display);
+#endif
     int window_w;
     int window_h;
     Uint32 window_flags;

@@ -188,11 +188,10 @@ UIKit_CreateWindow(_THIS, SDL_Window *window)
     /* ignore the size user requested, and make a fullscreen window */
     // !!! FIXME: can we have a smaller view?
     UIWindow *uiwindow = [UIWindow alloc];
-//    if (window->flags & (SDL_WINDOW_FULLSCREEN|SDL_WINDOW_BORDERLESS))
-//        uiwindow = [uiwindow initWithFrame:[data->uiscreen bounds]];
-//    else
-//        uiwindow = [uiwindow initWithFrame:[data->uiscreen applicationFrame]];
-    uiwindow = [uiwindow initWithFrame:[data->uiscreen bounds]];
+    if (window->flags & (SDL_WINDOW_FULLSCREEN|SDL_WINDOW_BORDERLESS))
+        uiwindow = [uiwindow initWithFrame:[data->uiscreen bounds]];
+    else
+        uiwindow = [uiwindow initWithFrame:[data->uiscreen applicationFrame]];
 
     // put the window on an external display if appropriate. This implicitly
     //  does [uiwindow setframe:[uiscreen bounds]], so don't do it on the

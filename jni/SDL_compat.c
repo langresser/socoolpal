@@ -24,6 +24,7 @@
 
 #include "SDL.h"
 #include "SDL_syswm.h"
+#include "SDL_compat.h"
 
 #include "video/SDL_sysvideo.h"
 #include "video/SDL_pixels_c.h"

@@ -185,8 +185,8 @@ WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPTSTR szCmdLine, int sw)
 #else
     /* Grab the command line */
     bufp = GetCommandLine();
-    nLen = SDL_strlen(bufp) + 1;
-    cmdline = SDL_stack_alloc(char, nLen);
+    nLen = strlen(bufp) + 1;
+    cmdline = malloc(4 * nLen);
     if (cmdline == NULL) {
         return OutOfMemory();
     }
@@ -195,7 +195,7 @@ WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPTSTR szCmdLine, int sw)
 
     /* Parse it into argv and argc */
     argc = ParseCommandLine(cmdline, NULL);
-    argv = SDL_stack_alloc(char *, argc + 1);
+    argv = malloc(4 * (argc + 1));
     if (argv == NULL) {
         return OutOfMemory();
     }
