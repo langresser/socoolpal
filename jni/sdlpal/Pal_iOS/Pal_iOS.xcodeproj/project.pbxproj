@@ -89,7 +89,7 @@
 		3B37ECF015B300A80091E824 /* wor16.asc in Resources */ = {isa = PBXBuildFile; fileRef = 3B37ECD315B300A80091E824 /* wor16.asc */; };
 		3B37ECF115B300A80091E824 /* wor16.fon in Resources */ = {isa = PBXBuildFile; fileRef = 3B37ECD415B300A80091E824 /* wor16.fon */; };
 		3B37ECF215B300A80091E824 /* word.dat in Resources */ = {isa = PBXBuildFile; fileRef = 3B37ECD515B300A80091E824 /* word.dat */; };
-		3B37ED3E15B31A800091E824 /* SDL_compat.c in Sources */ = {isa = PBXBuildFile; fileRef = 3B37ED3C15B31A800091E824 /* SDL_compat.c */; };
+		3B67E13915B864E300C71522 /* SDL_compat.c in Sources */ = {isa = PBXBuildFile; fileRef = 3B67E13715B864E300C71522 /* SDL_compat.c */; };
 		3B713CB415A9F71200A63662 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B713CB315A9F71200A63662 /* UIKit.framework */; };
 		3B713CB615A9F71200A63662 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B713CB515A9F71200A63662 /* Foundation.framework */; };
 		3B713CB815A9F71200A63662 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B713CB715A9F71200A63662 /* CoreGraphics.framework */; };
@@ -158,7 +158,6 @@
 		3B713D9C15A9F89A00A63662 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B713D9B15A9F89A00A63662 /* AudioToolbox.framework */; };
 		3B713D9E15A9F8A300A63662 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B713D9D15A9F8A300A63662 /* QuartzCore.framework */; };
 		3B79C64115B4839800CE706A /* LBSSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B79C64015B4839800CE706A /* LBSSDK.framework */; };
-		3B79C65115B4A86100CE706A /* CQCrashReport.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3B79C65015B4A86100CE706A /* CQCrashReport.mm */; };
 		3BB3E43515B32DA9007B9657 /* iOSUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB3E43415B32DA8007B9657 /* iOSUtil.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		3BB3E4E315B342CE007B9657 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BB3E4E215B342CE007B9657 /* CoreLocation.framework */; };
 		3BB3E52B15B34382007B9657 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BB3E52A15B34382007B9657 /* SystemConfiguration.framework */; };
@@ -331,8 +330,8 @@
 		3B37ECD315B300A80091E824 /* wor16.asc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = wor16.asc; path = ../../res/wor16.asc; sourceTree = "<group>"; };
 		3B37ECD415B300A80091E824 /* wor16.fon */ = {isa = PBXFileReference; lastKnownFileType = file; name = wor16.fon; path = ../../res/wor16.fon; sourceTree = "<group>"; };
 		3B37ECD515B300A80091E824 /* word.dat */ = {isa = PBXFileReference; lastKnownFileType = file; name = word.dat; path = ../../res/word.dat; sourceTree = "<group>"; };
-		3B37ED3C15B31A800091E824 /* SDL_compat.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = SDL_compat.c; path = ../../SDL_compat.c; sourceTree = "<group>"; };
-		3B37ED3D15B31A800091E824 /* SDL_compat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_compat.h; path = ../../SDL_compat.h; sourceTree = "<group>"; };
+		3B67E13715B864E300C71522 /* SDL_compat.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = SDL_compat.c; path = ../../../SDL_compat.c; sourceTree = "<group>"; };
+		3B67E13815B864E300C71522 /* SDL_compat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_compat.h; path = ../../../SDL_compat.h; sourceTree = "<group>"; };
 		3B713CAF15A9F71200A63662 /* Pal_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pal_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B713CB315A9F71200A63662 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		3B713CB515A9F71200A63662 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -458,8 +457,6 @@
 		3B713D9B15A9F89A00A63662 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		3B713D9D15A9F8A300A63662 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		3B79C64015B4839800CE706A /* LBSSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = LBSSDK.framework; sourceTree = "<group>"; };
-		3B79C64F15B4A86100CE706A /* CQCrashReport.h */ = {isa = PBXFileReference; fileEncoding = 2147486000; lastKnownFileType = sourcecode.c.h; path = CQCrashReport.h; sourceTree = "<group>"; };
-		3B79C65015B4A86100CE706A /* CQCrashReport.mm */ = {isa = PBXFileReference; fileEncoding = 2147486000; lastKnownFileType = sourcecode.cpp.objcpp; path = CQCrashReport.mm; sourceTree = "<group>"; };
 		3BB3E43415B32DA8007B9657 /* iOSUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iOSUtil.m; sourceTree = "<group>"; };
 		3BB3E4E215B342CE007B9657 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		3BB3E52A15B34382007B9657 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -795,8 +792,6 @@
 		3B3C904B15AE006C00976B55 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				3B79C64F15B4A86100CE706A /* CQCrashReport.h */,
-				3B79C65015B4A86100CE706A /* CQCrashReport.mm */,
 				3BB3E43415B32DA8007B9657 /* iOSUtil.m */,
 			);
 			name = Classes;
@@ -881,8 +876,8 @@
 		3B713CD815A9F78200A63662 /* Src */ = {
 			isa = PBXGroup;
 			children = (
-				3B37ED3C15B31A800091E824 /* SDL_compat.c */,
-				3B37ED3D15B31A800091E824 /* SDL_compat.h */,
+				3B67E13715B864E300C71522 /* SDL_compat.c */,
+				3B67E13815B864E300C71522 /* SDL_compat.h */,
 				3B713D0015A9F7D900A63662 /* ascii.h */,
 				3B713D0115A9F7D900A63662 /* battle.c */,
 				3B713D0715A9F7D900A63662 /* fight.h */,
@@ -1258,7 +1253,6 @@
 				3B713D8315A9F7D900A63662 /* util.c in Sources */,
 				3B713D8415A9F7D900A63662 /* video.c in Sources */,
 				3B713D8515A9F7D900A63662 /* yj1.c in Sources */,
-				3B37ED3E15B31A800091E824 /* SDL_compat.c in Sources */,
 				3BB3E43515B32DA9007B9657 /* iOSUtil.m in Sources */,
 				3B2D114915B4803700DE7816 /* AdMoGoAdapterAdwo.m in Sources */,
 				3B2D115715B4803700DE7816 /* AdMoGoAdapterDoMob.m in Sources */,
@@ -1275,7 +1269,6 @@
 				3B2D119015B4829500DE7816 /* CJSONScanner.m in Sources */,
 				3B2D119115B4829500DE7816 /* CJSONSerializer.m in Sources */,
 				3B2D119215B4829500DE7816 /* CSerializedJSONData.m in Sources */,
-				3B79C65115B4A86100CE706A /* CQCrashReport.mm in Sources */,
 				3B22854515B5CC8C00C68AAA /* jumphack.c in Sources */,
 				3B22854615B5CC8C00C68AAA /* SDL_uikitappdelegate.m in Sources */,
 				3B22854715B5CC8C00C68AAA /* SDL_uikitevents.m in Sources */,
@@ -1285,6 +1278,7 @@
 				3B22854B15B5CC8C00C68AAA /* SDL_uikitview.m in Sources */,
 				3B22854C15B5CC8C00C68AAA /* SDL_uikitviewcontroller.m in Sources */,
 				3B22854D15B5CC8C00C68AAA /* SDL_uikitwindow.m in Sources */,
+				3B67E13915B864E300C71522 /* SDL_compat.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

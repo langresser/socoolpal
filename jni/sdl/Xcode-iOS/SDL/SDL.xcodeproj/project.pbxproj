@@ -1482,6 +1482,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				GCC_THUMB_SUPPORT = NO;
+				HEADER_SEARCH_PATHS = ../../../;
 				PRODUCT_NAME = SDL2;
 				SKIP_INSTALL = YES;
 			};
@@ -1492,6 +1493,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_THUMB_SUPPORT = NO;
+				HEADER_SEARCH_PATHS = ../../../;
 				PRODUCT_NAME = SDL2;
 				SKIP_INSTALL = YES;
 			};

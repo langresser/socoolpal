@@ -280,6 +280,8 @@ outputCallback(void *inRefCon,
         while (remaining > 0) {
             if (this->hidden->bufferOffset >= this->hidden->bufferSize) {
                 /* Generate the data */
+                SDL_memset(this->hidden->buffer, this->spec.silence,
+                           this->hidden->bufferSize);
                 SDL_mutexP(this->mixer_lock);
                 (*this->spec.callback)(this->spec.userdata,
                             this->hidden->buffer, this->hidden->bufferSize);

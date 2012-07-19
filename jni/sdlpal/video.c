@@ -92,7 +92,7 @@ VIDEO_Init(
    gpScreenReal = SDL_SetVideoMode(320, 240, 8, SDL_SWSURFACE | SDL_FULLSCREEN);
 #elif defined (__IPHONEOS__)
     // SDL_FULLSCREEN¿ØÖÆÒþ²Øtitlebar
-    gpScreenReal = SDL_SetVideoMode(wScreenWidth, wScreenHeight, 8, SDL_FULLSCREEN);
+    gpScreenReal = SDL_SetVideoMode(wScreenWidth, wScreenHeight, 8, SDL_FULLSCREEN | SDL_WINDOW_BORDERLESS);
 #else
    gpScreenReal = SDL_SetVideoMode(wScreenWidth, wScreenHeight, 8,
       SDL_HWSURFACE | SDL_RESIZABLE | (fFullScreen ? SDL_FULLSCREEN : 0));
