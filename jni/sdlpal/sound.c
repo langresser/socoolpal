@@ -354,7 +354,7 @@ SOUND_OpenAudio(
    gSndPlayer.lock = SDL_CreateMutex();
 #endif
 
-    SDL_PauseAudio(1);
+    SDL_PauseAudio(0);
    return 0;
 }
 
