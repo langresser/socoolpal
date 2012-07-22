@@ -80,7 +80,7 @@ extern "C"
 #elif defined (ANDROID)
 #undef  _WIN32
 #undef  SDL_INIT_JOYSTICK
-#define SDL_INIT_JOYSTICK     0
+#define SDL_INIT_JOYSTICK     1
 #define PAL_HAS_MOUSE         1
 
 #elif defined __IPHONEOS__

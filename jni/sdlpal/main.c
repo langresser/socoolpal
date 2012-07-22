@@ -435,6 +435,20 @@ PAL_SplashScreen(
    PAL_FadeOut(1);
 }
 
+int SDL_mainLoop()
+{
+    //
+    // Show the trademark screen and splash screen
+    //
+    //   PAL_TrademarkScreen();
+#ifndef _DEBUG
+    PAL_SplashScreen();
+#endif
+    
+    PAL_GameMain();
+    return -1;
+}
+
 // 此处的main会被定义为SDL_main，进行sdl的初始化流程
 int
 SDL_main(
@@ -476,19 +490,11 @@ SDL_main(
     
     initButton();
 
+
+#ifdef __ANDROID__
+    SDL_mainLoop();
+#endif
    return 255;
 }
 
-int SDL_mainLoop()
-{
-    //
-    // Show the trademark screen and splash screen
-    //
-    //   PAL_TrademarkScreen();
-#ifndef _DEBUG
-    PAL_SplashScreen();
-#endif
-    
-    PAL_GameMain();
-    return -1;
-}
+

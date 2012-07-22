@@ -320,11 +320,10 @@ PAL_SceneFade(
          }
          VIDEO_SetPalette(newpalette);
 
-         while (SDL_PollEvent(NULL));
-
+		 PAL_ProcessEvent();
          while (SDL_GetTicks() < time)
          {
-            while (SDL_PollEvent(NULL));
+			PAL_ProcessEvent();
             SDL_Delay(5);
          }
       }
@@ -355,11 +354,11 @@ PAL_SceneFade(
          }
          VIDEO_SetPalette(newpalette);
 
-         while (SDL_PollEvent(NULL));
+         PAL_ProcessEvent();
 
          while (SDL_GetTicks() < time)
          {
-            while (SDL_PollEvent(NULL));
+            PAL_ProcessEvent();
             SDL_Delay(5);
          }
       }
@@ -434,11 +433,11 @@ PAL_PaletteFade(
          VIDEO_UpdateScreen(NULL);
       }
 
-      while (SDL_PollEvent(NULL));
+     PAL_ProcessEvent();
 
       while (SDL_GetTicks() < time)
       {
-         while (SDL_PollEvent(NULL));
+         PAL_ProcessEvent();
          SDL_Delay(5);
       }
    }

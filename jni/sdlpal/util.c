@@ -263,12 +263,12 @@ UTIL_Delay(
 {
    unsigned int t = SDL_GetTicks() + ms;
 
-   while (SDL_PollEvent(NULL));
+   PAL_ProcessEvent();
 
    while (SDL_GetTicks() < t)
    {
+	  PAL_ProcessEvent();
       SDL_Delay(1);
-      while (SDL_PollEvent(NULL));
    }
 
 #ifdef PAL_HAS_NATIVEMIDI
@@ -437,6 +437,9 @@ char*   my_strlwr(   char*   str   )
 #ifdef __IPHONEOS__
 char g_application_dir[256] = {0};
 char g_resource_dir[256] = "../Documents/";
+#elif defined __ANDROID__
+char g_application_dir[256] = {0};
+char g_resource_dir[256] = "/sdcard/sdlpal/";
 #else
 char g_application_dir[256] = {0};
 char g_resource_dir[256] = {0};
@@ -459,6 +462,10 @@ FILE* open_file(const char* file_name, const char* read_mode)
 	if (fp) {
 		return fp;
 	}
+
+#ifdef __ANDROID__
+    return NULL;
+#endif
 
 	snprintf(szTemp, sizeof(szTemp) - 1, "%s%s", g_application_dir, szFileName);
 	fp = fopen(szTemp, read_mode);
@@ -560,4 +567,5 @@ void getScreenSize(int* width, int* height)
 		*height = 320;
 	}
 }
+#elif defined __ANDROID__
 #endif

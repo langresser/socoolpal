@@ -6,7 +6,7 @@ LOCAL_MODULE := sdlpal
 
 APP_SUBDIRS := $(LOCAL_PATH)/adplug \
 				$(LOCAL_PATH)/libmad
-LOCAL_CFLAGS += -I$(LOCAL_PATH)/../SDL/include \
+LOCAL_CFLAGS += -Isdl/include \
 				-DPAL_CLASSIC \
 				-ggdb
 # Add more subdirs here, like src/subdir1 src/subdir2
@@ -29,7 +29,7 @@ LOCAL_SRC_FILES += battle.c \
 					main.c map.c palcommon.c palette.c \
 					play.c private.c res.c rixplay.cpp rngplay.c \
 					scene.c script.c sound.c text.c ui.c uibattle.c \
-					uigame.c util.c video.c yj1.c
+					uigame.c util.c video.c yj1.c androidUtil.cpp
 
 LOCAL_SRC_FILES += libmad/bit.c \
 					libmad/decoder.c \
@@ -43,9 +43,9 @@ LOCAL_SRC_FILES += libmad/bit.c \
 					libmad/synth.c \
 					libmad/timer.c
 
-LOCAL_SRC_FILES += main/android/SDL_android_main.cpp
+LOCAL_SRC_FILES += ../sdl/src/main/android/SDL_android_main.cpp
 
-LOCAL_SHARED_LIBRARIES := SDL SDL_mixer SDL_image SDL_ttf
+LOCAL_SHARED_LIBRARIES := SDL2 SDL_ttf
 
 LOCAL_LDLIBS := -lGLESv1_CM -ldl -llog -lz -lGLESv1_CM
 
