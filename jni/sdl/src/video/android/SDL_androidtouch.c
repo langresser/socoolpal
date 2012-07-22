@@ -29,6 +29,7 @@
 #include "../../events/SDL_touch_c.h"
 
 #include "SDL_androidtouch.h"
+#include "SDL_compat.h"
 
 
 #define ACTION_DOWN 0
@@ -68,7 +69,7 @@ void Android_OnTouch(int touch_device_id_in, int pointer_finger_id_in, int actio
         }
     }
 
-    
+    LOGI("Add Touch");
     fingerId = (SDL_FingerID)pointer_finger_id_in;
     switch (action) {
         case ACTION_DOWN:

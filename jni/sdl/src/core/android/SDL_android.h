@@ -53,6 +53,13 @@ static void Android_JNI_ThreadDestroyed(void*);
 JNIEnv *Android_JNI_GetEnv(void);
 int Android_JNI_SetupThread(void);
 
+
+#include <android/log.h>
+#include <pthread.h>
+#define LOG_TAG "SDL_android"
+#define LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
+#define LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
+//#define LOGI(...) do {} while (false)
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
 /* *INDENT-OFF* */

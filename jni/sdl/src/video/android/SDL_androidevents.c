@@ -23,7 +23,7 @@
 #if SDL_VIDEO_DRIVER_ANDROID
 
 #include "SDL_androidevents.h"
-
+#include "SDL_compat.h"
 void
 Android_PumpEvents(_THIS)
 {
@@ -37,6 +37,7 @@ Android_PumpEvents(_THIS)
      * SDLActivity::createGLContext -> SDLActivity:: initEGL -> SDLActivity::createEGLSurface -> SDLActivity::createEGLContext
      */
     if (isPaused) {
+        LOGI("SDL_GL_CreateContext out");
 #if SDL_ANDROID_BLOCK_ON_PAUSE
         if(SDL_SemWait(Android_ResumeSem) == 0) {
 #else
@@ -49,6 +50,7 @@ Android_PumpEvents(_THIS)
              * SDLActivity::createEGLContext will attempt to restore the GL context first, and if that fails it will create a new one
              * If a new GL context is created, the user needs to restore the textures manually (TODO: notify the user that this happened with a message)
              */
+            LOGI("SDL_GL_CreateContext int");
             SDL_GL_CreateContext(Android_Window);
         }
     }

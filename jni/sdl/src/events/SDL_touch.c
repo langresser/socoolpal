@@ -328,8 +328,8 @@ SDL_SendFingerDown(SDL_TouchID id, SDL_FingerID fingerid, SDL_bool down,
 
     
     //scale to Integer coordinates
-    x = (Uint16)((xin+touch->x_min)*(touch->xres)/(touch->native_xres));
-    y = (Uint16)((yin+touch->y_min)*(touch->yres)/(touch->native_yres));
+    x = xin;//(Uint16)((xin+touch->x_min)*(touch->xres)/(touch->native_xres));
+    y = yin;//(Uint16)((yin+touch->y_min)*(touch->yres)/(touch->native_yres));
     pressure = (Uint16)((pressurein+touch->pressure_min)*(touch->pressureres)/(touch->native_pressureres));
     
     finger = SDL_GetFinger(touch,fingerid);
@@ -365,8 +365,9 @@ SDL_SendFingerDown(SDL_TouchID id, SDL_FingerID fingerid, SDL_bool down,
             event.tfinger.windowID = touch->focus ? touch->focus->id : 0;
             event.tfinger.fingerId = fingerid;
             posted = (SDL_PushEvent(&event) > 0);
+			finger->down = SDL_TRUE;
         }
-        if(posted) finger->down = SDL_TRUE;
+
         return posted;
     }
     else {
@@ -383,8 +384,8 @@ SDL_SendFingerDown(SDL_TouchID id, SDL_FingerID fingerid, SDL_bool down,
             event.tfinger.windowID = touch->focus ? touch->focus->id : 0;
             event.tfinger.fingerId = fingerid;
             //I don't trust the coordinates passed on fingerUp
-            event.tfinger.x = finger->x; 
-            event.tfinger.y = finger->y;
+            event.tfinger.x = x; 
+            event.tfinger.y = y;
             event.tfinger.dx = 0;
             event.tfinger.dy = 0;
             event.tfinger.pressure = pressure;
@@ -414,8 +415,8 @@ SDL_SendTouchMotion(SDL_TouchID id, SDL_FingerID fingerid, int relative,
     }
 
     //scale to Integer coordinates
-    x = (Uint16)((xin+touch->x_min)*(touch->xres)/(touch->native_xres));
-    y = (Uint16)((yin+touch->y_min)*(touch->yres)/(touch->native_yres));
+    x = xin;//(Uint16)((xin+touch->x_min)*(touch->xres)/(touch->native_xres));
+    y = yin;//(Uint16)((yin+touch->y_min)*(touch->yres)/(touch->native_yres));
     pressure = (Uint16)((pressurein+touch->pressure_min)*(touch->pressureres)/(touch->native_pressureres));
     if(touch->flush_motion) {
         return 0;

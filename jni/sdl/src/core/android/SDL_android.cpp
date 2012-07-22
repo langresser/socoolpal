@@ -32,13 +32,8 @@ extern "C" {
 #include "../../video/android/SDL_androidtouch.h"
 #include "../../video/android/SDL_androidvideo.h"
 
-#include <android/log.h>
-#include <pthread.h>
-#define LOG_TAG "SDL_android"
-//#define LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
-//#define LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
-#define LOGI(...) do {} while (false)
-#define LOGE(...) do {} while (false)
+//#define LOGI(...) do {} while (false)
+//#define LOGE(...) do {} while (false)
 
 
 /* Implemented in audio/android/SDL_androidaudio.c */
@@ -104,7 +99,7 @@ extern "C" jint JNI_OnLoad(JavaVM* vm, void* reserved)
 // Called before SDL_main() to initialize JNI bindings
 extern "C" void SDL_Android_Init(JNIEnv* mEnv, jclass cls)
 {
-    __android_log_print(ANDROID_LOG_INFO, "SDL", "SDL_Android_Init()");
+    LOGI("SDL_Android_Init");
 
     Android_JNI_SetupThread();
 
@@ -137,6 +132,7 @@ extern "C" void Java_org_libsdl_app_SDLActivity_onNativeResize(
                                     JNIEnv* env, jclass jcls,
                                     jint width, jint height, jint format)
 {
+    LOGI("onNativeResize: %d  %d", width, height);
     Android_SetScreenResolution(width, height, format);
 }
 
@@ -179,6 +175,7 @@ extern "C" void Java_org_libsdl_app_SDLActivity_nativeQuit(
                                     JNIEnv* env, jclass cls)
 {    
     // Inject a SDL_QUIT event
+    LOGI("_nativeQuit");
     SDL_SendQuit();
 }
 
@@ -186,6 +183,7 @@ extern "C" void Java_org_libsdl_app_SDLActivity_nativeQuit(
 extern "C" void Java_org_libsdl_app_SDLActivity_nativePause(
                                     JNIEnv* env, jclass cls)
 {
+     LOGI("_nativePause");
     if (Android_Window) {
         /* Signal the pause semaphore so the event loop knows to pause and (optionally) block itself */
         if (!SDL_SemValue(Android_PauseSem)) SDL_SemPost(Android_PauseSem);
@@ -198,6 +196,7 @@ extern "C" void Java_org_libsdl_app_SDLActivity_nativePause(
 extern "C" void Java_org_libsdl_app_SDLActivity_nativeResume(
                                     JNIEnv* env, jclass cls)
 {
+    LOGI("nativeResume");
     if (Android_Window) {
         /* Signal the resume semaphore so the event loop knows to resume and restore the GL Context
          * We can't restore the GL Context here because it needs to be done on the SDL main thread
@@ -303,6 +302,7 @@ extern "C" SDL_bool Android_JNI_GetAccelerometerValues(float values[3])
 
 static void Android_JNI_ThreadDestroyed(void* value) {
     /* The thread is being destroyed, detach it from the Java VM and set the mThreadKey value to NULL as required */
+    LOGI("ThreadDestroyed");
     JNIEnv *env = (JNIEnv*) value;
     if (env != NULL) {
         mJavaVM->DetachCurrentThread();
@@ -591,8 +591,12 @@ extern "C" size_t Android_JNI_FileRead(SDL_RWops* ctx, void* buffer,
         size_t size, size_t maxnum)
 {
     LocalReferenceHolder refs;
-    int bytesRemaining = size * maxnum;
+    jlong bytesRemaining = (jlong) (size * maxnum);
+    jlong bytesMax = (jlong) (ctx->hidden.androidio.size -  ctx->hidden.androidio.position);
     int bytesRead = 0;
+
+    /* Don't read more bytes than those that remain in the file, otherwise we get an exception */
+    if (bytesRemaining >  bytesMax) bytesRemaining = bytesMax;
 
     JNIEnv *mEnv = Android_JNI_GetEnv();
     if (!refs.init(mEnv)) {

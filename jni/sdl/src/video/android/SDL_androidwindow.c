@@ -26,10 +26,12 @@
 
 #include "SDL_androidvideo.h"
 #include "SDL_androidwindow.h"
+#include "../../core/android/SDL_android.h"
 
 int
 Android_CreateWindow(_THIS, SDL_Window * window)
 {
+    LOGI("Android_CreateWindow");
     if (Android_Window) {
         SDL_SetError("Android only supports one window");
         return -1;
@@ -56,12 +58,14 @@ Android_CreateWindow(_THIS, SDL_Window * window)
 void
 Android_SetWindowTitle(_THIS, SDL_Window * window)
 {
+    LOGI("Android_SetWindowTitle");
     Android_JNI_SetActivityTitle(window->title);
 }
 
 void
 Android_DestroyWindow(_THIS, SDL_Window * window)
 {
+    LOGI("Android_DestroyWindow");
     if (window == Android_Window) {
         Android_Window = NULL;
         if (Android_PauseSem) SDL_DestroySemaphore(Android_PauseSem);
