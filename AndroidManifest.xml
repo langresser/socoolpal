@@ -21,14 +21,15 @@
         <activity android:name="org.libsdl.app.SDLActivity"
                   android:label="@string/app_name"
                   android:screenOrientation="landscape"
-                  android:configChanges="orientation|keyboardHidden|keyboard|screenLayout" 
-        >
+                  android:configChanges="orientation|keyboardHidden|keyboard|screenLayout">
+            
+        </activity>
+        <activity android:name="org.libsdl.app.SplashScreenActivityy" android:theme="@style/Transparent">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name="org.libsdl.app.TransparentActivity" android:theme="@style/Transparent"/>  
+        </activity>  
 		
 		
 		
