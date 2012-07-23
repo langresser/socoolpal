@@ -133,6 +133,15 @@ static void SDL_IdleTimerDisabledChanged(const char *name, const char *oldValue,
     longjmp(*(jump_env()), 1);
 }
 
+-(void)applicationDidEnterBackground:(UIApplication *)application
+{
+    extern BOOL g_hasInGame;
+    extern void PAL_SaveGame(const char*         szFileName, short wSavedTimes);
+    if (g_hasInGame) {
+        PAL_SaveGame("9.rpg", 0);
+    }
+}
+
 - (void) applicationWillResignActive:(UIApplication*)application
 {
     //NSLog(@"%@", NSStringFromSelector(_cmd));
