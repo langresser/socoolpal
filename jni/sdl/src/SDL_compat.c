@@ -42,7 +42,12 @@ static SDL_Rect SDL_VideoViewport;
 static char *wm_title = NULL;
 static SDL_Surface *SDL_VideoIcon;
 static int SDL_enabled_UNICODE = 0;
-SDL_bool g_isInBackground = SDL_FALSE;
+int g_isInBackground = SDL_FALSE;
+
+int IsInBackground()
+{
+	return g_isInBackground;
+}
 
 const char *
 SDL_AudioDriverName(char *namebuf, int maxlen)
@@ -466,8 +471,14 @@ SDL_SetVideoMode(int width, int height, int bpp, Uint32 flags)
 {
     SDL_DisplayMode desktop_mode;
     int display = GetVideoDisplay();
+
+#ifdef __WIN32__
+	int window_x = SDL_WINDOWPOS_UNDEFINED_DISPLAY(display);
+    int window_y = SDL_WINDOWPOS_UNDEFINED_DISPLAY(display);
+#else
     int window_x = 0;//SDL_WINDOWPOS_UNDEFINED_DISPLAY(display);
     int window_y = 0;//SDL_WINDOWPOS_UNDEFINED_DISPLAY(display);
+#endif
     int window_w;
     int window_h;
     Uint32 window_flags;

@@ -517,11 +517,7 @@ PAL_AdditionalCredits(
 {
    LPCSTR rgszStrings[] = {
       "SDLPAL (http://sdlpal.codeplex.com/)",
-#ifdef PAL_CLASSIC
-      "         (\xB8\x67\xA8\xE5\xAF\x53\xA7\x4F\xBD\x67  " __DATE__ ")",
-#else
       "                    (" __DATE__ ")",
-#endif
       " ",
       "  (c) 2009-2011, Wei Mingzhi",
       "      <whistler_wmz@users.sf.net>.",
@@ -1330,11 +1326,11 @@ PAL_InterpretInstruction(
       //
       w = g_Battle.rgEnemy[wEventObjectID].wObjectID;
 
-#ifdef PAL_CLASSIC
-      i = 9;
-#else
-      i = ((pScript->rgwOperand[0] == kStatusSlow) ? 14 : 9);
-#endif
+	  if (g_isClassicMode) {
+		  i = 9;
+	  } else {
+		  i = ((pScript->rgwOperand[0] == kStatusParalyzed) ? 14 : 9);
+	  }
 
       if (RandomLong(0, i) >= gpGlobals->g.rgObject[w].enemy.wResistanceToSorcery &&
          g_Battle.rgEnemy[wEventObjectID].rgwStatus[pScript->rgwOperand[0]] == 0)
@@ -1408,19 +1404,19 @@ PAL_InterpretInstruction(
       {
          char s[256];
 
-#ifdef PAL_CLASSIC
-         i = RandomLong(1, gpGlobals->wCollectValue);
-         if (i > 9)
-         {
-            i = 9;
-         }
-#else
-         i = RandomLong(1, 9);
-         if (i > gpGlobals->wCollectValue)
-         {
-            i = gpGlobals->wCollectValue;
-         }
-#endif
+		 if (g_isClassicMode) {
+			 i = RandomLong(1, gpGlobals->wCollectValue);
+			 if (i > 9)
+			 {
+				i = 9;
+			 }
+		 } else {
+			 i = RandomLong(1, 9);
+			 if (i > gpGlobals->wCollectValue)
+			 {
+				i = gpGlobals->wCollectValue;
+			 }
+		 }
 
          gpGlobals->wCollectValue -= i;
          i--;

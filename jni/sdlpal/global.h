@@ -30,6 +30,7 @@ extern "C"
 {
 #endif
 
+extern BOOL g_isClassicMode;
 //
 // SOME NOTES ON "AUTO SCRIPT" AND "TRIGGER SCRIPT":
 //
@@ -83,14 +84,21 @@ extern "C"
 #define     MAX_LEVELS                   99
 
 // status of characters
+/*
+@0000: 疯魔
+@0001: 定身
+@0002: 昏睡
+@0003: 咒封
+@0004: 死者继续攻击
+@0005: 普通攻击加强
+@0006: 防御加强
+@0007: 身法加强
+@0008: 两次攻击
+*/
 typedef enum tagSTATUS
 {
-   kStatusConfused = 0,  // attack friends randomly
-#ifdef PAL_CLASSIC
-   kStatusParalyzed,     // paralyzed
-#else
-   kStatusSlow,          // slower
-#endif
+   kStatusConfused = 0,  // attack friends randomly 混乱
+   kStatusParalyzed,     // paralyzed  回合制(瘫痪)   即时制（减速）
    kStatusSleep,         // not allowed to move
    kStatusSilence,       // cannot use magic
    kStatusPuppet,        // for dead players only, continue attacking
@@ -101,9 +109,6 @@ typedef enum tagSTATUS
    kStatusAll
 } STATUS;
 
-#ifndef PAL_CLASSIC
-#define kStatusParalyzed kStatusSleep
-#endif
 
 // body parts of equipments
 typedef enum tagBODYPART
@@ -515,9 +520,7 @@ typedef struct tagGLOBALVARS
    BOOL             fNeedToFadeIn;       // TRUE if need to fade in when drawing scene
    BOOL             fInBattle;           // TRUE if in battle
    BOOL             fAutoBattle;         // TRUE if auto-battle
-#ifndef PAL_CLASSIC
-   BYTE             bBattleSpeed;        // Battle Speed (1 = Fastest, 5 = Slowest)
-#endif
+   BYTE             bBattleSpeed;        // Battle Speed (1 = Fastest, 5 = Slowest) 即时战斗使用
    WORD             wLastUnequippedItem; // last unequipped item
 
    PLAYERROLES      rgEquipmentEffect[MAX_PLAYER_EQUIPMENTS + 1]; // equipment effects

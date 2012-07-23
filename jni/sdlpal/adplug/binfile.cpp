@@ -21,7 +21,7 @@
 #include <errno.h>
 
 #include "binfile.h"
-#include "util.h"
+#include "../util.h"
 
 /***** binfbase *****/
 

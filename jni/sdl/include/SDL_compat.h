@@ -364,7 +364,7 @@ extern DECLSPEC int SDLCALL SDL_putenv(const char *variable);
 #define LOGE(...)
 #endif
 
-extern SDL_bool g_isInBackground;
+extern DECLSPEC   int SDLCALL IsInBackground();
 /*@}*//*Compatibility*/
 
 /* Ends C function definitions when using C++ */
