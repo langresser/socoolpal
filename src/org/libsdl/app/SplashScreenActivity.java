@@ -55,7 +55,10 @@ public class SplashScreenActivity extends Activity {
 			return;
         }
         
+        TextView textView = (TextView)findViewById(R.id.TextView01);
+        textView.setText("正在检测游戏数据...");
         if (isNeedUpdateData()) {
+        	textView.setText("正在初始化游戏数据，请稍后...");
         	updateData();
         }
         

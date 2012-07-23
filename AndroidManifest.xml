@@ -17,7 +17,7 @@
 
     
  
-    <application android:label="@string/app_name" android:icon="@drawable/sdlpal">
+    <application android:label="@string/app_name" android:icon="@drawable/icon72">
         <activity android:name="org.libsdl.app.SDLActivity"
                   android:label="@string/app_name"
                   android:screenOrientation="landscape"

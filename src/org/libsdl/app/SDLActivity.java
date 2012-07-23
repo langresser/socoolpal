@@ -6,6 +6,8 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.egl.*;
 
+import org.socool.pal.R;
+
 import com.admogo.AdMogoLayout;
 import com.admogo.AdMogoListener;
 import com.admogo.AdMogoManager;
@@ -14,6 +16,7 @@ import android.annotation.SuppressLint;
 import android.app.*;
 import android.content.*;
 import android.view.*;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.os.*;
 import android.util.Log;
@@ -77,6 +80,16 @@ public class SDLActivity extends Activity  implements AdMogoListener{
 
         // Keep track of the paused state
         mIsPaused = false;
+        
+        Button btnHelp = (Button)findViewById(R.id.btnHelp);
+        btnHelp.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				
+				
+			}
+		});
 
         // Set up the surface
         mSurface = new SDLSurface(getApplication());

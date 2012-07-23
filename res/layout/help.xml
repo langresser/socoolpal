@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+    <Button android:id="@+id/btnFeedback"
+        android:text="Bug反馈"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+    <Button android:id="@+id/btnBBS"
+        android:text="论坛交流"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+    
+<TextView android:id="@+id/gongl"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    />
+</LinearLayout>
