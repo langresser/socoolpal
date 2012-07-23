@@ -9,7 +9,7 @@ project/libs
 bin/
 gen/
 obj/
-libs/
+libs/armeabi
 *.obj
 Debug/
 *.user
