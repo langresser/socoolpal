@@ -57,6 +57,8 @@ UTIL_Delay(
    unsigned int ms
 );
 
+void UTIL_DelayEx(unsigned int ms, unsigned int delay);
+
 void
 TerminateOnError(
    const char *fmt,

@@ -47,6 +47,6 @@ LOCAL_SRC_FILES += ../sdl/src/main/android/SDL_android_main.cpp
 
 LOCAL_SHARED_LIBRARIES := SDL2 SDL_ttf
 
-LOCAL_LDLIBS := -lGLESv1_CM -ldl -llog -lz -lGLESv1_CM
+LOCAL_LDLIBS := -lGLESv1_CM -ldl -llog -lz -lGLESv2
 
 include $(BUILD_SHARED_LIBRARY)

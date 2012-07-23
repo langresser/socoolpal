@@ -69,7 +69,6 @@ void Android_OnTouch(int touch_device_id_in, int pointer_finger_id_in, int actio
         }
     }
 
-    LOGI("Add Touch");
     fingerId = (SDL_FingerID)pointer_finger_id_in;
     switch (action) {
         case ACTION_DOWN:

@@ -1,31 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="org.socool.pal"
-      android:versionName="1.7" android:versionCode="7">
-    <application android:label="@string/app_name" android:icon="@drawable/sdlpal" android:debuggable="true">
-        <activity android:name="org.socool.pal.MainActivity"
-                  android:label="@string/app_name"
-                  android:screenOrientation="landscape"
-        >
-        </activity>
+      android:versionName="1.7" android:versionCode="7" android:installLocation="auto">
+      <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="9" />
+
+    <uses-permission android:name="android.permission.VIBRATE"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	
+	<uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+	<uses-permission android:name="android.permission.READ_LOGS"/>
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> 
+
+    
+ 
+    <application android:label="@string/app_name" android:icon="@drawable/sdlpal">
         <activity android:name="org.libsdl.app.SDLActivity"
                   android:label="@string/app_name"
                   android:screenOrientation="landscape"
+                  android:configChanges="orientation|keyboardHidden|keyboard|screenLayout" 
         >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="org.libsdl.app.TransparentActivity" android:theme="@style/Transparent">  
-		</activity>  
+        <activity android:name="org.libsdl.app.TransparentActivity" android:theme="@style/Transparent"/>  
+		
+		
+		
+		<!-- ****************************************注意添加*********************************** -->
+        <!-- 声明Mogo的Activity -->
+        <activity
+            android:name="com.admogo.AdMogoWebView"
+            android:label="@string/app_name" >
+        </activity>
+
+        <!-- 注册Mogo Service，应用下载所需 -->
+        <service
+            android:name="com.admogo.UpdateService"
+            android:exported="true"
+            android:process=":remote" />
+        <!-- 注册Mogo Service，应用被安装所用 -->
+        <service
+            android:name="com.admogo.CountService"
+            android:exported="true"
+            android:process=":remote" />
+        
+		
+		 <!-- 声明聚赢的Activity -->
+        <activity android:name="com.tencent.mobwin.MobinWINBrowserActivity" />
+        <!-- 声明安沃的Activity -->
+        <activity
+            android:name="com.adwo.adsdk.AdwoAdBrowserActivity"
+            android:label="@string/app_name" />
+        <!-- 声明有米的Activity和receiver -->
+        <activity
+            android:name="net.youmi.android.AdActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation" />
+
+        <!-- 声明多盟的Activity -->
+        <activity
+            android:name="cn.domob.android.ads.DomobActivity"
+            android:theme="@android:style/Theme.Translucent" />
+        
+        
+        <meta-data
+            android:name="ADMOGO_KEY"
+            android:value="cbae17c6e1434254ab2dd095e764ec3c" />
     </application>
-    <uses-sdk android:minSdkVersion="4" />
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-    <uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
-    <uses-permission android:name="android.permission.VIBRATE"></uses-permission>
-
-
-
 </manifest> 

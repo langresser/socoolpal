@@ -67,8 +67,11 @@ VIDEO_Init(
 
 --*/
 {
+	// android 平台在其他地方初始化
+#ifndef __ANDROID__
    g_wInitialWidth = wScreenWidth;
    g_wInitialHeight = wScreenHeight;
+#endif
 
    //
    // Create the screen surface.
@@ -202,6 +205,9 @@ VIDEO_UpdateScreen(
    short           screenRealHeight = gpScreenReal->h;
    short           screenRealY = 0;
 
+   if (g_isInBackground) {
+		return;
+	}
    //
    // Lock surface if needed
    //

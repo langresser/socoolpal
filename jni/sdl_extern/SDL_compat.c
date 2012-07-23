@@ -42,7 +42,6 @@ static SDL_Rect SDL_VideoViewport;
 static char *wm_title = NULL;
 static SDL_Surface *SDL_VideoIcon;
 static int SDL_enabled_UNICODE = 0;
-SDL_bool g_isInBackground = SDL_FALSE;
 
 const char *
 SDL_AudioDriverName(char *namebuf, int maxlen)

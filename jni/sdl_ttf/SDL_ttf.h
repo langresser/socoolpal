@@ -26,7 +26,6 @@
 
 #ifndef _SDL_TTF_H
 #define _SDL_TTF_H
-
 #include "SDL.h"
 #include "begin_code.h"
 

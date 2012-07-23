@@ -94,6 +94,10 @@ PAL_GameMain(
   
    while (TRUE)
    {
+	   if (g_isInBackground) {
+		   UTIL_DelayEx(200, 50);
+           continue;
+	   }
       //
       // Do some initialization at game start.
       //

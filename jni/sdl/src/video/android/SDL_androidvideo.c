@@ -37,7 +37,7 @@
 #include "SDL_androidkeyboard.h"
 #include "SDL_androidwindow.h"
 
-#include "../../core/android/SDL_android.h"
+#include "SDL_compat.h"
 #define ANDROID_VID_DRIVER_NAME "Android"
 
 /* Initialization/Query functions */
@@ -164,13 +164,14 @@ Android_VideoQuit(_THIS)
 void
 Android_SetScreenResolution(int width, int height, Uint32 format)
 {
-    if (Android_ScreenWidth != 0 || Android_ScreenHeight != 0) {
+    if (Android_ScreenWidth != 0 || Android_ScreenHeight != 0
+            || width == 0 || height == 0) {
         return;
     }
 
-    LOGI("Android_SetScreenResolution");
-    Android_ScreenWidth = width;
-    Android_ScreenHeight = height;   
+    LOGI("Android_SetScreenResolution: %d  %d", width, height);
+    Android_ScreenWidth = width;//width >= height ? width : height;
+    Android_ScreenHeight = height;//height >= height ? width : height;   
     Android_ScreenFormat = format;
 
     if (Android_Window) {

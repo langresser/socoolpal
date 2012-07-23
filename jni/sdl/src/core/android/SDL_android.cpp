@@ -21,6 +21,7 @@
 #include "SDL_config.h"
 #include "SDL_stdinc.h"
 #include "SDL_assert.h"
+#include "SDL.h"
 
 #ifdef __ANDROID__
 
@@ -206,6 +207,20 @@ extern "C" void Java_org_libsdl_app_SDLActivity_nativeResume(
         SDL_SendWindowEvent(Android_Window, SDL_WINDOWEVENT_FOCUS_GAINED, 0, 0);
         SDL_SendWindowEvent(Android_Window, SDL_WINDOWEVENT_RESTORED, 0, 0);
     }
+}
+
+// PauseGame
+extern "C" void Java_org_libsdl_app_SDLActivity_nativePauseGame(
+                                    JNIEnv* env, jclass cls)
+{
+    g_isInBackground = SDL_TRUE;
+}
+
+// ResumeGame
+extern "C" void Java_org_libsdl_app_SDLActivity_nativeResumeGame(
+                                    JNIEnv* env, jclass cls)
+{
+    g_isInBackground = SDL_FALSE;
 }
 
 extern "C" void Java_org_libsdl_app_SDLActivity_nativeRunAudioThread(
@@ -403,6 +418,11 @@ extern "C" void * Android_JNI_GetAudioBuffer()
 
 extern "C" void Android_JNI_WriteAudioBuffer()
 {
+    if (g_isInBackground) {
+        SDL_Delay(50);
+        return;
+    }
+
     JNIEnv *mAudioEnv = Android_JNI_GetEnv();
 
     if (audioBuffer16Bit) {

@@ -276,6 +276,23 @@ UTIL_Delay(
 #endif
 }
 
+void UTIL_DelayEx(unsigned int ms, unsigned int delay)
+{
+   unsigned int t = SDL_GetTicks() + ms;
+
+   PAL_ProcessEvent();
+
+   while (SDL_GetTicks() < t)
+   {
+	  PAL_ProcessEvent();
+      SDL_Delay(delay);
+   }
+
+#ifdef PAL_HAS_NATIVEMIDI
+   MIDI_CheckLoop();
+#endif
+}
+
 void
 TerminateOnError(
    const char *fmt,

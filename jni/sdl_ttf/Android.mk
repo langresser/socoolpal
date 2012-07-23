@@ -4,11 +4,12 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := SDL_ttf
 
-LOCAL_CFLAGS := -I$(LOCAL_PATH)/../SDL/include -I$(LOCAL_PATH)/../freetype/include
+LOCAL_CFLAGS := -Isdl/include \
+	-Ifreetype/include
 
 LOCAL_SRC_FILES := SDL_ttf.c
 
-LOCAL_SHARED_LIBRARIES := SDL
+LOCAL_SHARED_LIBRARIES := SDL2
 
 LOCAL_STATIC_LIBRARIES := freetype
 

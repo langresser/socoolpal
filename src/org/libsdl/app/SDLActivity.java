@@ -6,11 +6,15 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.egl.*;
 
+import com.admogo.AdMogoLayout;
+import com.admogo.AdMogoListener;
+import com.admogo.AdMogoManager;
 
+import android.annotation.SuppressLint;
 import android.app.*;
 import android.content.*;
 import android.view.*;
-import android.widget.TextView;
+import android.widget.FrameLayout;
 import android.os.*;
 import android.util.Log;
 import android.graphics.*;
@@ -26,10 +30,14 @@ import java.lang.*;
 /**
     SDL Activity
 */
-public class SDLActivity extends Activity {
+public class SDLActivity extends Activity  implements AdMogoListener{
+
+    // Keep track of the paused state
+    public static boolean mIsPaused;
+    public static boolean mIsPausedMusic = false;
 
     // Main components
-    private static SDLActivity mSingleton;
+    public static SDLActivity mSingleton;
     private static SDLSurface mSurface;
 
     // This is what SDL runs in. It invokes SDL_main(), eventually
@@ -48,49 +56,130 @@ public class SDLActivity extends Activity {
 
     // Load the .so
     static {
-    	System.loadLibrary("SDL");
-        System.loadLibrary("SDL_image");
-        System.loadLibrary("SDL_mixer");
+        System.loadLibrary("SDL2");
+        //System.loadLibrary("SDL2_image");
+        //System.loadLibrary("SDL2_mixer");
         System.loadLibrary("SDL_ttf");
-    	System.loadLibrary("sdlpal");
+        System.loadLibrary("sdlpal");
     }
-    
-    private PowerManager.WakeLock wakeLock = null;
-	private DataDownloader downloader = null;
 
     // Setup
     protected void onCreate(Bundle savedInstanceState) {
         //Log.v("SDL", "onCreate()");
         super.onCreate(savedInstanceState);
         
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,  
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         // So we can call stuff from static callbacks
         mSingleton = this;
+
+        // Keep track of the paused state
+        mIsPaused = false;
 
         // Set up the surface
         mSurface = new SDLSurface(getApplication());
         setContentView(mSurface);
         SurfaceHolder holder = mSurface.getHolder();
         
-        TextView tv = new TextView(this);
-		tv.setText("Initializing");
-		downloader = new DataDownloader(this, tv);
+        createBanner();
     }
+    
+    private AdMogoLayout adMogoLayoutCode = null;
+    void createBanner()
+    {
+    	/************************ 代码方式添加Banner广告 ***********************/
+		adMogoLayoutCode = new AdMogoLayout(this, "cbae17c6e1434254ab2dd095e764ec3c", false);
+		FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+				FrameLayout.LayoutParams.FILL_PARENT,
+				FrameLayout.LayoutParams.WRAP_CONTENT);
+		// 设置广告出现的位置(悬浮于顶部)
+		params.topMargin = 0;
+		// 添加广告状态监听
+		adMogoLayoutCode.setAdMogoListener(this);
+		params.gravity = Gravity.TOP;
+		addContentView(adMogoLayoutCode, params);
+    }
+    
+    void cleanBanner()
+    {
+    	AdMogoManager.clear();
+    }
+    
+    // 被jni调用，关掉广告
+    public static void closeAds()
+    {
+    	mSingleton.runOnUiThread(new Runnable() {
+			public void run() {
+				if (mSingleton.adMogoLayoutCode != null) {
+					 //   		AdMogoManager.clear();
+					 mSingleton.adMogoLayoutCode.setVisibility(View.GONE);
+				}
+			}
+        });
+ 
+    	
+    }
+    
+	public void onClickAd() {
+		Log.v("=onClickAd=", "Click the buttom ad.");
+	}
+
+	public void onFailedReceiveAd() {
+		Log.v("=onFailedReceiveAd=", "Failed to receive the buttom ad.");
+	}
+
+	public void onReceiveAd() {
+		Log.v("=onReceiveAd=", "Receive the buttom ad.");
+	}
+
+	public void onCloseMogoDialog() {
+		Log.v("=onCloseMogoDialog=", "Close ad Dialog.");
+	}
+
+	public void onCloseAd() {
+		Log.v("=onCloseAd=", "Close ad.");
+	}
+
+	public void onRequestAd() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onRealClickAd() {
+		// TODO Auto-generated method stub
+		
+	}
 
     // Events
     protected void onPause() {
         Log.v("SDL", "onPause()");
+        SDLActivity.nativePauseGame();
+        
+        if (mAudioTrack != null && mAudioTrack.getPlayState() == AudioTrack.PLAYSTATE_PLAYING) {
+        	mAudioTrack.pause();
+        	mIsPausedMusic = true;
+        }
         super.onPause();
-        SDLActivity.nativePause();
+        // Don't call SDLActivity.nativePause(); here, it will be called by SDLSurface::surfaceDestroyed
     }
 
     protected void onResume() {
         Log.v("SDL", "onResume()");
+        SDLActivity.nativeResumeGame();
+        
+        if (mIsPausedMusic && mAudioTrack != null &&  mAudioTrack.getPlayState() == AudioTrack.PLAYSTATE_PAUSED) {
+        	mAudioTrack.play();
+        }
+        
         super.onResume();
-        SDLActivity.nativeResume();
+        // Don't call SDLActivity.nativeResume(); here, it will be called via SDLSurface::surfaceChanged->SDLActivity::startApp
     }
 
     protected void onDestroy() {
         super.onDestroy();
+        cleanBanner();
         Log.v("SDL", "onDestroy()");
         // Send a quit message to the application
         SDLActivity.nativeQuit();
@@ -129,10 +218,13 @@ public class SDLActivity extends Activity {
     }
 
     // C functions we call
+    public static native void nativeSetSize(int width, int height);
     public static native void nativeInit();
     public static native void nativeQuit();
     public static native void nativePause();
     public static native void nativeResume();
+    public static native void nativePauseGame();
+    public static native void nativeResumeGame();
     public static native void onNativeResize(int x, int y, int format);
     public static native void onNativeKeyDown(int keycode);
     public static native void onNativeKeyUp(int keycode);
@@ -150,7 +242,9 @@ public class SDLActivity extends Activity {
     }
 
     public static void flipBuffers() {
-        flipEGL();
+    	if (!SDLActivity.mIsPaused) {
+    		 flipEGL();
+    	}
     }
 
     public static void setActivityTitle(String title) {
@@ -169,7 +263,15 @@ public class SDLActivity extends Activity {
             mSDLThread.start();
         }
         else {
-            SDLActivity.nativeResume();
+            /*
+             * Some Android variants may send multiple surfaceChanged events, so we don't need to resume every time
+             * every time we get one of those events, only if it comes after surfaceDestroyed
+             */
+            if (mIsPaused) {
+ //           	SDLActivity.createEGLSurface();
+                SDLActivity.nativeResume();
+                SDLActivity.mIsPaused = false;
+            }
         }
     }
 
@@ -258,12 +360,15 @@ public class SDLActivity extends Activity {
                 return false;
             }
 
-            if (!egl.eglMakeCurrent(SDLActivity.mEGLDisplay, surface, surface, SDLActivity.mEGLContext)) {
-                Log.e("SDL", "Old EGL Context doesnt work, trying with a new one");
-                createEGLContext();
+            if (egl.eglGetCurrentContext() != SDLActivity.mEGLContext) {
                 if (!egl.eglMakeCurrent(SDLActivity.mEGLDisplay, surface, surface, SDLActivity.mEGLContext)) {
-                    Log.e("SDL", "Failed making EGL Context current");
-                    return false;
+                    Log.e("SDL", "Old EGL Context doesnt work, trying with a new one");
+                    // TODO: Notify the user via a message that the old context could not be restored, and that textures need to be manually restored.
+                    createEGLContext();
+                    if (!egl.eglMakeCurrent(SDLActivity.mEGLDisplay, surface, surface, SDLActivity.mEGLContext)) {
+                        Log.e("SDL", "Failed making EGL Context current");
+                        return false;
+                    }
                 }
             }
             SDLActivity.mEGLSurface = surface;
@@ -435,14 +540,16 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     public void surfaceCreated(SurfaceHolder holder) {
         Log.v("SDL", "surfaceCreated()");
         holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
-        SDLActivity.createEGLSurface();
         enableSensor(Sensor.TYPE_ACCELEROMETER, true);
     }
 
     // Called when we lose the surface
     public void surfaceDestroyed(SurfaceHolder holder) {
         Log.v("SDL", "surfaceDestroyed()");
-        SDLActivity.nativePause();
+        if (!SDLActivity.mIsPaused) {
+            SDLActivity.mIsPaused = true;
+            SDLActivity.nativePause();
+        }
         enableSensor(Sensor.TYPE_ACCELEROMETER, false);
     }
 
@@ -496,6 +603,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
             break;
         }
         SDLActivity.onNativeResize(width, height, sdlFormat);
+        SDLActivity.nativeSetSize(width, height);
         Log.v("SDL", "Window size:" + width + "x"+height);
 
         SDLActivity.startApp();
@@ -507,16 +615,59 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
 
 
+    private int m_lastKeyPressed = 0;
     // Key events
     public boolean onKey(View  v, int keyCode, KeyEvent event) {
+    	if (keyCode == KeyEvent.KEYCODE_VOLUME_UP || keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+    		if (event.getAction() == KeyEvent.ACTION_DOWN) {
+    			return super.onKeyDown(keyCode, event);
+    		} else if (event.getAction() == KeyEvent.ACTION_UP) {
+    			return super.onKeyUp(keyCode, event);
+    		}
+    	}
 
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            //Log.v("SDL", "key down: " + keyCode);
+    	// 这些按键不需要repeat
+    	if (event.getAction() == KeyEvent.ACTION_DOWN) {
+    		if (m_lastKeyPressed == keyCode && 
+    				(KeyEvent.KEYCODE_MENU == keyCode
+    				|| KeyEvent.KEYCODE_BACK == keyCode
+    				|| KeyEvent.KEYCODE_PLUS == keyCode
+    				|| KeyEvent.KEYCODE_MINUS == keyCode)) {
+    			return true;
+    		}
+    		
+    		m_lastKeyPressed = keyCode;
+ //           Log.v("SDL", "key down: " + keyCode);
             SDLActivity.onNativeKeyDown(keyCode);
             return true;
         }
         else if (event.getAction() == KeyEvent.ACTION_UP) {
-            //Log.v("SDL", "key up: " + keyCode);
+ //           Log.v("SDL", "key up: " + keyCode);
+            m_lastKeyPressed = 0;
+            
+            switch (keyCode) {
+            case KeyEvent.KEYCODE_BACK:
+            {
+            	Dialog dialog = new AlertDialog.Builder(SDLActivity.mSingleton).setTitle("PAL").setMessage("是否退出游戏？")
+						.setPositiveButton("确定",
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog, int whichButton) {
+										SDLActivity.mSingleton.finish();
+										dialog.cancel();
+									}
+								}).setNegativeButton("取消",
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog, int which) {
+										dialog.cancel();
+									}
+								}).create();// 创建按钮
+				dialog.show();
+				return true;
+            }
+            case KeyEvent.KEYCODE_HOME:
+            	// 此处无法截获
+            	break;
+            }
             SDLActivity.onNativeKeyUp(keyCode);
             return true;
         }
@@ -524,20 +675,32 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         return false;
     }
 
+    private float m_lastMoveX = 0;
+    private float m_lastMoveY = 0;
+ 
     // Touch events
-    public boolean onTouch(View v, MotionEvent event) {
+	public boolean onTouch(View v, MotionEvent event) {
         {
              final int touchDevId = event.getDeviceId();
              final int pointerCount = event.getPointerCount();
              // touchId, pointerId, action, x, y, pressure
-             int actionPointerIndex = event.getAction();
+             int actionPointerIndex = event.getActionIndex();
              int pointerFingerId = event.getPointerId(actionPointerIndex);
-             int action = event.getAction();
+             int action = event.getActionMasked();
 
              float x = event.getX(actionPointerIndex);
              float y = event.getY(actionPointerIndex);
              float p = event.getPressure(actionPointerIndex);
-
+   
+//             if (true) {
+            if (action == MotionEvent.ACTION_MOVE) {
+            	if (Math.abs(m_lastMoveX - x) < 0.01 && (Math.abs(m_lastMoveY - y) < 0.01)) {
+            		return true;
+            	}
+            	 m_lastMoveX = x;
+            	 m_lastMoveY = y;
+             }
+             
              if (action == MotionEvent.ACTION_MOVE && pointerCount > 1) {
                 // TODO send motion to every pointer if its position has
                 // changed since prev event.
@@ -556,7 +719,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
    } 
 
     // Sensor events
-    public void enableSensor(int sensortype, boolean enabled) {
+    public void enableSensor (int sensortype, boolean enabled) {
         // TODO: This uses getDefaultSensor - what if we have >1 accels?
         if (enabled) {
             mSensorManager.registerListener(this, 
