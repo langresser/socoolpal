@@ -34,6 +34,12 @@ LPGLOBALVARS gpGlobals = NULL;
       DO_BYTESWAP(buf, size);                                    \
    }
 
+#ifdef PAL_CLASSIC
+BOOL g_isClassicMode = TRUE;
+#else
+BOOL g_isClassicMode = FALSE;
+#endif
+
 INT
 PAL_InitGlobals(
    VOID
@@ -302,9 +308,7 @@ PAL_LoadDefaultGame(
    gpGlobals->viewport = PAL_XY(0, 0);
    gpGlobals->wLayer = 0;
    gpGlobals->wChaseRange = 1;
-#ifndef PAL_CLASSIC
    gpGlobals->bBattleSpeed = 2;
-#endif
 
    memset(gpGlobals->rgInventory, 0, sizeof(gpGlobals->rgInventory));
    memset(gpGlobals->rgPoisonStatus, 0, sizeof(gpGlobals->rgPoisonStatus));
@@ -396,13 +400,13 @@ PAL_LoadGame(
    gpGlobals->wChasespeedChangeCycles = s.wChasespeedChangeCycles;
    gpGlobals->nFollower = s.nFollower;
    gpGlobals->dwCash = s.dwCash;
-#ifndef PAL_CLASSIC
+
+   // 即时制，战斗速度
    gpGlobals->bBattleSpeed = s.wBattleSpeed;
    if (gpGlobals->bBattleSpeed > 5 || gpGlobals->bBattleSpeed == 0)
    {
       gpGlobals->bBattleSpeed = 2;
    }
-#endif
 
    memcpy(gpGlobals->rgParty, s.rgParty, sizeof(gpGlobals->rgParty));
    memcpy(gpGlobals->rgTrail, s.rgTrail, sizeof(gpGlobals->rgTrail));
@@ -468,11 +472,7 @@ PAL_SaveGame(
    s.wChasespeedChangeCycles = gpGlobals->wChasespeedChangeCycles;
    s.nFollower = gpGlobals->nFollower;
    s.dwCash = gpGlobals->dwCash;
-#ifndef PAL_CLASSIC
    s.wBattleSpeed = gpGlobals->bBattleSpeed;
-#else
-   s.wBattleSpeed = 2;
-#endif
 
    memcpy(s.rgParty, gpGlobals->rgParty, sizeof(gpGlobals->rgParty));
    memcpy(s.rgTrail, gpGlobals->rgTrail, sizeof(gpGlobals->rgTrail));
@@ -1681,38 +1681,34 @@ PAL_SetPlayerStatus(
 
 --*/
 {
-#ifndef PAL_CLASSIC
-   if (wStatusID == kStatusSlow &&
-      gpGlobals->rgPlayerStatus[wPlayerRole][kStatusHaste] > 0)
-   {
-      //
-      // Remove the haste status
-      //
-      PAL_RemovePlayerStatus(wPlayerRole, kStatusHaste);
-      return;
-   }
+	if (!g_isClassicMode) {
+		if (wStatusID == kStatusParalyzed &&
+		  gpGlobals->rgPlayerStatus[wPlayerRole][kStatusHaste] > 0)
+		   {
+			  //
+			  // Remove the haste status
+			  //
+			  PAL_RemovePlayerStatus(wPlayerRole, kStatusHaste);
+			  return;
+		   }
 
-   if (wStatusID == kStatusHaste &&
-      gpGlobals->rgPlayerStatus[wPlayerRole][kStatusSlow] > 0)
-   {
-      //
-      // Remove the slow status
-      //
-      PAL_RemovePlayerStatus(wPlayerRole, kStatusSlow);
-      return;
-   }
-#endif
-
+		if (wStatusID == kStatusHaste &&
+			  gpGlobals->rgPlayerStatus[wPlayerRole][kStatusParalyzed] > 0)
+		   {
+			  //
+			  // Remove the slow status
+			  //
+			  PAL_RemovePlayerStatus(wPlayerRole, kStatusParalyzed);
+			  return;
+		   }
+	}
+   
    switch (wStatusID)
    {
    case kStatusConfused:
    case kStatusSleep:
    case kStatusSilence:
-#ifdef PAL_CLASSIC
-   case kStatusParalyzed:
-#else
-   case kStatusSlow:
-#endif
+   case kStatusParalyzed: // 回合
       //
       // for "bad" statuses, don't set the status when we already have it
       //

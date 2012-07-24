@@ -376,8 +376,6 @@ PAL_SwitchMenu(
    return (wReturnValue == 0) ? FALSE : TRUE;
 }
 
-#ifndef PAL_CLASSIC
-
 static VOID
 PAL_BattleSpeedMenu(
    VOID
@@ -433,8 +431,6 @@ PAL_BattleSpeedMenu(
       gpGlobals->bBattleSpeed = wReturnValue;
    }
 }
-
-#endif
 
 LPBOX
 PAL_ShowCash(
@@ -532,17 +528,6 @@ PAL_SystemMenu(
    //
    // Create menu items
    //
-#ifdef PAL_CLASSIC
-   MENUITEM        rgSystemMenuItem[5] =
-   {
-      // value  label                      enabled   pos
-      { 1,      SYSMENU_LABEL_SAVE,        TRUE,     PAL_XY(SUBMENU_X_POSITION + 13, SUBMENU_Y_POSITION) },
-      { 2,      SYSMENU_LABEL_LOAD,        TRUE,     PAL_XY(SUBMENU_X_POSITION + 13, SUBMENU_Y_POSITION + 18) },
-      { 3,      SYSMENU_LABEL_MUSIC,       TRUE,     PAL_XY(SUBMENU_X_POSITION + 13, SUBMENU_Y_POSITION + 36) },
-      { 4,      SYSMENU_LABEL_SOUND,       TRUE,     PAL_XY(SUBMENU_X_POSITION + 13, SUBMENU_Y_POSITION + 54) },
-      { 5,      SYSMENU_LABEL_QUIT,        TRUE,     PAL_XY(SUBMENU_X_POSITION + 13, SUBMENU_Y_POSITION + 72) },
-   };
-#else
    MENUITEM        rgSystemMenuItem[6] =
    {
       // value  label                      enabled   pos
@@ -553,28 +538,18 @@ PAL_SystemMenu(
       { 5,      SYSMENU_LABEL_BATTLEMODE,  TRUE,     PAL_XY(SUBMENU_X_POSITION + 13, SUBMENU_Y_POSITION + 72) },
       { 6,      SYSMENU_LABEL_QUIT,        TRUE,     PAL_XY(SUBMENU_X_POSITION + 13, SUBMENU_Y_POSITION + 90) },
    };
-#endif
 
    //
    // Create the menu box.
    //
-#ifdef PAL_CLASSIC
-   lpMenuBox = PAL_CreateBox(PAL_XY(SUBMENU_X_POSITION, SUBMENU_Y_POSITION - 13), 4, 3, 0, TRUE, NULL);
-#else
    lpMenuBox = PAL_CreateBox(PAL_XY(SUBMENU_X_POSITION, SUBMENU_Y_POSITION - 13), 5, 3, 0, TRUE, NULL);
-#endif
    VIDEO_UpdateScreen(&rect);
 
    //
    // Perform the menu.
    //
-#ifdef PAL_CLASSIC
-   wReturnValue = PAL_ReadMenu(PAL_SystemMenu_OnItemChange, rgSystemMenuItem, 5,
-      gpGlobals->iCurSystemMenuItem, MENUITEM_COLOR, TRUE);
-#else
    wReturnValue = PAL_ReadMenu(PAL_SystemMenu_OnItemChange, rgSystemMenuItem, 6,
       gpGlobals->iCurSystemMenuItem, MENUITEM_COLOR, TRUE);
-#endif
 
    if (wReturnValue == MENUITEM_VALUE_CANCELLED)
    {
@@ -664,7 +639,6 @@ PAL_SystemMenu(
       g_fNoSound = !PAL_SwitchMenu(!g_fNoSound);
       break;
 
-#ifndef PAL_CLASSIC
    case 5:
       //
       // Battle Mode
@@ -673,9 +647,165 @@ PAL_SystemMenu(
       break;
 
    case 6:
-#else
-   case 5:
+      //
+      // Quit
+      //
+      if (PAL_ConfirmMenu())
+      {
+         PAL_PlayMUS(0, FALSE, 2);
+         PAL_FadeOut(2);
+         PAL_Shutdown();
+         exit(0);
+      }
+      break;
+   }
+
+   PAL_DeleteBox(lpMenuBox);
+   return TRUE;
+}
+
+static BOOL
+PAL_SystemMenuClassic(
+   VOID
+)
+/*++
+  Purpose:
+
+    Show the system menu.
+
+  Parameters:
+
+    None.
+
+  Return value:
+
+    TRUE if user made some operations in the menu, FALSE if user cancelled.
+
+--*/
+{
+   LPBOX               lpMenuBox;
+   WORD                wReturnValue;
+   int                 iSlot, i, iSavedTimes;
+   FILE               *fp;
+   
+   const int SUBMENU_X_POSITION = 60;
+   const int SUBMENU_Y_POSITION = 50;
+   const SDL_Rect      rect = {SUBMENU_X_POSITION, SUBMENU_Y_POSITION - 13, 100, 135};
+
+   //
+   // Create menu items
+   //
+   MENUITEM        rgSystemMenuItem[5] =
+   {
+      // value  label                      enabled   pos
+      { 1,      SYSMENU_LABEL_SAVE,        TRUE,     PAL_XY(SUBMENU_X_POSITION + 13, SUBMENU_Y_POSITION) },
+      { 2,      SYSMENU_LABEL_LOAD,        TRUE,     PAL_XY(SUBMENU_X_POSITION + 13, SUBMENU_Y_POSITION + 18) },
+      { 3,      SYSMENU_LABEL_MUSIC,       TRUE,     PAL_XY(SUBMENU_X_POSITION + 13, SUBMENU_Y_POSITION + 36) },
+      { 4,      SYSMENU_LABEL_SOUND,       TRUE,     PAL_XY(SUBMENU_X_POSITION + 13, SUBMENU_Y_POSITION + 54) },
+      { 5,      SYSMENU_LABEL_QUIT,        TRUE,     PAL_XY(SUBMENU_X_POSITION + 13, SUBMENU_Y_POSITION + 72) },
+   };
+
+   //
+   // Create the menu box.
+   //
+   lpMenuBox = PAL_CreateBox(PAL_XY(SUBMENU_X_POSITION, SUBMENU_Y_POSITION - 13), 4, 3, 0, TRUE, NULL);
+   VIDEO_UpdateScreen(&rect);
+
+   //
+   // Perform the menu.
+   //
+   wReturnValue = PAL_ReadMenu(PAL_SystemMenu_OnItemChange, rgSystemMenuItem, 5,
+      gpGlobals->iCurSystemMenuItem, MENUITEM_COLOR, TRUE);
+
+   if (wReturnValue == MENUITEM_VALUE_CANCELLED)
+   {
+      //
+      // User cancelled the menu
+      //
+      PAL_DeleteBox(lpMenuBox);
+      VIDEO_UpdateScreen(&rect);
+      return FALSE;
+   }
+
+   switch (wReturnValue)
+   {
+   case 1:
+      //
+      // Save game
+      //
+      iSlot = PAL_SaveSlotMenu(gpGlobals->bCurrentSaveSlot);
+
+      if (iSlot != MENUITEM_VALUE_CANCELLED)
+      {
+         gpGlobals->bCurrentSaveSlot = (BYTE)iSlot;
+
+         iSavedTimes = 0;
+         for (i = 1; i <= 5; i++)
+         {
+            fp = open_file(va("%d%s", i, ".rpg"), "rb");
+            if (fp != NULL)
+            {
+               WORD wSavedTimes;
+               fread(&wSavedTimes, sizeof(WORD), 1, fp);
+               fclose(fp);
+               wSavedTimes = SWAP16(wSavedTimes);
+               if ((int)wSavedTimes > iSavedTimes)
+               {
+                  iSavedTimes = wSavedTimes;
+               }
+            }
+         }
+         PAL_SaveGame(va("%d%s", iSlot, ".rpg"), iSavedTimes + 1);
+      }
+      break;
+
+   case 2:
+      //
+      // Load game
+      //
+      iSlot = PAL_SaveSlotMenu(gpGlobals->bCurrentSaveSlot);
+      if (iSlot != MENUITEM_VALUE_CANCELLED)
+      {
+         PAL_PlayMUS(0, FALSE, 1);
+         PAL_FadeOut(1);
+         PAL_InitGameData(iSlot);
+      }
+      break;
+
+   case 3:
+      //
+      // Music
+      //
+      g_fNoMusic = !PAL_SwitchMenu(!g_fNoMusic);
+#ifdef PAL_HAS_NATIVEMIDI
+      if (g_fUseMidi)
+      {
+         if (g_fNoMusic)
+         {
+            PAL_PlayMUS(0, FALSE, 0);
+         }
+         else
+         {
+            PAL_PlayMUS(gpGlobals->wNumMusic, TRUE, 0);
+         }
+      }
 #endif
+	  if (g_fNoMusic) {
+		  g_iVolume = 0;
+	  } else {
+		 g_iVolume = SDL_MIX_MAXVOLUME * 0.5;
+	  }
+	  
+      break;
+
+   case 4:
+      //
+      // Sound
+      //
+      g_fNoSound = !PAL_SwitchMenu(!g_fNoSound);
+      break;
+
+   case 5:
       //
       // Quit
       //
@@ -1141,10 +1271,18 @@ PAL_InGameMenu(
          // System
          //
 		  gpGlobals->iCurMainMenuItem = 3;
-         if (PAL_SystemMenu())
-         {
-            goto out;
-         }
+		  if (g_isClassicMode) {
+			  if (PAL_SystemMenuClassic())
+			 {
+				goto out;
+			 }
+		  } else {
+			  if (PAL_SystemMenu())
+			 {
+				goto out;
+			 }
+		  }
+         
          break;
       }
    }

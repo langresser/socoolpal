@@ -94,7 +94,7 @@ PAL_GameMain(
   
    while (TRUE)
    {
-	   if (g_isInBackground) {
+	   if (IsInBackground()) {
 		   UTIL_DelayEx(200, 50);
            continue;
 	   }
