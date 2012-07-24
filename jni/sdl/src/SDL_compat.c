@@ -43,6 +43,7 @@ static char *wm_title = NULL;
 static SDL_Surface *SDL_VideoIcon;
 static int SDL_enabled_UNICODE = 0;
 int g_isInBackground = SDL_FALSE;
+Uint32 g_windowId = 0;
 
 int IsInBackground()
 {
@@ -555,6 +556,8 @@ SDL_SetVideoMode(int width, int height, int bpp, Uint32 flags)
     if (!SDL_VideoWindow) {
         return NULL;
     }
+    
+    g_windowId = SDL_VideoWindow->id;
     SDL_SetWindowIcon(SDL_VideoWindow, SDL_VideoIcon);
 
     SetupScreenSaver(flags);

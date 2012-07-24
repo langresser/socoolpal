@@ -43,6 +43,7 @@ extern int SDL_mainLoop();
 static int forward_argc;
 static char **forward_argv;
 static int exit_status;
+extern int g_isInBackground;
 
 int main(int argc, char **argv)
 {

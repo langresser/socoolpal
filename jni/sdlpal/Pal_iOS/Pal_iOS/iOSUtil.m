@@ -23,6 +23,9 @@ extern BOOL g_showSystemMenu;
     UIButton* btnBBS;
     UIButton* btnMenu;
     UIButton* btnSearch;
+    UIButton* switchMode;
+    UILabel* modeLabel;
+
     UITextView* textView;
     
     AdMoGoView *adView;
@@ -34,6 +37,7 @@ extern BOOL g_showSystemMenu;
 -(void)onClickFeedBack;
 -(void)onClickBBS;
 -(void)onClickMenu;
+-(void)onClickMode;
 
 -(void)initAds;
 -(void)showAds;
@@ -108,6 +112,18 @@ MyDelegate* g_delegate = nil;
 //    btnSearch.hidden = YES;
 }
 
+-(void)onClickMode
+{
+    g_isClassicMode = !g_isClassicMode;
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    if (defaults) {
+        [defaults setInteger:(g_isClassicMode ? 1 : 2) forKey:@"BattleMode"];
+    }
+    
+    [switchMode setTitle:(g_isClassicMode ? @"回合制" : @"即时制") forState:UIControlStateNormal];
+    [switchMode setTitle:(g_isClassicMode ? @"回合制" : @"即时制") forState:UIControlStateHighlighted];
+}
+
 -(void)onClickMenu
 {
     if (g_showSystemMenu) {
@@ -133,7 +149,7 @@ MyDelegate* g_delegate = nil;
     UIView* mainView = windowData->viewcontroller.view;
 
     if (textView == nil) {
-        textView = [[UITextView alloc]initWithFrame:CGRectMake(80, 0, 300, 320)];
+        textView = [[UITextView alloc]initWithFrame:CGRectMake(100, 0, 300, 320)];
         NSString* text = [NSString stringWithContentsOfFile:@"gl.txt" encoding:NSUTF8StringEncoding error:nil];
         if (text) {
             textView.text = text;
@@ -158,6 +174,22 @@ MyDelegate* g_delegate = nil;
         [btnBBS addTarget:self  action:@selector(onClickBBS) forControlEvents:UIControlEventTouchUpInside];
         
         [mainView addSubview:btnBBS];
+        
+        modeLabel = [[UILabel alloc]initWithFrame:CGRectMake(1, 105, 70, 24)];
+        modeLabel.text = @"战斗模式:";
+        modeLabel.font = [UIFont systemFontOfSize:15];
+//        modeLabel.backgroundColor = [UIColor clearColor];
+        modeLabel.alpha = 0.4;
+        [mainView addSubview:modeLabel];
+
+        switchMode = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        switchMode.frame = CGRectMake(1, 130, 70, 24);
+
+        [switchMode setTitle:(g_isClassicMode ? @"回合制" : @"即时制") forState:UIControlStateNormal];
+        [switchMode setTitle:(g_isClassicMode ? @"回合制" : @"即时制") forState:UIControlStateHighlighted];
+        [switchMode addTarget:self  action:@selector(onClickMode) forControlEvents:UIControlEventTouchUpInside];
+        switchMode.alpha = 0.8;
+        [mainView addSubview:switchMode];
     }
     
     if (textView.superview == nil) {
@@ -166,8 +198,11 @@ MyDelegate* g_delegate = nil;
         [textView removeFromSuperview];
     }
     
-    feedBack.hidden = (textView.superview == nil);
-    btnBBS.hidden = (textView.superview == nil);
+    BOOL isHiden = (textView.superview == nil);
+    feedBack.hidden = isHiden;
+    btnBBS.hidden = isHiden;
+    modeLabel.hidden = isHiden;
+    switchMode.hidden = isHiden;
 }
 
 -(void)onClickFeedBack
@@ -293,11 +328,16 @@ void initButton()
     showAds();
     
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-    if (defaults && [defaults boolForKey:@"Tip"] == NO) {
-        [defaults setBool:YES forKey:@"Tip"];
+    if (defaults) {
+        if ([defaults boolForKey:@"Tip"] == NO) {
+            [defaults setBool:YES forKey:@"Tip"];
+            
+            UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"点击左上角的按钮可以查看触屏操作方式和游戏攻略" delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil,nil];
+            [alert show];
+        }
         
-        UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"点击左上角的按钮可以查看触屏操作方式和游戏攻略" delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil,nil];
-        [alert show];
+        int mode = [defaults integerForKey:@"BattleMode"];
+        g_isClassicMode = (mode == 0 || mode == 1);
     }
 }
 

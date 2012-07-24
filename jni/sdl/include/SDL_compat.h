@@ -365,6 +365,7 @@ extern DECLSPEC int SDLCALL SDL_putenv(const char *variable);
 #endif
 
 extern DECLSPEC   int SDLCALL IsInBackground();
+extern Uint32 g_windowId;
 /*@}*//*Compatibility*/
 
 /* Ends C function definitions when using C++ */
