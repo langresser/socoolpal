@@ -138,8 +138,9 @@ PAL_GameMain(
       //
       PAL_StartFrame();
        
-       if (g_hasInGame && g_InputState.touchEventType == TOUCH_NONE) {
+       if (g_hasInGame) {
            showMenu();
+           showJoystick();
        }
    }
 }

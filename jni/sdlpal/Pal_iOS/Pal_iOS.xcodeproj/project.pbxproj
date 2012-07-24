@@ -157,6 +157,26 @@
 		3B713D9C15A9F89A00A63662 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B713D9B15A9F89A00A63662 /* AudioToolbox.framework */; };
 		3B713D9E15A9F8A300A63662 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B713D9D15A9F8A300A63662 /* QuartzCore.framework */; };
 		3B79C64115B4839800CE706A /* LBSSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B79C64015B4839800CE706A /* LBSSDK.framework */; };
+		3B89AC3615BF02B400582E84 /* integerrockerbg.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B89AC2C15BF02B400582E84 /* integerrockerbg.png */; };
+		3B89AC3715BF02B400582E84 /* lightbutton0pic.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B89AC2D15BF02B400582E84 /* lightbutton0pic.png */; };
+		3B89AC3815BF02B400582E84 /* left.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B89AC2E15BF02B400582E84 /* left.png */; };
+		3B89AC3915BF02B400582E84 /* lightbutton2pic.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B89AC2F15BF02B400582E84 /* lightbutton2pic.png */; };
+		3B89AC3A15BF02B400582E84 /* up.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B89AC3015BF02B400582E84 /* up.png */; };
+		3B89AC3B15BF02B400582E84 /* lightbutton4pic.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B89AC3115BF02B400582E84 /* lightbutton4pic.png */; };
+		3B89AC3C15BF02B400582E84 /* right.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B89AC3215BF02B400582E84 /* right.png */; };
+		3B89AC3D15BF02B400582E84 /* lightbutton6pic.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B89AC3315BF02B400582E84 /* lightbutton6pic.png */; };
+		3B89AC3E15BF02B400582E84 /* down.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B89AC3415BF02B400582E84 /* down.png */; };
+		3B89AC3F15BF02B400582E84 /* rockerbg.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B89AC3515BF02B400582E84 /* rockerbg.png */; };
+		3B89AC4215BF056300582E84 /* CGJoystick.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B89AC4115BF056300582E84 /* CGJoystick.m */; };
+		3B89AC5115BF372A00582E84 /* CGJoystickButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B89AC5015BF372A00582E84 /* CGJoystickButton.m */; };
+		3B89AC5A15BF3B8600582E84 /* BackBtnClick.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B89AC5215BF3B8500582E84 /* BackBtnClick.png */; };
+		3B89AC5B15BF3B8600582E84 /* BackBtnNormal.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B89AC5315BF3B8500582E84 /* BackBtnNormal.png */; };
+		3B89AC5C15BF3B8600582E84 /* expoint1.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B89AC5415BF3B8500582E84 /* expoint1.png */; };
+		3B89AC5D15BF3B8600582E84 /* expoint2.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B89AC5515BF3B8500582E84 /* expoint2.png */; };
+		3B89AC5E15BF3B8600582E84 /* expoint3.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B89AC5615BF3B8500582E84 /* expoint3.png */; };
+		3B89AC5F15BF3B8600582E84 /* SkillOperate.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B89AC5715BF3B8600582E84 /* SkillOperate.png */; };
+		3B89AC6015BF3B8600582E84 /* systembtnemboss.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B89AC5815BF3B8600582E84 /* systembtnemboss.png */; };
+		3B89AC6115BF3B8600582E84 /* systembtnnormal.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B89AC5915BF3B8600582E84 /* systembtnnormal.png */; };
 		3BB3E43515B32DA9007B9657 /* iOSUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB3E43415B32DA8007B9657 /* iOSUtil.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		3BB3E4E315B342CE007B9657 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BB3E4E215B342CE007B9657 /* CoreLocation.framework */; };
 		3BB3E52B15B34382007B9657 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BB3E52A15B34382007B9657 /* SystemConfiguration.framework */; };
@@ -454,6 +474,28 @@
 		3B713D9B15A9F89A00A63662 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		3B713D9D15A9F8A300A63662 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		3B79C64015B4839800CE706A /* LBSSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = LBSSDK.framework; sourceTree = "<group>"; };
+		3B89AC2C15BF02B400582E84 /* integerrockerbg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = integerrockerbg.png; sourceTree = "<group>"; };
+		3B89AC2D15BF02B400582E84 /* lightbutton0pic.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lightbutton0pic.png; sourceTree = "<group>"; };
+		3B89AC2E15BF02B400582E84 /* left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = left.png; sourceTree = "<group>"; };
+		3B89AC2F15BF02B400582E84 /* lightbutton2pic.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lightbutton2pic.png; sourceTree = "<group>"; };
+		3B89AC3015BF02B400582E84 /* up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = up.png; sourceTree = "<group>"; };
+		3B89AC3115BF02B400582E84 /* lightbutton4pic.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lightbutton4pic.png; sourceTree = "<group>"; };
+		3B89AC3215BF02B400582E84 /* right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = right.png; sourceTree = "<group>"; };
+		3B89AC3315BF02B400582E84 /* lightbutton6pic.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lightbutton6pic.png; sourceTree = "<group>"; };
+		3B89AC3415BF02B400582E84 /* down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = down.png; sourceTree = "<group>"; };
+		3B89AC3515BF02B400582E84 /* rockerbg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rockerbg.png; sourceTree = "<group>"; };
+		3B89AC4015BF056300582E84 /* CGJoystick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGJoystick.h; sourceTree = "<group>"; };
+		3B89AC4115BF056300582E84 /* CGJoystick.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CGJoystick.m; sourceTree = "<group>"; };
+		3B89AC4F15BF372A00582E84 /* CGJoystickButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGJoystickButton.h; sourceTree = "<group>"; };
+		3B89AC5015BF372A00582E84 /* CGJoystickButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CGJoystickButton.m; sourceTree = "<group>"; };
+		3B89AC5215BF3B8500582E84 /* BackBtnClick.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BackBtnClick.png; sourceTree = "<group>"; };
+		3B89AC5315BF3B8500582E84 /* BackBtnNormal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BackBtnNormal.png; sourceTree = "<group>"; };
+		3B89AC5415BF3B8500582E84 /* expoint1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = expoint1.png; sourceTree = "<group>"; };
+		3B89AC5515BF3B8500582E84 /* expoint2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = expoint2.png; sourceTree = "<group>"; };
+		3B89AC5615BF3B8500582E84 /* expoint3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = expoint3.png; sourceTree = "<group>"; };
+		3B89AC5715BF3B8600582E84 /* SkillOperate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SkillOperate.png; sourceTree = "<group>"; };
+		3B89AC5815BF3B8600582E84 /* systembtnemboss.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = systembtnemboss.png; sourceTree = "<group>"; };
+		3B89AC5915BF3B8600582E84 /* systembtnnormal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = systembtnnormal.png; sourceTree = "<group>"; };
 		3BB3E43415B32DA8007B9657 /* iOSUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iOSUtil.m; sourceTree = "<group>"; };
 		3BB3E4E215B342CE007B9657 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		3BB3E52A15B34382007B9657 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -790,6 +832,10 @@
 			isa = PBXGroup;
 			children = (
 				3BB3E43415B32DA8007B9657 /* iOSUtil.m */,
+				3B89AC4015BF056300582E84 /* CGJoystick.h */,
+				3B89AC4115BF056300582E84 /* CGJoystick.m */,
+				3B89AC4F15BF372A00582E84 /* CGJoystickButton.h */,
+				3B89AC5015BF372A00582E84 /* CGJoystickButton.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -1025,6 +1071,7 @@
 		3B713D9F15A9FA1700A63662 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				3B89AC2B15BF02B400582E84 /* Resources */,
 				3B37ECB915B300A80091E824 /* 0.rpg */,
 				3B37ECBF15B300A80091E824 /* abc.mkf */,
 				3B37ECC015B300A80091E824 /* ball.mkf */,
@@ -1050,6 +1097,31 @@
 				3B37ECD515B300A80091E824 /* word.dat */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		3B89AC2B15BF02B400582E84 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				3B89AC5215BF3B8500582E84 /* BackBtnClick.png */,
+				3B89AC5315BF3B8500582E84 /* BackBtnNormal.png */,
+				3B89AC5415BF3B8500582E84 /* expoint1.png */,
+				3B89AC5515BF3B8500582E84 /* expoint2.png */,
+				3B89AC5615BF3B8500582E84 /* expoint3.png */,
+				3B89AC5715BF3B8600582E84 /* SkillOperate.png */,
+				3B89AC5815BF3B8600582E84 /* systembtnemboss.png */,
+				3B89AC5915BF3B8600582E84 /* systembtnnormal.png */,
+				3B89AC2C15BF02B400582E84 /* integerrockerbg.png */,
+				3B89AC2D15BF02B400582E84 /* lightbutton0pic.png */,
+				3B89AC2E15BF02B400582E84 /* left.png */,
+				3B89AC2F15BF02B400582E84 /* lightbutton2pic.png */,
+				3B89AC3015BF02B400582E84 /* up.png */,
+				3B89AC3115BF02B400582E84 /* lightbutton4pic.png */,
+				3B89AC3215BF02B400582E84 /* right.png */,
+				3B89AC3315BF02B400582E84 /* lightbutton6pic.png */,
+				3B89AC3415BF02B400582E84 /* down.png */,
+				3B89AC3515BF02B400582E84 /* rockerbg.png */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1189,6 +1261,24 @@
 				3B2D116B15B4803800DE7816 /* adsmogo_picrollbg.png in Resources */,
 				3B2D116C15B4803800DE7816 /* AdMoGoWebBrowser.xib in Resources */,
 				3B22855515B5D3EA00C68AAA /* umFeedback.bundle in Resources */,
+				3B89AC3615BF02B400582E84 /* integerrockerbg.png in Resources */,
+				3B89AC3715BF02B400582E84 /* lightbutton0pic.png in Resources */,
+				3B89AC3815BF02B400582E84 /* left.png in Resources */,
+				3B89AC3915BF02B400582E84 /* lightbutton2pic.png in Resources */,
+				3B89AC3A15BF02B400582E84 /* up.png in Resources */,
+				3B89AC3B15BF02B400582E84 /* lightbutton4pic.png in Resources */,
+				3B89AC3C15BF02B400582E84 /* right.png in Resources */,
+				3B89AC3D15BF02B400582E84 /* lightbutton6pic.png in Resources */,
+				3B89AC3E15BF02B400582E84 /* down.png in Resources */,
+				3B89AC3F15BF02B400582E84 /* rockerbg.png in Resources */,
+				3B89AC5A15BF3B8600582E84 /* BackBtnClick.png in Resources */,
+				3B89AC5B15BF3B8600582E84 /* BackBtnNormal.png in Resources */,
+				3B89AC5C15BF3B8600582E84 /* expoint1.png in Resources */,
+				3B89AC5D15BF3B8600582E84 /* expoint2.png in Resources */,
+				3B89AC5E15BF3B8600582E84 /* expoint3.png in Resources */,
+				3B89AC5F15BF3B8600582E84 /* SkillOperate.png in Resources */,
+				3B89AC6015BF3B8600582E84 /* systembtnemboss.png in Resources */,
+				3B89AC6115BF3B8600582E84 /* systembtnnormal.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1273,6 +1363,8 @@
 				3B0E317D15BDA4400073D626 /* SDL_uikitview.m in Sources */,
 				3B0E317E15BDA4400073D626 /* SDL_uikitviewcontroller.m in Sources */,
 				3B0E317F15BDA4400073D626 /* SDL_uikitwindow.m in Sources */,
+				3B89AC4215BF056300582E84 /* CGJoystick.m in Sources */,
+				3B89AC5115BF372A00582E84 /* CGJoystickButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

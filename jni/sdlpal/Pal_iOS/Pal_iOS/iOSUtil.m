@@ -13,8 +13,17 @@
 #import "AdMoGoView.h"
 #import "MobClick.h"
 #import "UMFeedback.h"
+#import "CGJoystick.h"
+#import "CGJoystickButton.h"
 
 extern BOOL g_showSystemMenu;
+
+#define JOYSTICK_NONE 0
+#define JOYSTICK_MOVE 1
+#define JOYSTICK_BATTLE 2
+
+int g_joystickType = JOYSTICK_NONE;
+BOOL g_useJoyStick = YES;
 
 @interface MyDelegate : NSObject<AdMoGoDelegate>
 {
@@ -25,10 +34,18 @@ extern BOOL g_showSystemMenu;
     UIButton* btnSearch;
     UIButton* switchMode;
     UILabel* modeLabel;
+    
+    UISwitch* joystickBtn;
+    UILabel* joystickLabel;
 
     UITextView* textView;
     
     AdMoGoView *adView;
+    
+    
+    // joystick
+    CGJoystick* joystickBase;
+    CGJoystickButton* joystickButton;
 }
 @property(retain, nonatomic) UIButton* helpBtn;
 
@@ -38,6 +55,8 @@ extern BOOL g_showSystemMenu;
 -(void)onClickBBS;
 -(void)onClickMenu;
 -(void)onClickMode;
+-(void)onClickJoystick;
+
 
 -(void)initAds;
 -(void)showAds;
@@ -45,6 +64,9 @@ extern BOOL g_showSystemMenu;
 
 -(void)showMenuBtn;
 -(void)hideMenuBtn;
+
+-(void)showJoystick;
+-(void)hideJoystick;
 @end
 
 MyDelegate* g_delegate = nil;
@@ -112,6 +134,40 @@ MyDelegate* g_delegate = nil;
 //    btnSearch.hidden = YES;
 }
 
+-(void)showJoystick
+{
+    if (joystickBase == nil) {
+        joystickBase = [[CGJoystick alloc]initWithFrame:CGRectMake(10, 210, 100, 100)];
+
+        SDL_Window* window = SDL_GetWindowFromID(g_windowId);
+        if (!window) {
+            return;
+        }
+        
+        SDL_WindowData* windowData = (SDL_WindowData*)window->driverdata;
+        UIView* mainView = windowData->viewcontroller.view;
+        [mainView addSubview:joystickBase];
+        
+        joystickButton = [[CGJoystickButton alloc]initWithFrame:CGRectMake(365, 205, 200, 200)];
+        [mainView addSubview:joystickButton];
+    }
+    
+    joystickBase.hidden = NO;
+    joystickButton.hidden = NO;
+    g_joystickType = JOYSTICK_MOVE;
+}
+
+-(void)hideJoystick
+{
+    if (joystickBase == nil) {
+        return;
+    }
+    
+    joystickBase.hidden = YES;
+    joystickButton.hidden = YES;
+    g_joystickType = JOYSTICK_NONE;
+}
+
 -(void)onClickMode
 {
     g_isClassicMode = !g_isClassicMode;
@@ -122,6 +178,22 @@ MyDelegate* g_delegate = nil;
     
     [switchMode setTitle:(g_isClassicMode ? @"回合制" : @"即时制") forState:UIControlStateNormal];
     [switchMode setTitle:(g_isClassicMode ? @"回合制" : @"即时制") forState:UIControlStateHighlighted];
+}
+
+-(void)onClickJoystick
+{
+    g_useJoyStick = !g_useJoyStick;
+    
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    if (defaults) {
+        [defaults setInteger:(g_useJoyStick ? 1 : 2) forKey:@"JoystickMode"];
+    }
+    
+    if (g_useJoyStick) {
+        showJoystick();
+    } else {
+        hideJoystick();
+    }
 }
 
 -(void)onClickMenu
@@ -190,6 +262,20 @@ MyDelegate* g_delegate = nil;
         [switchMode addTarget:self  action:@selector(onClickMode) forControlEvents:UIControlEventTouchUpInside];
         switchMode.alpha = 0.8;
         [mainView addSubview:switchMode];
+        
+        joystickLabel = [[UILabel alloc]initWithFrame:CGRectMake(1, 160, 70, 24)];
+        joystickLabel.text = @"显示摇杆:";
+        joystickLabel.font = [UIFont systemFontOfSize:15];
+        //        modeLabel.backgroundColor = [UIColor clearColor];
+        joystickLabel.alpha = 0.4;
+        [mainView addSubview:joystickLabel];
+        
+        joystickBtn = [[UISwitch alloc]initWithFrame:CGRectMake(1, 180, 40, 20)];
+        joystickBtn.on = g_useJoyStick ? YES : NO;
+        
+        [joystickBtn addTarget:self  action:@selector(onClickJoystick) forControlEvents:UIControlEventTouchUpInside];
+        joystickBtn.alpha = 0.8;
+        [mainView addSubview:joystickBtn];
     }
     
     if (textView.superview == nil) {
@@ -203,6 +289,9 @@ MyDelegate* g_delegate = nil;
     btnBBS.hidden = isHiden;
     modeLabel.hidden = isHiden;
     switchMode.hidden = isHiden;
+    
+    joystickBtn.hidden = isHiden;
+    joystickLabel.hidden = isHiden;
 }
 
 -(void)onClickFeedBack
@@ -338,6 +427,9 @@ void initButton()
         
         int mode = [defaults integerForKey:@"BattleMode"];
         g_isClassicMode = (mode == 0 || mode == 1);
+        
+        int joystick = [defaults integerForKey:@"JoystickMode"];
+        g_useJoyStick = (joystick == 0 || joystick == 1);
     }
 }
 
@@ -380,4 +472,27 @@ void getScreenSize(int* width, int* height)
         *height = size.width > size.height ? size.height : size.width;
     }
 }
+
+
+
+void showJoystick()
+{
+    if (!g_useJoyStick) {
+        return;
+    }
+
+    if (g_joystickType == JOYSTICK_NONE) {
+        [[MyDelegate sharedInstance]showJoystick];
+    }
+}
+
+void hideJoystick()
+{
+    if (g_joystickType == JOYSTICK_NONE) {
+        return;
+    }
+
+    [[MyDelegate sharedInstance]hideJoystick];
+}
+
 #endif

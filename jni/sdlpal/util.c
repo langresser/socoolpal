@@ -26,6 +26,7 @@
 #ifdef PAL_HAS_NATIVEMIDI
 #include "midi.h"
 #endif
+#include "input.h"
 
 
 void

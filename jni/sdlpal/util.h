@@ -97,6 +97,9 @@ extern void closeAds();
 
 extern void showMenu();
 extern void hideMenu();
+    
+extern void showJoystick();
+extern void hideJoystick();
 
 extern void getScreenSize(int* width, int* height);
 
