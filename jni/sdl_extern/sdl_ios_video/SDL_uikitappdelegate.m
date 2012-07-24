@@ -27,6 +27,7 @@
 #import "SDL_hints.h"
 #import "SDL_hints_c.h"
 #import "SDL_system.h"
+#include "SDL_compat.h"
 
 #import "SDL_uikitappdelegate.h"
 #import "SDL_uikitopenglview.h"
@@ -140,6 +141,13 @@ static void SDL_IdleTimerDisabledChanged(const char *name, const char *oldValue,
     if (g_hasInGame) {
         PAL_SaveGame("9.rpg", 0);
     }
+    
+    g_isInBackground = SDL_TRUE;
+}
+
+-(void)applicationWillEnterForeground:(UIApplication *)application
+{
+    g_isInBackground = SDL_FALSE;
 }
 
 - (void) applicationWillResignActive:(UIApplication*)application

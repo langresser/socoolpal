@@ -92,6 +92,8 @@
 		04FFAB8B12E23B8D00BA343D /* SDL_atomic.c in Sources */ = {isa = PBXBuildFile; fileRef = 04FFAB8912E23B8D00BA343D /* SDL_atomic.c */; };
 		04FFAB8C12E23B8D00BA343D /* SDL_spinlock.c in Sources */ = {isa = PBXBuildFile; fileRef = 04FFAB8A12E23B8D00BA343D /* SDL_spinlock.c */; };
 		22C905CD13A22646003FE4E4 /* SDL_hints_c.h in Headers */ = {isa = PBXBuildFile; fileRef = 22C905CC13A22646003FE4E4 /* SDL_hints_c.h */; };
+		3B0E318415BDA54B0073D626 /* SDL_compat.c in Sources */ = {isa = PBXBuildFile; fileRef = 3B0E318315BDA54B0073D626 /* SDL_compat.c */; };
+		3B0E318615BDA55C0073D626 /* SDL_compat.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B0E318515BDA55C0073D626 /* SDL_compat.h */; };
 		56EA86FB13E9EC2B002E47EB /* SDL_coreaudio.c in Sources */ = {isa = PBXBuildFile; fileRef = 56EA86F913E9EC2B002E47EB /* SDL_coreaudio.c */; };
 		56EA86FC13E9EC2B002E47EB /* SDL_coreaudio.h in Headers */ = {isa = PBXBuildFile; fileRef = 56EA86FA13E9EC2B002E47EB /* SDL_coreaudio.h */; };
 		56ED04E1118A8EE200A56AA6 /* SDL_power.c in Sources */ = {isa = PBXBuildFile; fileRef = 56ED04E0118A8EE200A56AA6 /* SDL_power.c */; };
@@ -326,6 +328,8 @@
 		04FFAB8912E23B8D00BA343D /* SDL_atomic.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_atomic.c; sourceTree = "<group>"; };
 		04FFAB8A12E23B8D00BA343D /* SDL_spinlock.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SDL_spinlock.c; sourceTree = "<group>"; };
 		22C905CC13A22646003FE4E4 /* SDL_hints_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_hints_c.h; path = ../../src/SDL_hints_c.h; sourceTree = "<group>"; };
+		3B0E318315BDA54B0073D626 /* SDL_compat.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = SDL_compat.c; path = ../../../SDL/src/SDL_compat.c; sourceTree = "<group>"; };
+		3B0E318515BDA55C0073D626 /* SDL_compat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_compat.h; path = ../../SDL/include/SDL_compat.h; sourceTree = "<group>"; };
 		56EA86F913E9EC2B002E47EB /* SDL_coreaudio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = SDL_coreaudio.c; path = coreaudio/SDL_coreaudio.c; sourceTree = "<group>"; };
 		56EA86FA13E9EC2B002E47EB /* SDL_coreaudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_coreaudio.h; path = coreaudio/SDL_coreaudio.h; sourceTree = "<group>"; };
 		56ED04E0118A8EE200A56AA6 /* SDL_power.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = SDL_power.c; path = ../../src/power/SDL_power.c; sourceTree = SOURCE_ROOT; };
@@ -819,6 +823,7 @@
 		FD99B8BC0DD52E5C00FB1D6B /* Public Headers */ = {
 			isa = PBXGroup;
 			children = (
+				3B0E318515BDA55C0073D626 /* SDL_compat.h */,
 				AA7558651595D55500BBD41B /* begin_code.h */,
 				AA7558661595D55500BBD41B /* close_code.h */,
 				AA7558671595D55500BBD41B /* SDL_assert.h */,
@@ -878,6 +883,7 @@
 		FD99B8BD0DD52E6D00FB1D6B /* Library Source */ = {
 			isa = PBXGroup;
 			children = (
+				3B0E318315BDA54B0073D626 /* SDL_compat.c */,
 				04B2ECEF1025CEB900F9BC5F /* atomic */,
 				FD99B8FB0DD52EDC00FB1D6B /* audio */,
 				FD99B98A0DD52EDC00FB1D6B /* cpuinfo */,
@@ -1163,6 +1169,7 @@
 				AA7558C81595D55500BBD41B /* SDL_version.h in Headers */,
 				AA7558C91595D55500BBD41B /* SDL_video.h in Headers */,
 				AA7558CA1595D55500BBD41B /* SDL.h in Headers */,
+				3B0E318615BDA55C0073D626 /* SDL_compat.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1370,6 +1377,7 @@
 				04BAC09D1300C1290055DE28 /* SDL_log.c in Sources */,
 				56EA86FB13E9EC2B002E47EB /* SDL_coreaudio.c in Sources */,
 				AA628ADB159369E3005138DD /* SDL_rotate.c in Sources */,
+				3B0E318415BDA54B0073D626 /* SDL_compat.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

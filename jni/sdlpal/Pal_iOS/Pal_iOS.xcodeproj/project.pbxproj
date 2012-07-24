@@ -7,15 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3B22854515B5CC8C00C68AAA /* jumphack.c in Sources */ = {isa = PBXBuildFile; fileRef = 3B22853215B5CC8C00C68AAA /* jumphack.c */; };
-		3B22854615B5CC8C00C68AAA /* SDL_uikitappdelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B22853615B5CC8C00C68AAA /* SDL_uikitappdelegate.m */; };
-		3B22854715B5CC8C00C68AAA /* SDL_uikitevents.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B22853815B5CC8C00C68AAA /* SDL_uikitevents.m */; };
-		3B22854815B5CC8C00C68AAA /* SDL_uikitopengles.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B22853A15B5CC8C00C68AAA /* SDL_uikitopengles.m */; };
-		3B22854915B5CC8C00C68AAA /* SDL_uikitopenglview.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B22853C15B5CC8C00C68AAA /* SDL_uikitopenglview.m */; };
-		3B22854A15B5CC8C00C68AAA /* SDL_uikitvideo.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B22853E15B5CC8C00C68AAA /* SDL_uikitvideo.m */; };
-		3B22854B15B5CC8C00C68AAA /* SDL_uikitview.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B22854015B5CC8C00C68AAA /* SDL_uikitview.m */; };
-		3B22854C15B5CC8C00C68AAA /* SDL_uikitviewcontroller.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B22854215B5CC8C00C68AAA /* SDL_uikitviewcontroller.m */; };
-		3B22854D15B5CC8C00C68AAA /* SDL_uikitwindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B22854415B5CC8C00C68AAA /* SDL_uikitwindow.m */; };
+		3B0E317715BDA4400073D626 /* jumphack.c in Sources */ = {isa = PBXBuildFile; fileRef = 3B0E316415BDA4400073D626 /* jumphack.c */; };
+		3B0E317815BDA4400073D626 /* SDL_uikitappdelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B0E316815BDA4400073D626 /* SDL_uikitappdelegate.m */; };
+		3B0E317915BDA4400073D626 /* SDL_uikitevents.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B0E316A15BDA4400073D626 /* SDL_uikitevents.m */; };
+		3B0E317A15BDA4400073D626 /* SDL_uikitopengles.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B0E316C15BDA4400073D626 /* SDL_uikitopengles.m */; };
+		3B0E317B15BDA4400073D626 /* SDL_uikitopenglview.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B0E316E15BDA4400073D626 /* SDL_uikitopenglview.m */; };
+		3B0E317C15BDA4400073D626 /* SDL_uikitvideo.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B0E317015BDA4400073D626 /* SDL_uikitvideo.m */; };
+		3B0E317D15BDA4400073D626 /* SDL_uikitview.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B0E317215BDA4400073D626 /* SDL_uikitview.m */; };
+		3B0E317E15BDA4400073D626 /* SDL_uikitviewcontroller.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B0E317415BDA4400073D626 /* SDL_uikitviewcontroller.m */; };
+		3B0E317F15BDA4400073D626 /* SDL_uikitwindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B0E317615BDA4400073D626 /* SDL_uikitwindow.m */; };
 		3B22855015B5D37700C68AAA /* libMobClickLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B22854E15B5D37700C68AAA /* libMobClickLibrary.a */; };
 		3B22855415B5D3EA00C68AAA /* libUMFeedback.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B22855115B5D3EA00C68AAA /* libUMFeedback.a */; };
 		3B22855515B5D3EA00C68AAA /* umFeedback.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3B22855215B5D3EA00C68AAA /* umFeedback.bundle */; };
@@ -89,7 +89,6 @@
 		3B37ECF015B300A80091E824 /* wor16.asc in Resources */ = {isa = PBXBuildFile; fileRef = 3B37ECD315B300A80091E824 /* wor16.asc */; };
 		3B37ECF115B300A80091E824 /* wor16.fon in Resources */ = {isa = PBXBuildFile; fileRef = 3B37ECD415B300A80091E824 /* wor16.fon */; };
 		3B37ECF215B300A80091E824 /* word.dat in Resources */ = {isa = PBXBuildFile; fileRef = 3B37ECD515B300A80091E824 /* word.dat */; };
-		3B67E13915B864E300C71522 /* SDL_compat.c in Sources */ = {isa = PBXBuildFile; fileRef = 3B67E13715B864E300C71522 /* SDL_compat.c */; };
 		3B713CB415A9F71200A63662 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B713CB315A9F71200A63662 /* UIKit.framework */; };
 		3B713CB615A9F71200A63662 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B713CB515A9F71200A63662 /* Foundation.framework */; };
 		3B713CB815A9F71200A63662 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B713CB715A9F71200A63662 /* CoreGraphics.framework */; };
@@ -199,25 +198,25 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		3B22853215B5CC8C00C68AAA /* jumphack.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = jumphack.c; sourceTree = "<group>"; };
-		3B22853315B5CC8C00C68AAA /* jumphack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jumphack.h; sourceTree = "<group>"; };
-		3B22853415B5CC8C00C68AAA /* keyinfotable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = keyinfotable.h; sourceTree = "<group>"; };
-		3B22853515B5CC8C00C68AAA /* SDL_uikitappdelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_uikitappdelegate.h; sourceTree = "<group>"; };
-		3B22853615B5CC8C00C68AAA /* SDL_uikitappdelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDL_uikitappdelegate.m; sourceTree = "<group>"; };
-		3B22853715B5CC8C00C68AAA /* SDL_uikitevents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_uikitevents.h; sourceTree = "<group>"; };
-		3B22853815B5CC8C00C68AAA /* SDL_uikitevents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDL_uikitevents.m; sourceTree = "<group>"; };
-		3B22853915B5CC8C00C68AAA /* SDL_uikitopengles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_uikitopengles.h; sourceTree = "<group>"; };
-		3B22853A15B5CC8C00C68AAA /* SDL_uikitopengles.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDL_uikitopengles.m; sourceTree = "<group>"; };
-		3B22853B15B5CC8C00C68AAA /* SDL_uikitopenglview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_uikitopenglview.h; sourceTree = "<group>"; };
-		3B22853C15B5CC8C00C68AAA /* SDL_uikitopenglview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDL_uikitopenglview.m; sourceTree = "<group>"; };
-		3B22853D15B5CC8C00C68AAA /* SDL_uikitvideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_uikitvideo.h; sourceTree = "<group>"; };
-		3B22853E15B5CC8C00C68AAA /* SDL_uikitvideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDL_uikitvideo.m; sourceTree = "<group>"; };
-		3B22853F15B5CC8C00C68AAA /* SDL_uikitview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_uikitview.h; sourceTree = "<group>"; };
-		3B22854015B5CC8C00C68AAA /* SDL_uikitview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDL_uikitview.m; sourceTree = "<group>"; };
-		3B22854115B5CC8C00C68AAA /* SDL_uikitviewcontroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_uikitviewcontroller.h; sourceTree = "<group>"; };
-		3B22854215B5CC8C00C68AAA /* SDL_uikitviewcontroller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDL_uikitviewcontroller.m; sourceTree = "<group>"; };
-		3B22854315B5CC8C00C68AAA /* SDL_uikitwindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_uikitwindow.h; sourceTree = "<group>"; };
-		3B22854415B5CC8C00C68AAA /* SDL_uikitwindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDL_uikitwindow.m; sourceTree = "<group>"; };
+		3B0E316415BDA4400073D626 /* jumphack.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = jumphack.c; sourceTree = "<group>"; };
+		3B0E316515BDA4400073D626 /* jumphack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jumphack.h; sourceTree = "<group>"; };
+		3B0E316615BDA4400073D626 /* keyinfotable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = keyinfotable.h; sourceTree = "<group>"; };
+		3B0E316715BDA4400073D626 /* SDL_uikitappdelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_uikitappdelegate.h; sourceTree = "<group>"; };
+		3B0E316815BDA4400073D626 /* SDL_uikitappdelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDL_uikitappdelegate.m; sourceTree = "<group>"; };
+		3B0E316915BDA4400073D626 /* SDL_uikitevents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_uikitevents.h; sourceTree = "<group>"; };
+		3B0E316A15BDA4400073D626 /* SDL_uikitevents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDL_uikitevents.m; sourceTree = "<group>"; };
+		3B0E316B15BDA4400073D626 /* SDL_uikitopengles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_uikitopengles.h; sourceTree = "<group>"; };
+		3B0E316C15BDA4400073D626 /* SDL_uikitopengles.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDL_uikitopengles.m; sourceTree = "<group>"; };
+		3B0E316D15BDA4400073D626 /* SDL_uikitopenglview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_uikitopenglview.h; sourceTree = "<group>"; };
+		3B0E316E15BDA4400073D626 /* SDL_uikitopenglview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDL_uikitopenglview.m; sourceTree = "<group>"; };
+		3B0E316F15BDA4400073D626 /* SDL_uikitvideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_uikitvideo.h; sourceTree = "<group>"; };
+		3B0E317015BDA4400073D626 /* SDL_uikitvideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDL_uikitvideo.m; sourceTree = "<group>"; };
+		3B0E317115BDA4400073D626 /* SDL_uikitview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_uikitview.h; sourceTree = "<group>"; };
+		3B0E317215BDA4400073D626 /* SDL_uikitview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDL_uikitview.m; sourceTree = "<group>"; };
+		3B0E317315BDA4400073D626 /* SDL_uikitviewcontroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_uikitviewcontroller.h; sourceTree = "<group>"; };
+		3B0E317415BDA4400073D626 /* SDL_uikitviewcontroller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDL_uikitviewcontroller.m; sourceTree = "<group>"; };
+		3B0E317515BDA4400073D626 /* SDL_uikitwindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_uikitwindow.h; sourceTree = "<group>"; };
+		3B0E317615BDA4400073D626 /* SDL_uikitwindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDL_uikitwindow.m; sourceTree = "<group>"; };
 		3B22854E15B5D37700C68AAA /* libMobClickLibrary.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libMobClickLibrary.a; sourceTree = SOURCE_ROOT; };
 		3B22854F15B5D37700C68AAA /* MobClick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobClick.h; sourceTree = SOURCE_ROOT; };
 		3B22855115B5D3EA00C68AAA /* libUMFeedback.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libUMFeedback.a; sourceTree = SOURCE_ROOT; };
@@ -330,8 +329,6 @@
 		3B37ECD315B300A80091E824 /* wor16.asc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = wor16.asc; path = ../../res/wor16.asc; sourceTree = "<group>"; };
 		3B37ECD415B300A80091E824 /* wor16.fon */ = {isa = PBXFileReference; lastKnownFileType = file; name = wor16.fon; path = ../../res/wor16.fon; sourceTree = "<group>"; };
 		3B37ECD515B300A80091E824 /* word.dat */ = {isa = PBXFileReference; lastKnownFileType = file; name = word.dat; path = ../../res/word.dat; sourceTree = "<group>"; };
-		3B67E13715B864E300C71522 /* SDL_compat.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = SDL_compat.c; path = ../../../SDL_compat.c; sourceTree = "<group>"; };
-		3B67E13815B864E300C71522 /* SDL_compat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_compat.h; path = ../../../SDL_compat.h; sourceTree = "<group>"; };
 		3B713CAF15A9F71200A63662 /* Pal_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pal_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B713CB315A9F71200A63662 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		3B713CB515A9F71200A63662 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -511,31 +508,31 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		3B22853115B5CC8C00C68AAA /* sdl_ios_video */ = {
+		3B0E316315BDA4400073D626 /* sdl_ios_video */ = {
 			isa = PBXGroup;
 			children = (
-				3B22853215B5CC8C00C68AAA /* jumphack.c */,
-				3B22853315B5CC8C00C68AAA /* jumphack.h */,
-				3B22853415B5CC8C00C68AAA /* keyinfotable.h */,
-				3B22853515B5CC8C00C68AAA /* SDL_uikitappdelegate.h */,
-				3B22853615B5CC8C00C68AAA /* SDL_uikitappdelegate.m */,
-				3B22853715B5CC8C00C68AAA /* SDL_uikitevents.h */,
-				3B22853815B5CC8C00C68AAA /* SDL_uikitevents.m */,
-				3B22853915B5CC8C00C68AAA /* SDL_uikitopengles.h */,
-				3B22853A15B5CC8C00C68AAA /* SDL_uikitopengles.m */,
-				3B22853B15B5CC8C00C68AAA /* SDL_uikitopenglview.h */,
-				3B22853C15B5CC8C00C68AAA /* SDL_uikitopenglview.m */,
-				3B22853D15B5CC8C00C68AAA /* SDL_uikitvideo.h */,
-				3B22853E15B5CC8C00C68AAA /* SDL_uikitvideo.m */,
-				3B22853F15B5CC8C00C68AAA /* SDL_uikitview.h */,
-				3B22854015B5CC8C00C68AAA /* SDL_uikitview.m */,
-				3B22854115B5CC8C00C68AAA /* SDL_uikitviewcontroller.h */,
-				3B22854215B5CC8C00C68AAA /* SDL_uikitviewcontroller.m */,
-				3B22854315B5CC8C00C68AAA /* SDL_uikitwindow.h */,
-				3B22854415B5CC8C00C68AAA /* SDL_uikitwindow.m */,
+				3B0E316415BDA4400073D626 /* jumphack.c */,
+				3B0E316515BDA4400073D626 /* jumphack.h */,
+				3B0E316615BDA4400073D626 /* keyinfotable.h */,
+				3B0E316715BDA4400073D626 /* SDL_uikitappdelegate.h */,
+				3B0E316815BDA4400073D626 /* SDL_uikitappdelegate.m */,
+				3B0E316915BDA4400073D626 /* SDL_uikitevents.h */,
+				3B0E316A15BDA4400073D626 /* SDL_uikitevents.m */,
+				3B0E316B15BDA4400073D626 /* SDL_uikitopengles.h */,
+				3B0E316C15BDA4400073D626 /* SDL_uikitopengles.m */,
+				3B0E316D15BDA4400073D626 /* SDL_uikitopenglview.h */,
+				3B0E316E15BDA4400073D626 /* SDL_uikitopenglview.m */,
+				3B0E316F15BDA4400073D626 /* SDL_uikitvideo.h */,
+				3B0E317015BDA4400073D626 /* SDL_uikitvideo.m */,
+				3B0E317115BDA4400073D626 /* SDL_uikitview.h */,
+				3B0E317215BDA4400073D626 /* SDL_uikitview.m */,
+				3B0E317315BDA4400073D626 /* SDL_uikitviewcontroller.h */,
+				3B0E317415BDA4400073D626 /* SDL_uikitviewcontroller.m */,
+				3B0E317515BDA4400073D626 /* SDL_uikitwindow.h */,
+				3B0E317615BDA4400073D626 /* SDL_uikitwindow.m */,
 			);
 			name = sdl_ios_video;
-			path = ../../../sdl_ios_video;
+			path = ../../../sdl_extern/sdl_ios_video;
 			sourceTree = "<group>";
 		};
 		3B2D10F715B4803700DE7816 /* AdsMoGoLib */ = {
@@ -845,7 +842,7 @@
 		3B713CB915A9F71200A63662 /* Pal_iOS */ = {
 			isa = PBXGroup;
 			children = (
-				3B22853115B5CC8C00C68AAA /* sdl_ios_video */,
+				3B0E316315BDA4400073D626 /* sdl_ios_video */,
 				3B3C904B15AE006C00976B55 /* Classes */,
 				3B713CD915A9F79600A63662 /* adplug */,
 				3B713D1415A9F7D900A63662 /* libmad */,
@@ -876,8 +873,6 @@
 		3B713CD815A9F78200A63662 /* Src */ = {
 			isa = PBXGroup;
 			children = (
-				3B67E13715B864E300C71522 /* SDL_compat.c */,
-				3B67E13815B864E300C71522 /* SDL_compat.h */,
 				3B713D0015A9F7D900A63662 /* ascii.h */,
 				3B713D0115A9F7D900A63662 /* battle.c */,
 				3B713D0715A9F7D900A63662 /* fight.h */,
@@ -1269,16 +1264,15 @@
 				3B2D119015B4829500DE7816 /* CJSONScanner.m in Sources */,
 				3B2D119115B4829500DE7816 /* CJSONSerializer.m in Sources */,
 				3B2D119215B4829500DE7816 /* CSerializedJSONData.m in Sources */,
-				3B22854515B5CC8C00C68AAA /* jumphack.c in Sources */,
-				3B22854615B5CC8C00C68AAA /* SDL_uikitappdelegate.m in Sources */,
-				3B22854715B5CC8C00C68AAA /* SDL_uikitevents.m in Sources */,
-				3B22854815B5CC8C00C68AAA /* SDL_uikitopengles.m in Sources */,
-				3B22854915B5CC8C00C68AAA /* SDL_uikitopenglview.m in Sources */,
-				3B22854A15B5CC8C00C68AAA /* SDL_uikitvideo.m in Sources */,
-				3B22854B15B5CC8C00C68AAA /* SDL_uikitview.m in Sources */,
-				3B22854C15B5CC8C00C68AAA /* SDL_uikitviewcontroller.m in Sources */,
-				3B22854D15B5CC8C00C68AAA /* SDL_uikitwindow.m in Sources */,
-				3B67E13915B864E300C71522 /* SDL_compat.c in Sources */,
+				3B0E317715BDA4400073D626 /* jumphack.c in Sources */,
+				3B0E317815BDA4400073D626 /* SDL_uikitappdelegate.m in Sources */,
+				3B0E317915BDA4400073D626 /* SDL_uikitevents.m in Sources */,
+				3B0E317A15BDA4400073D626 /* SDL_uikitopengles.m in Sources */,
+				3B0E317B15BDA4400073D626 /* SDL_uikitopenglview.m in Sources */,
+				3B0E317C15BDA4400073D626 /* SDL_uikitvideo.m in Sources */,
+				3B0E317D15BDA4400073D626 /* SDL_uikitview.m in Sources */,
+				3B0E317E15BDA4400073D626 /* SDL_uikitviewcontroller.m in Sources */,
+				3B0E317F15BDA4400073D626 /* SDL_uikitwindow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
