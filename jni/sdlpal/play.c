@@ -429,11 +429,9 @@ BOOL do_search(PAL_POS rgPos[13])
 			}
 
 			if (offsetX == 0 && offsetY < 0) {
-				dir = (dir + 2) % 4;
 			}
 
 			if (offsetY == 0 && offsetX < 0) {
-				dir = (dir + 2) % 4;
 			}
 
 			gpGlobals->wPartyDirection = dir;
