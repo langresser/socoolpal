@@ -885,14 +885,15 @@ int GetMouseMoveDirOffset(int nDir, int* pOffsetX, int* pOffsetY)
 	*pOffsetX = nOffsetX;
 	*pOffsetY = nOffsetY;
 
+	
+	// 如果前方有物品的话，不改变方向
+	if (checkIsEventObjects(PAL_XY(nTargetX, nTargetY))) {
+		return nDir1;
+	}
+
 	if (!PAL_CheckObstacle(PAL_XY(nTargetX, nTargetY), FALSE, 0)) {
 		return nDir1;
 	}
-    
-    // 如果前方有物品的话，不改变方向
-    if (checkIsEventObjects(PAL_XY(nTargetX, nTargetY))) {
-        return nDir1;
-    }
 
 	nOffsetX = nArrOffsetX[nDir2] * 16;
 	nOffsetY = nArrOffsetY[nDir2] * 8;
@@ -948,6 +949,7 @@ PAL_UpdateParty(
 --*/
 {
    int              xSource, ySource, xTarget, yTarget, xOffset, yOffset, i;
+   BOOL couldMove;
 
    //
    // Has user pressed one of the arrow keys?
@@ -972,7 +974,8 @@ PAL_UpdateParty(
       //
       // Check for obstacles on the destination location
       //
-      if (!PAL_CheckObstacle(PAL_XY(xTarget, yTarget), TRUE, 0))
+	  couldMove = !PAL_CheckObstacle(PAL_XY(xTarget, yTarget), TRUE, 0);
+      if (couldMove)
       {
          //
          // Player will actually be moved. Store trail.
