@@ -179,6 +179,9 @@
     <ClCompile Include="..\sdl\src\main\windows\SDL_windows_main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="hack.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ascii.h">
@@ -351,6 +354,9 @@
     </ClInclude>
     <ClInclude Include="libmad\timer.h">
       <Filter>libmad</Filter>
+    </ClInclude>
+    <ClInclude Include="hack.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

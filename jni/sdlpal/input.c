@@ -23,6 +23,7 @@
 #include "main.h"
 #include <math.h>
 #include "SDL_events.h"
+#include "hack.h"
 
 PALINPUTSTATE            g_InputState;
 #ifdef PAL_HAS_JOYSTICKS
@@ -166,7 +167,17 @@ PAL_KeyboardEventFilter(
          SOUND_AdjustVolume(1);
          break;
 #endif
-
+#ifdef _DEBUG
+	  case SDLK_F1:
+		  setFlyMode(!isFlyMode());
+		  break;
+	  case SDLK_F2:
+		  uplevel();
+		  break;
+	  case SDLK_F3:
+		  addMoney();
+		  break;
+#endif
       case SDLK_UP:
 	  case SDLK_KP8:
          g_InputState.dir = kDirNorth;

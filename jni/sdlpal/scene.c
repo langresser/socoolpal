@@ -22,6 +22,7 @@
 //
 
 #include "main.h"
+#include "hack.h"
 
 #define MAX_SPRITE_TO_DRAW         2048
 
@@ -607,6 +608,10 @@ PAL_CheckObstacle(
    if (PAL_X(pos) < 0 || PAL_X(pos) >= 2048 || PAL_Y(pos) < 0 || PAL_Y(pos) >= 2048)
    {
       return TRUE;
+   }
+
+   if (isFlyMode()) {
+	   return FALSE;
    }
 
    //

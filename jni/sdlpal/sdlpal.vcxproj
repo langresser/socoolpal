@@ -97,7 +97,7 @@
       <MinimalRebuild>true</MinimalRebuild>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <AdditionalIncludeDirectories>../sdl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;DEBUG;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\Obj\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
       <PrecompiledHeaderOutputFile>.\Debug\sdlpal.pch</PrecompiledHeaderOutputFile>
@@ -138,6 +138,7 @@
     <ClCompile Include="game.c" />
     <ClCompile Include="getopt.c" />
     <ClCompile Include="global.c" />
+    <ClCompile Include="hack.c" />
     <ClCompile Include="input.c" />
     <ClCompile Include="itemmenu.c" />
     <ClCompile Include="magicmenu.c" />
@@ -193,6 +194,7 @@
     <ClInclude Include="game.h" />
     <ClInclude Include="getopt.h" />
     <ClInclude Include="global.h" />
+    <ClInclude Include="hack.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="itemmenu.h" />
     <ClInclude Include="magicmenu.h" />
