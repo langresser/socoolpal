@@ -585,5 +585,13 @@ void getScreenSize(int* width, int* height)
 		*height = 320;
 	}
 }
+
+void showJoystick()
+{
+}
+
+void hideJoystick()
+{
+}
 #elif defined __ANDROID__
 #endif

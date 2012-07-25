@@ -223,7 +223,7 @@ PAL_SaveSlotMenu(
    //
    // Activate the menu
    //
-   wItemSelected = PAL_ReadMenu(NULL, rgMenuItem, 5, wDefaultSlot - 1, MENUITEM_COLOR, TRUE);
+   wItemSelected = PAL_ReadMenu_Save(NULL, rgMenuItem, 5, wDefaultSlot - 1, MENUITEM_COLOR, TRUE, 100, 30, rect);
 
    //
    // Delete the boxes

@@ -209,6 +209,17 @@ PAL_ReadMenu(
 );
 
 WORD
+	PAL_ReadMenu_Save(
+	LPITEMCHANGED_CALLBACK    lpfnMenuItemChanged,
+	LPMENUITEM                rgMenuItem,
+	INT                       nMenuItem,
+	WORD                      wDefaultItem,
+	BYTE                      bLabelColor,
+	BOOL						couldCancel,
+	int width, int height, SDL_Rect boundingBox
+);
+
+WORD
 PAL_ReadMenu_Buy(
    LPITEMCHANGED_CALLBACK    lpfnMenuItemChanged,
    LPMENUITEM                rgMenuItem,
