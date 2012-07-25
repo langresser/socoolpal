@@ -17,11 +17,9 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
-        stickBase = [UIImage imageNamed:@"integerrockerbg"];
-        stickUp = [UIImage imageNamed:@"up"];
-        stickDown = [UIImage imageNamed:@"down"];
-        stickLeft = [UIImage imageNamed:@"left"];
-        stickRight = [UIImage imageNamed:@"right"];
+        
+        
+        self.backgroundColor = [UIColor clearColor];
 //        joystickBase = [[UIImageView alloc] initWithImage:image];
 //        joystickBase.frame = CGRectMake(0, 0, frame.size.width, frame.size.height);
 //        joystickBase.backgroundColor = [UIColor clearColor];
@@ -32,12 +30,18 @@
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    UITouch* touch = [[event allTouches]anyObject];
-    CGPoint point = [touch locationInView:self];
-    int dir = [self getDirByPoint:point];
-    if (stickDir != dir) {
-        [self setNeedsDisplay];
-        stickDir = dir;
+
+    for (UITouch* touch in touches) {
+        CGPoint point = [touch locationInView:self];
+        CGRect rect = self.bounds;
+        if (point.x >= 0 && point.x <= rect.size.width
+            && point.y >= 0 && point.y <= rect.size.height) {
+            int dir = [self getDirByPoint:point];
+            if (stickDir != dir) {
+                [self setNeedsDisplay];
+                stickDir = dir;
+            }
+        }
     }
     
     [self doMove:stickDir];
@@ -66,15 +70,21 @@
 
 -(int)getDirByPoint:(CGPoint)point
 {
+    CGPoint centerPoint = CGPointMake(70, 70);
+    int diffX = point.x - centerPoint.x;
+    int diffY = centerPoint.y - point.y;
+    int absX = abs(diffX);
+    int absY = abs(diffY);
     int dir = 0;
-    if (point.x > 30 && point.x <= 50 && point.y >= 0 && point.y <= 50) {
+    
+    if (diffY > 0 && (absX <= absY)) {
         dir = DIR_UP;
-    } else if (point.x >= 30 && point.x <= 50 && point.y >= 50 && point.y <= 100) {
+    } else if (diffY < 0 && absX <= absY) {
         dir = DIR_DOWN;
-    } else if (point.x >= 0 && point.x <= 50 && point.y >= 40 && point.y <= 60) {
-        dir = DIR_LEFT;
-    } else if (point.x >= 50 && point.x <= 100 && point.y >= 40 && point.y <= 60) {
+    } else if (diffX > 0 && absX >= absY) {
         dir = DIR_RIGHT;
+    } else if (diffX < 0 && absX >= absY) {
+        dir = DIR_LEFT;
     } else {
         dir = 0;
     }
@@ -84,12 +94,17 @@
 
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    UITouch* touch = [[event allTouches]anyObject];
-    CGPoint point = [touch locationInView:self];
-    int dir = [self getDirByPoint:point];
-    if (stickDir != dir) {
-        [self setNeedsDisplay];
-        stickDir = dir;
+    for (UITouch* touch in touches) {
+        CGPoint point = [touch locationInView:self];
+        CGRect rect = self.bounds;
+        if (point.x >= 0 && point.x <= rect.size.width
+            && point.y >= 0 && point.y <= rect.size.height) {
+            int dir = [self getDirByPoint:point];
+            if (stickDir != dir) {
+                [self setNeedsDisplay];
+                stickDir = dir;
+            }
+        }
     }
     
     [self doMove:stickDir];
@@ -117,22 +132,28 @@
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect
 {
+    stickBase = [UIImage imageNamed:@"jsbg"];
+    stickUp = [UIImage imageNamed:@"js4"];
+    stickDown = [UIImage imageNamed:@"js8"];
+    stickLeft = [UIImage imageNamed:@"js2"];
+    stickRight = [UIImage imageNamed:@"js6"];
+
     // Drawing code
 //    CGContextRef context = UIGraphicsGetCurrentContext();
     [stickBase drawInRect:rect];
     
     switch (stickDir) {
         case DIR_UP:
-            [stickUp drawInRect:CGRectMake(30, 0, 20, 50)];
+            [stickUp drawInRect:CGRectMake(58, 15, 35, 90)];
             break;
         case DIR_DOWN:
-            [stickDown drawInRect:CGRectMake(30, 50, 20, 50)];
+            [stickDown drawInRect:CGRectMake(59, 68, 35, 90)];
             break;
         case DIR_LEFT:
-            [stickLeft drawInRect:CGRectMake(0, 40, 50, 20)];
+            [stickLeft drawInRect:CGRectMake(13, 60, 90, 35)];
             break;
         case DIR_RIGHT:
-            [stickRight drawInRect:CGRectMake(50, 40, 50, 20)];
+            [stickRight drawInRect:CGRectMake(65, 60, 90, 35)];
             break;
         default:
             break;

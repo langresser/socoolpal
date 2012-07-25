@@ -364,9 +364,9 @@ PAL_BattleUIDrawMiscMenu(
 
    MENUITEM rgMenuItem[] = {
       // value   label                   enabled   position
-      {  0,      BATTLEUI_LABEL_ITEM,    TRUE,     PAL_XY(16, 32)  },
-      {  1,      BATTLEUI_LABEL_DEFEND,  TRUE,     PAL_XY(16, 50)  },
-      {  2,      BATTLEUI_LABEL_AUTO,    TRUE,     PAL_XY(16, 68)  },
+      {  0,      BATTLEUI_LABEL_AUTO,    TRUE,     PAL_XY(16, 32)  },
+      {  1,      BATTLEUI_LABEL_ITEM,  TRUE,     PAL_XY(16, 50)  },
+      {  2,      BATTLEUI_LABEL_DEFEND,    TRUE,     PAL_XY(16, 68)  },
       {  3,      BATTLEUI_LABEL_FLEE,    TRUE,     PAL_XY(16, 86)  },
       {  4,      BATTLEUI_LABEL_STATUS,  TRUE,     PAL_XY(16, 104) }
    };
@@ -1070,6 +1070,7 @@ PAL_BattleUIUpdate(
       PAL_RLEBlitToSurface(PAL_SpriteGetFrame(gpSpriteUI, i), gpScreen, PAL_XY(x, y));
    }
 
+#if 0
    if (g_Battle.UI.state == kBattleUISelectTargetEnemy
 	   || g_Battle.UI.state == kBattleUISelectTargetPlayer
 	   || g_Battle.UI.state == kBattleUISelectTargetEnemyAll
@@ -1077,6 +1078,7 @@ PAL_BattleUIUpdate(
 		PAL_CreateSingleLineBox(PAL_XY(270, 0), 2, FALSE);
 		PAL_DrawText(PAL_GetWord(LABEL_BACK), PAL_XY(278, 10), MENUITEM_COLOR_CONFIRMED, FALSE, FALSE);
    }
+#endif
 
    switch (g_Battle.UI.state)
    {

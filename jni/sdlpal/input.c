@@ -167,17 +167,6 @@ PAL_KeyboardEventFilter(
          SOUND_AdjustVolume(1);
          break;
 #endif
-#ifdef _DEBUG
-	  case SDLK_F1:
-		  setFlyMode(!isFlyMode());
-		  break;
-	  case SDLK_F2:
-		  uplevel();
-		  break;
-	  case SDLK_F3:
-		  addMoney();
-		  break;
-#endif
       case SDLK_UP:
 	  case SDLK_KP8:
          g_InputState.dir = kDirNorth;
@@ -333,6 +322,32 @@ PAL_KeyboardEventFilter(
       }
       break;
    }
+}
+
+
+int GetInputDir(int mouseX, int mouseY)
+{
+	int nScrW = 320;
+	int nScrH = 200;
+    
+	// 目前来看人物似乎总是在屏幕中心，即使走到地图边上;
+	int nHeroX = nScrW / 2;
+	int nHeroY = nScrH / 2;
+    
+	int nDeltaX = mouseX - nHeroX;
+	int nDeltaY = nHeroY - mouseY;
+    
+    if (nDeltaY >= 0 && nDeltaX >= 0) {
+        return kDirNorth;
+    } else if (nDeltaY >= 0 && nDeltaX < 0) {
+        return kDirWest;
+    } else if (nDeltaY < 0 && nDeltaX >= 0) {
+        return kDirEast;
+    } else if (nDeltaY < 0 && nDeltaX < 0) {
+        return kDirSouth;
+    }
+    
+    return kDirUnknown;
 }
 
 int GetMouseMoveDir(int nMouseX, int nMouseY)
@@ -493,10 +508,8 @@ PAL_MouseEventFilter(
 	  g_InputState.touchX = mouseX * 320.0 / g_wInitialWidth;
 	  g_InputState.touchY = mouseY * 200.0 / g_wInitialHeight;
       
-	  if (4 != gridIndex) {
-		  g_InputState.controlType = CONTROL_TYPE_MOUSE_WALK;
-		  g_InputState.nMoveDir = GetMouseMoveDir(g_InputState.touchX, g_InputState.touchY);
-	  }
+       g_InputState.controlType = CONTROL_TYPE_MOUSE_WALK;
+       g_InputState.nMoveDir = GetMouseMoveDir(g_InputState.touchX, g_InputState.touchY);
            	  
 	  switch (gridIndex)
 	  {
@@ -524,6 +537,9 @@ PAL_MouseEventFilter(
 	  case 5:
 		  g_InputState.dir = kDirEast;
 		  break;
+       case 4:
+              g_InputState.dir = GetInputDir(g_InputState.touchX, g_InputState.touchY);
+        break;
 	  }
       break;
 #ifdef __ANDROID__
@@ -570,6 +586,8 @@ PAL_MouseEventFilter(
 	  case 5:
 		  g_InputState.dir = kDirEast;
 		  break;
+          case 4:
+              g_InputState.dir = GetInputDir(g_InputState.touchX, g_InputState.touchY);
 	  }
 	   break;
 #ifdef __ANDROID__
@@ -591,15 +609,15 @@ PAL_MouseEventFilter(
 		g_InputState.touchEventType = TOUCH_NONE;
 	  }
            
-           
-	  if (gridIndex == 4) {
-		  if (abs(lastReleasex - lastPressx) <= 25
-			  && abs(lastReleasey - lastPressy) <= 25) {
-			if (lastReleaseButtonTime - lastPressButtonTime <= 500) {
-				g_InputState.dwKeyPress |= kKeyMainSearch;
-			}
-		  }
-	  }
+       if (gridIndex == 4) {
+           if (abs(lastReleasex - lastPressx) <= 25
+               && abs(lastReleasey - lastPressy) <= 25) {
+               if (lastReleaseButtonTime - lastPressButtonTime <= 500) {
+                   g_InputState.dwKeyPress |= kKeyMainSearch;
+               }
+           }
+       }
+               
 
 	  g_InputState.dir = kDirUnknown;
 	  g_InputState.nMoveDir = eMoveDirUnknown;

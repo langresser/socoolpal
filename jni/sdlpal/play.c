@@ -656,6 +656,7 @@ PAL_StartFrame(
       // Show the in-game menu
       //
        g_showSystemMenu = TRUE;
+       hideSearchButton();
       PAL_InGameMenu();
        g_showSystemMenu = FALSE;
    }

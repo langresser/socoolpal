@@ -141,6 +141,7 @@ PAL_GameMain(
        if (g_hasInGame) {
            showMenu();
            showJoystick();
+           hideBackButton();
        }
    }
 }

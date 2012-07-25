@@ -98,8 +98,15 @@ extern void closeAds();
 extern void showMenu();
 extern void hideMenu();
     
+extern void showSearchButton();
+extern void hideSearchButton();
+    
 extern void showJoystick();
 extern void hideJoystick();
+    
+    extern void showBackButton();
+    extern void hideBackButton();
+    
 
 extern void getScreenSize(int* width, int* height);
 

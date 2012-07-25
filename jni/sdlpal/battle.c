@@ -382,6 +382,8 @@ PAL_BattleMain(
 
     g_hasInGame = FALSE;
     hideMenu();
+    showBackButton();
+
    //
    // Run the main battle loop.
    //
