@@ -89,6 +89,9 @@ UTIL_CloseFile(
 FILE* open_file(const char* file_name, const char* read_mode);
 char*   my_strlwr(char*   str);
 
+extern void initDir();
+extern void getFileStatus(const char* pszName);
+
 extern void initButton();
 extern void hideButton();
 

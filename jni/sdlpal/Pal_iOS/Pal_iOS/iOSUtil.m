@@ -361,6 +361,30 @@ MyDelegate* g_delegate = nil;
 }
 @end
 
+extern char g_application_dir[256];
+extern char g_resource_dir[256];
+void initDir()
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString  *plistPath = [paths objectAtIndex:0];
+    strlcpy(g_resource_dir, [plistPath UTF8String], sizeof(g_resource_dir));
+    
+    g_resource_dir[strlen(g_resource_dir)] = '/';
+}
+
+void getFileStatus(const char* pszName)
+{
+    NSFileManager* fmgr = [NSFileManager defaultManager];
+    if (!fmgr) {
+        return;
+    }
+    
+    NSError* error;
+    NSDictionary* attr = [fmgr attributesOfItemAtPath:[NSString stringWithUTF8String:pszName] error:&error];
+
+
+    NSLog(@"file: %s    attr:%@ ", pszName, attr);
+}
 
 void initButton()
 {

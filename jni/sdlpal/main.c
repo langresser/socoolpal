@@ -472,6 +472,8 @@ SDL_main(
 
 --*/
 {
+    initDir();
+
    int wScreenWidth = 0, wScreenHeight = 0;
    BOOL fullScreen = TRUE;
 
