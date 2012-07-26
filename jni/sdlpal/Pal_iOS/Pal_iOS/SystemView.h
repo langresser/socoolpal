@@ -8,10 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
+#define APP_FOR_APPSTORE 1
+
 @interface SystemView : UIView
 {
     UIButton* switchMode;
     UIButton* moveButton;
+    UILabel* hackLabel;
 }
 
 @end

@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <StoreKit/StoreKit.h>
 
-#define kRemoveAdsId @"com.langresser.removeads"
+#define kRemoveAdsId @"com.bananastudio.pal98.hack"
 
 #define kIAPFailedNotification @"kIAPTransactionFailedNotification"
 #define kIAPSucceededNotification @"kIAPTransactionSucceededNotification"

@@ -180,6 +180,12 @@
 		3BBEC06515C1AA6E00047CDF /* AdMoGoAdapterAdermob.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BBEC06315C1AA6E00047CDF /* AdMoGoAdapterAdermob.m */; };
 		3BBEC06615C1AA6E00047CDF /* libAderSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BBEC06415C1AA6E00047CDF /* libAderSDK.a */; };
 		3BBEC06815C1AAB700047CDF /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BBEC06715C1AAB600047CDF /* EventKit.framework */; };
+		3BBEC07115C1B1C700047CDF /* DianJinOfferPlatform.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BBEC06E15C1B1C700047CDF /* DianJinOfferPlatform.framework */; };
+		3BBEC07215C1B1C800047CDF /* Log.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BBEC06F15C1B1C700047CDF /* Log.framework */; };
+		3BBEC07315C1B1C800047CDF /* Zip.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BBEC07015C1B1C700047CDF /* Zip.framework */; };
+		3BF86B6A15C1C749000FAC45 /* more_app_click.png in Resources */ = {isa = PBXBuildFile; fileRef = 3BF86B6815C1C749000FAC45 /* more_app_click.png */; };
+		3BF86B6B15C1C749000FAC45 /* more_app_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 3BF86B6915C1C749000FAC45 /* more_app_normal.png */; };
+		3BF86B6D15C1D995000FAC45 /* DianJinOfferPlatformResources in Resources */ = {isa = PBXBuildFile; fileRef = 3BF86B6C15C1D995000FAC45 /* DianJinOfferPlatformResources */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -488,6 +494,12 @@
 		3BBEC06315C1AA6E00047CDF /* AdMoGoAdapterAdermob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdMoGoAdapterAdermob.m; sourceTree = "<group>"; };
 		3BBEC06415C1AA6E00047CDF /* libAderSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libAderSDK.a; sourceTree = "<group>"; };
 		3BBEC06715C1AAB600047CDF /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
+		3BBEC06E15C1B1C700047CDF /* DianJinOfferPlatform.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DianJinOfferPlatform.framework; sourceTree = "<group>"; };
+		3BBEC06F15C1B1C700047CDF /* Log.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Log.framework; sourceTree = "<group>"; };
+		3BBEC07015C1B1C700047CDF /* Zip.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Zip.framework; sourceTree = "<group>"; };
+		3BF86B6815C1C749000FAC45 /* more_app_click.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = more_app_click.png; sourceTree = "<group>"; };
+		3BF86B6915C1C749000FAC45 /* more_app_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = more_app_normal.png; sourceTree = "<group>"; };
+		3BF86B6C15C1D995000FAC45 /* DianJinOfferPlatformResources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = DianJinOfferPlatformResources; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -523,6 +535,9 @@
 				3B22855015B5D37700C68AAA /* libMobClickLibrary.a in Frameworks */,
 				3B22855415B5D3EA00C68AAA /* libUMFeedback.a in Frameworks */,
 				3BBEC06615C1AA6E00047CDF /* libAderSDK.a in Frameworks */,
+				3BBEC07115C1B1C700047CDF /* DianJinOfferPlatform.framework in Frameworks */,
+				3BBEC07215C1B1C800047CDF /* Log.framework in Frameworks */,
+				3BBEC07315C1B1C800047CDF /* Zip.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -750,6 +765,8 @@
 		3B713CA415A9F71200A63662 = {
 			isa = PBXGroup;
 			children = (
+				3BF86B6C15C1D995000FAC45 /* DianJinOfferPlatformResources */,
+				3BBEC06D15C1B1C700047CDF /* DianJinFramework */,
 				3BBEC06715C1AAB600047CDF /* EventKit.framework */,
 				3BA9FE9E15C05ACA00BECDF5 /* StoreKit.framework */,
 				3B2D119515B4831400DE7816 /* ImageIO.framework */,
@@ -1013,6 +1030,8 @@
 		3B89AC2B15BF02B400582E84 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				3BF86B6815C1C749000FAC45 /* more_app_click.png */,
+				3BF86B6915C1C749000FAC45 /* more_app_normal.png */,
 				3BA9FEAA15C08D1200BECDF5 /* back.png */,
 				3BA9FEAB15C08D1200BECDF5 /* back1.png */,
 				3BA9FEA615C0756400BECDF5 /* search.png */,
@@ -1050,6 +1069,16 @@
 				3BBEC06315C1AA6E00047CDF /* AdMoGoAdapterAdermob.m */,
 			);
 			path = AdsMoGoAdapter;
+			sourceTree = "<group>";
+		};
+		3BBEC06D15C1B1C700047CDF /* DianJinFramework */ = {
+			isa = PBXGroup;
+			children = (
+				3BBEC06E15C1B1C700047CDF /* DianJinOfferPlatform.framework */,
+				3BBEC06F15C1B1C700047CDF /* Log.framework */,
+				3BBEC07015C1B1C700047CDF /* Zip.framework */,
+			);
+			path = DianJinFramework;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1192,6 +1221,9 @@
 				3BA9FEA915C0756400BECDF5 /* search2.png in Resources */,
 				3BA9FEAC15C08D1200BECDF5 /* back.png in Resources */,
 				3BA9FEAD15C08D1200BECDF5 /* back1.png in Resources */,
+				3BF86B6A15C1C749000FAC45 /* more_app_click.png in Resources */,
+				3BF86B6B15C1C749000FAC45 /* more_app_normal.png in Resources */,
+				3BF86B6D15C1D995000FAC45 /* DianJinOfferPlatformResources in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1366,6 +1398,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/AdViewSDK\"",
 					"\"$(SRCROOT)/AdsMoGoLib/AdNetworkLibs/MobWin\"",
+					"\"$(SRCROOT)/DianJinFramework\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pal_iOS/Pal_iOS-Prefix.pch";
@@ -1413,6 +1446,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/AdViewSDK\"",
 					"\"$(SRCROOT)/AdsMoGoLib/AdNetworkLibs/MobWin\"",
+					"\"$(SRCROOT)/DianJinFramework\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pal_iOS/Pal_iOS-Prefix.pch";

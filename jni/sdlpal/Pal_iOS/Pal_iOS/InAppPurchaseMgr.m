@@ -68,7 +68,7 @@ InAppPurchaseMgr* g_iap_instance = nil;
     if ([productId isEqualToString:kRemoveAdsId])
     {
         // enable the pro features
-        [[NSUserDefaults standardUserDefaults] setObject:[UIDevice currentDevice].uniqueDeviceIdentifier forKey:kRemoveAdsFlag];
+        [[NSUserDefaults standardUserDefaults] setObject:[[UIDevice currentDevice] uniqueDeviceIdentifier] forKey:kRemoveAdsFlag];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
 }

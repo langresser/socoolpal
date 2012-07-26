@@ -17,6 +17,13 @@
 #import "CGJoystickButton.h"
 #import "SystemView.h"
 
+#ifndef APP_FOR_APPSTORE
+#import <DianJinOfferPlatform/DianJinOfferPlatform.h>
+#import <DianJinOfferPlatform/DianJinOfferBanner.h>
+#import <DianJinOfferPlatform/DianJinBannerSubViewProperty.h>
+#import <DianJinOfferPlatform/DianJinTransitionParam.h>
+#endif
+
 extern BOOL g_showSystemMenu;
 
 #define JOYSTICK_NONE 0
@@ -26,7 +33,11 @@ extern BOOL g_showSystemMenu;
 int g_joystickType = JOYSTICK_NONE;
 BOOL g_useJoyStick = NO;
 
+#ifndef APP_FOR_APPSTORE
+@interface MyDelegate : NSObject<AdMoGoDelegate, DianJinOfferBannerDelegate>
+#else
 @interface MyDelegate : NSObject<AdMoGoDelegate>
+#endif
 {
     UIButton* helpBtn;
     UIButton* btnMenu;
@@ -35,6 +46,11 @@ BOOL g_useJoyStick = NO;
     UIButton* btnBack;  // in battle;
 
     UITextView* textView;
+    
+#ifndef APP_FOR_APPSTORE
+    DianJinOfferBanner *_banner;
+    UIButton* moreApp;
+#endif
     
     AdMoGoView *adView;
     
@@ -239,8 +255,27 @@ MyDelegate* g_delegate = nil;
             textView.alpha = 0.8;
         }
         
-        systemView = [[SystemView alloc]initWithFrame:CGRectMake(20, 50, 160, 270)];
+        systemView = [[SystemView alloc]initWithFrame:CGRectMake(0, 50, 180, 270)];
         [mainView addSubview:systemView];
+        
+#ifndef APP_FOR_APPSTORE
+        _banner = [[DianJinOfferBanner alloc] initWithOfferBanner:CGPointMake(50, 0) style:kDJBannerStyle320_50];
+        DianJinTransitionParam *transitionParam = [[DianJinTransitionParam alloc] init];
+        transitionParam.animationType = kDJTransitionCube;
+        transitionParam.animationSubType = kDJTransitionFromTop;
+        transitionParam.duration = 1.0;
+        [_banner setupTransition:transitionParam];
+        [transitionParam release];
+//        [_banner startWithTimeInterval:20 delegate:self];
+        [mainView addSubview:_banner];
+        
+        moreApp = [[UIButton alloc]initWithFrame:CGRectMake(380, 0, 100, 50)];
+        [moreApp setImage:[UIImage imageNamed:@"more_app_normal"] forState:UIControlStateNormal];
+        [moreApp setImage:[UIImage imageNamed:@"more_app_click"] forState:UIControlStateHighlighted];
+        [moreApp addTarget:self action:@selector(onClickMoreApp) forControlEvents:UIControlEventTouchUpInside];
+        [mainView addSubview:moreApp];
+#endif
+        
     }
     
     if (textView.superview == nil) {
@@ -252,12 +287,33 @@ MyDelegate* g_delegate = nil;
     BOOL isHiden = (textView.superview == nil);
     systemView.hidden = isHiden;
     
+#ifndef APP_FOR_APPSTORE
+    _banner.hidden = isHiden;
+    moreApp.hidden = isHiden;
+#endif
+    
     if (isHiden) {
-        closeAds();
+#ifndef APP_FOR_APPSTORE
+        [_banner stop];
+#endif
     } else {
-        showAds();
+#ifndef APP_FOR_APPSTORE
+        [_banner startWithTimeInterval:20 delegate:self];
+#endif
         hideJoystick();
     }
+}
+
+-(void)onClickMoreApp
+{
+#ifndef APP_FOR_APPSTORE
+    [[DianJinOfferPlatform defaultPlatform] presentOfferWall:self];
+#endif
+}
+
+- (void)appActivatedDidFinish:(NSDictionary *)resultDic
+{
+    NSLog(@"appActivatedDidFinish: %@", resultDic);
 }
 
 -(void)onClickMenu
@@ -327,6 +383,8 @@ MyDelegate* g_delegate = nil;
     }
     adView.hidden = YES;
     [adView pauseAdRequest];
+    [adView removeFromSuperview];
+    adView = nil;
 }
 
 - (void)adjustAdSize {	
@@ -406,6 +464,13 @@ void initButton()
     
 //    [MobClick setLogEnabled:YES];
     [MobClick startWithAppkey:@"50045626527015611900001a"];
+    
+#ifndef APP_FOR_APPSTORE
+    // Override point for customization after application launch.
+	[[DianJinOfferPlatform defaultPlatform] setAppId:7209 andSetAppKey:@"13891e5c79ce10b018d2d5a7c44dabd4"];
+	[[DianJinOfferPlatform defaultPlatform] setOfferViewColor:kDJBlueColor];
+    [[DianJinOfferPlatform defaultPlatform] setOfferViewAutoRotate:YES];
+#endif
     
     showAds();
     
