@@ -767,7 +767,38 @@ PAL_ShowDialogText(
 		   if (gpGlobals->fInBattle && g_Battle.BattleResult == kBattleResultOnGoing)
 			{
 				PAL_BattleUIShowText(lpszText, 1400);
-			}
+		    } else {
+			   PAL_POS    pos;
+			   LPBOX      lpBox;
+
+			   //
+			   // Create the window box
+			   //
+			   pos = PAL_XY(PAL_X(g_TextLib.posDialogText) - len * 4, PAL_Y(g_TextLib.posDialogText));
+			   lpBox = PAL_CreateSingleLineBox(pos, (len + 1) / 2, TRUE);
+
+			   rect.x = PAL_X(pos);
+			   rect.y = PAL_Y(pos);
+			   rect.w = 320 - rect.x * 2 + 32;
+			   rect.h = 64;
+
+			   //
+			   // Show the text on the screen
+			   //
+			   pos = PAL_XY(PAL_X(pos) + 8 + ((len & 1) << 2), PAL_Y(pos) + 10);
+			   PAL_DrawText(lpszText, pos, 0, FALSE, FALSE);
+			   VIDEO_UpdateScreen(&rect);
+
+			   PAL_DialogWaitForKey();
+
+			   //
+			   // Delete the box
+			   //
+			   PAL_DeleteBox(lpBox);
+			   VIDEO_UpdateScreen(&rect);
+
+			   PAL_EndDialog();
+		   }
 	   } else {
 		   PAL_POS    pos;
          LPBOX      lpBox;
