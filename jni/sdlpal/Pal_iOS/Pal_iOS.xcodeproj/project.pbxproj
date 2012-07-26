@@ -19,28 +19,11 @@
 		3B22855015B5D37700C68AAA /* libMobClickLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B22854E15B5D37700C68AAA /* libMobClickLibrary.a */; };
 		3B22855415B5D3EA00C68AAA /* libUMFeedback.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B22855115B5D3EA00C68AAA /* libUMFeedback.a */; };
 		3B22855515B5D3EA00C68AAA /* umFeedback.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3B22855215B5D3EA00C68AAA /* umFeedback.bundle */; };
-		3B2D114915B4803700DE7816 /* AdMoGoAdapterAdwo.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B2D10FC15B4803700DE7816 /* AdMoGoAdapterAdwo.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		3B2D114A15B4803700DE7816 /* libios_sdk_2.5.3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B2D110015B4803700DE7816 /* libios_sdk_2.5.3.a */; };
-		3B2D114B15B4803700DE7816 /* ad50.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B2D110215B4803700DE7816 /* ad50.png */; };
-		3B2D114C15B4803700DE7816 /* ad80.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B2D110315B4803700DE7816 /* ad80.png */; };
-		3B2D114D15B4803700DE7816 /* ad90.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B2D110415B4803700DE7816 /* ad90.png */; };
-		3B2D114E15B4803700DE7816 /* adwo_browser.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B2D110515B4803700DE7816 /* adwo_browser.png */; };
-		3B2D114F15B4803700DE7816 /* adwo_download.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B2D110615B4803700DE7816 /* adwo_download.png */; };
-		3B2D115015B4803700DE7816 /* adwo_email.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B2D110715B4803700DE7816 /* adwo_email.png */; };
-		3B2D115115B4803700DE7816 /* adwo_ipod.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B2D110815B4803700DE7816 /* adwo_ipod.png */; };
-		3B2D115215B4803700DE7816 /* adwo_map.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B2D110915B4803700DE7816 /* adwo_map.png */; };
-		3B2D115315B4803700DE7816 /* adwo_search.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B2D110A15B4803700DE7816 /* adwo_search.png */; };
-		3B2D115415B4803700DE7816 /* adwo_sms.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B2D110B15B4803700DE7816 /* adwo_sms.png */; };
-		3B2D115515B4803700DE7816 /* adwo_tel.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B2D110C15B4803700DE7816 /* adwo_tel.png */; };
-		3B2D115615B4803700DE7816 /* AWCloseButtonX.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B2D110D15B4803700DE7816 /* AWCloseButtonX.png */; };
 		3B2D115715B4803700DE7816 /* AdMoGoAdapterDoMob.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B2D111115B4803700DE7816 /* AdMoGoAdapterDoMob.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		3B2D115815B4803700DE7816 /* DomobAdSDKBundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3B2D111615B4803700DE7816 /* DomobAdSDKBundle.bundle */; };
 		3B2D115915B4803700DE7816 /* libDomobAdSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B2D111715B4803700DE7816 /* libDomobAdSDK.a */; };
 		3B2D115A15B4803800DE7816 /* AdMoGoAdapterMobWinAd.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B2D111B15B4803700DE7816 /* AdMoGoAdapterMobWinAd.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		3B2D115C15B4803800DE7816 /* MobWin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B2D111D15B4803700DE7816 /* MobWin.a */; };
-		3B2D115D15B4803800DE7816 /* AdMoGoAdapterYouMi.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B2D112515B4803700DE7816 /* AdMoGoAdapterYouMi.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		3B2D115E15B4803800DE7816 /* AdMoGoAdapterYouMiFullAd.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B2D112715B4803700DE7816 /* AdMoGoAdapterYouMiFullAd.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		3B2D115F15B4803800DE7816 /* libYouMi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B2D112815B4803700DE7816 /* libYouMi.a */; };
 		3B2D116015B4803800DE7816 /* adsmogo_adclose@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B2D112F15B4803700DE7816 /* adsmogo_adclose@2x.png */; };
 		3B2D116115B4803800DE7816 /* adsmogo_bannerbg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B2D113015B4803700DE7816 /* adsmogo_bannerbg@2x.png */; };
 		3B2D116215B4803800DE7816 /* adsmogo_btnbg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B2D113115B4803700DE7816 /* adsmogo_btnbg@2x.png */; };
@@ -194,6 +177,9 @@
 		3BB3E54115B35496007B9657 /* icon_72.png in Resources */ = {isa = PBXBuildFile; fileRef = 3BB3E54015B35496007B9657 /* icon_72.png */; };
 		3BB3E55015B35C14007B9657 /* icon_57.png in Resources */ = {isa = PBXBuildFile; fileRef = 3BB3E54E15B35C14007B9657 /* icon_57.png */; };
 		3BB3E55115B35C14007B9657 /* icon_114.png in Resources */ = {isa = PBXBuildFile; fileRef = 3BB3E54F15B35C14007B9657 /* icon_114.png */; };
+		3BBEC06515C1AA6E00047CDF /* AdMoGoAdapterAdermob.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BBEC06315C1AA6E00047CDF /* AdMoGoAdapterAdermob.m */; };
+		3BBEC06615C1AA6E00047CDF /* libAderSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BBEC06415C1AA6E00047CDF /* libAderSDK.a */; };
+		3BBEC06815C1AAB700047CDF /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BBEC06715C1AAB600047CDF /* EventKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -245,22 +231,6 @@
 		3B22855115B5D3EA00C68AAA /* libUMFeedback.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libUMFeedback.a; sourceTree = SOURCE_ROOT; };
 		3B22855215B5D3EA00C68AAA /* umFeedback.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = umFeedback.bundle; sourceTree = SOURCE_ROOT; };
 		3B22855315B5D3EA00C68AAA /* UMFeedback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMFeedback.h; sourceTree = SOURCE_ROOT; };
-		3B2D10FB15B4803700DE7816 /* AdMoGoAdapterAdwo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdMoGoAdapterAdwo.h; sourceTree = "<group>"; };
-		3B2D10FC15B4803700DE7816 /* AdMoGoAdapterAdwo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdMoGoAdapterAdwo.m; sourceTree = "<group>"; };
-		3B2D10FE15B4803700DE7816 /* AWAdView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWAdView.h; sourceTree = "<group>"; };
-		3B2D110015B4803700DE7816 /* libios_sdk_2.5.3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libios_sdk_2.5.3.a; sourceTree = "<group>"; };
-		3B2D110215B4803700DE7816 /* ad50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ad50.png; sourceTree = "<group>"; };
-		3B2D110315B4803700DE7816 /* ad80.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ad80.png; sourceTree = "<group>"; };
-		3B2D110415B4803700DE7816 /* ad90.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ad90.png; sourceTree = "<group>"; };
-		3B2D110515B4803700DE7816 /* adwo_browser.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = adwo_browser.png; sourceTree = "<group>"; };
-		3B2D110615B4803700DE7816 /* adwo_download.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = adwo_download.png; sourceTree = "<group>"; };
-		3B2D110715B4803700DE7816 /* adwo_email.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = adwo_email.png; sourceTree = "<group>"; };
-		3B2D110815B4803700DE7816 /* adwo_ipod.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = adwo_ipod.png; sourceTree = "<group>"; };
-		3B2D110915B4803700DE7816 /* adwo_map.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = adwo_map.png; sourceTree = "<group>"; };
-		3B2D110A15B4803700DE7816 /* adwo_search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = adwo_search.png; sourceTree = "<group>"; };
-		3B2D110B15B4803700DE7816 /* adwo_sms.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = adwo_sms.png; sourceTree = "<group>"; };
-		3B2D110C15B4803700DE7816 /* adwo_tel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = adwo_tel.png; sourceTree = "<group>"; };
-		3B2D110D15B4803700DE7816 /* AWCloseButtonX.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AWCloseButtonX.png; sourceTree = "<group>"; };
 		3B2D111015B4803700DE7816 /* AdMoGoAdapterDoMob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdMoGoAdapterDoMob.h; sourceTree = "<group>"; };
 		3B2D111115B4803700DE7816 /* AdMoGoAdapterDoMob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdMoGoAdapterDoMob.m; sourceTree = "<group>"; };
 		3B2D111215B4803700DE7816 /* DMAdView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMAdView.h; sourceTree = "<group>"; };
@@ -275,15 +245,6 @@
 		3B2D111F15B4803700DE7816 /* MobWinBannerViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobWinBannerViewDelegate.h; sourceTree = "<group>"; };
 		3B2D112015B4803700DE7816 /* MobWinSpotView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobWinSpotView.h; sourceTree = "<group>"; };
 		3B2D112115B4803700DE7816 /* MobWinSpotViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobWinSpotViewDelegate.h; sourceTree = "<group>"; };
-		3B2D112415B4803700DE7816 /* AdMoGoAdapterYouMi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdMoGoAdapterYouMi.h; sourceTree = "<group>"; };
-		3B2D112515B4803700DE7816 /* AdMoGoAdapterYouMi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdMoGoAdapterYouMi.m; sourceTree = "<group>"; };
-		3B2D112615B4803700DE7816 /* AdMoGoAdapterYouMiFullAd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdMoGoAdapterYouMiFullAd.h; sourceTree = "<group>"; };
-		3B2D112715B4803700DE7816 /* AdMoGoAdapterYouMiFullAd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdMoGoAdapterYouMiFullAd.m; sourceTree = "<group>"; };
-		3B2D112815B4803700DE7816 /* libYouMi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libYouMi.a; sourceTree = "<group>"; };
-		3B2D112915B4803700DE7816 /* YouMiDelegateProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YouMiDelegateProtocol.h; sourceTree = "<group>"; };
-		3B2D112A15B4803700DE7816 /* YouMiSpot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YouMiSpot.h; sourceTree = "<group>"; };
-		3B2D112B15B4803700DE7816 /* YouMiSpotDelegateProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YouMiSpotDelegateProtocol.h; sourceTree = "<group>"; };
-		3B2D112C15B4803700DE7816 /* YouMiView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YouMiView.h; sourceTree = "<group>"; };
 		3B2D112F15B4803700DE7816 /* adsmogo_adclose@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "adsmogo_adclose@2x.png"; sourceTree = "<group>"; };
 		3B2D113015B4803700DE7816 /* adsmogo_bannerbg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "adsmogo_bannerbg@2x.png"; sourceTree = "<group>"; };
 		3B2D113115B4803700DE7816 /* adsmogo_btnbg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "adsmogo_btnbg@2x.png"; sourceTree = "<group>"; };
@@ -521,6 +482,12 @@
 		3BB3E54015B35496007B9657 /* icon_72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_72.png; sourceTree = SOURCE_ROOT; };
 		3BB3E54E15B35C14007B9657 /* icon_57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_57.png; sourceTree = SOURCE_ROOT; };
 		3BB3E54F15B35C14007B9657 /* icon_114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_114.png; sourceTree = SOURCE_ROOT; };
+		3BBEC05F15C1AA6E00047CDF /* AderDelegateProtocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AderDelegateProtocal.h; sourceTree = "<group>"; };
+		3BBEC06015C1AA6E00047CDF /* AderSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AderSDK.h; sourceTree = "<group>"; };
+		3BBEC06215C1AA6E00047CDF /* AdMoGoAdapterAdermob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdMoGoAdapterAdermob.h; sourceTree = "<group>"; };
+		3BBEC06315C1AA6E00047CDF /* AdMoGoAdapterAdermob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdMoGoAdapterAdermob.m; sourceTree = "<group>"; };
+		3BBEC06415C1AA6E00047CDF /* libAderSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libAderSDK.a; sourceTree = "<group>"; };
+		3BBEC06715C1AAB600047CDF /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -528,6 +495,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3BBEC06815C1AAB700047CDF /* EventKit.framework in Frameworks */,
 				3BA9FE9F15C05ACA00BECDF5 /* StoreKit.framework in Frameworks */,
 				3B2D119615B4831400DE7816 /* ImageIO.framework in Frameworks */,
 				3BB3E53B15B34EFE007B9657 /* MessageUI.framework in Frameworks */,
@@ -548,14 +516,13 @@
 				3B713CB415A9F71200A63662 /* UIKit.framework in Frameworks */,
 				3B713CB615A9F71200A63662 /* Foundation.framework in Frameworks */,
 				3B713CB815A9F71200A63662 /* CoreGraphics.framework in Frameworks */,
-				3B2D114A15B4803700DE7816 /* libios_sdk_2.5.3.a in Frameworks */,
 				3B2D115915B4803700DE7816 /* libDomobAdSDK.a in Frameworks */,
 				3B2D115C15B4803800DE7816 /* MobWin.a in Frameworks */,
-				3B2D115F15B4803800DE7816 /* libYouMi.a in Frameworks */,
 				3B2D116D15B4803800DE7816 /* libAdMoGo.a in Frameworks */,
 				3B79C64115B4839800CE706A /* LBSSDK.framework in Frameworks */,
 				3B22855015B5D37700C68AAA /* libMobClickLibrary.a in Frameworks */,
 				3B22855415B5D3EA00C68AAA /* libUMFeedback.a in Frameworks */,
+				3BBEC06615C1AA6E00047CDF /* libAderSDK.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -603,67 +570,11 @@
 		3B2D10F815B4803700DE7816 /* AdNetworkLibs */ = {
 			isa = PBXGroup;
 			children = (
-				3B2D10F915B4803700DE7816 /* Adwo */,
+				3BBEC05E15C1AA6E00047CDF /* Adermob */,
 				3B2D110E15B4803700DE7816 /* DoMob */,
 				3B2D111815B4803700DE7816 /* MobWin */,
-				3B2D112215B4803700DE7816 /* YouMi */,
 			);
 			path = AdNetworkLibs;
-			sourceTree = "<group>";
-		};
-		3B2D10F915B4803700DE7816 /* Adwo */ = {
-			isa = PBXGroup;
-			children = (
-				3B2D10FA15B4803700DE7816 /* AdsMoGoAdapter */,
-				3B2D10FD15B4803700DE7816 /* includes */,
-				3B2D10FF15B4803700DE7816 /* lib */,
-				3B2D110115B4803700DE7816 /* res */,
-			);
-			path = Adwo;
-			sourceTree = "<group>";
-		};
-		3B2D10FA15B4803700DE7816 /* AdsMoGoAdapter */ = {
-			isa = PBXGroup;
-			children = (
-				3B2D10FB15B4803700DE7816 /* AdMoGoAdapterAdwo.h */,
-				3B2D10FC15B4803700DE7816 /* AdMoGoAdapterAdwo.m */,
-			);
-			path = AdsMoGoAdapter;
-			sourceTree = "<group>";
-		};
-		3B2D10FD15B4803700DE7816 /* includes */ = {
-			isa = PBXGroup;
-			children = (
-				3B2D10FE15B4803700DE7816 /* AWAdView.h */,
-			);
-			path = includes;
-			sourceTree = "<group>";
-		};
-		3B2D10FF15B4803700DE7816 /* lib */ = {
-			isa = PBXGroup;
-			children = (
-				3B2D110015B4803700DE7816 /* libios_sdk_2.5.3.a */,
-			);
-			path = lib;
-			sourceTree = "<group>";
-		};
-		3B2D110115B4803700DE7816 /* res */ = {
-			isa = PBXGroup;
-			children = (
-				3B2D110215B4803700DE7816 /* ad50.png */,
-				3B2D110315B4803700DE7816 /* ad80.png */,
-				3B2D110415B4803700DE7816 /* ad90.png */,
-				3B2D110515B4803700DE7816 /* adwo_browser.png */,
-				3B2D110615B4803700DE7816 /* adwo_download.png */,
-				3B2D110715B4803700DE7816 /* adwo_email.png */,
-				3B2D110815B4803700DE7816 /* adwo_ipod.png */,
-				3B2D110915B4803700DE7816 /* adwo_map.png */,
-				3B2D110A15B4803700DE7816 /* adwo_search.png */,
-				3B2D110B15B4803700DE7816 /* adwo_sms.png */,
-				3B2D110C15B4803700DE7816 /* adwo_tel.png */,
-				3B2D110D15B4803700DE7816 /* AWCloseButtonX.png */,
-			);
-			path = res;
 			sourceTree = "<group>";
 		};
 		3B2D110E15B4803700DE7816 /* DoMob */ = {
@@ -715,30 +626,6 @@
 			children = (
 				3B2D111A15B4803700DE7816 /* AdMoGoAdapterMobWinAd.h */,
 				3B2D111B15B4803700DE7816 /* AdMoGoAdapterMobWinAd.m */,
-			);
-			path = AdsMoGoAdapter;
-			sourceTree = "<group>";
-		};
-		3B2D112215B4803700DE7816 /* YouMi */ = {
-			isa = PBXGroup;
-			children = (
-				3B2D112315B4803700DE7816 /* AdsMoGoAdapter */,
-				3B2D112815B4803700DE7816 /* libYouMi.a */,
-				3B2D112915B4803700DE7816 /* YouMiDelegateProtocol.h */,
-				3B2D112A15B4803700DE7816 /* YouMiSpot.h */,
-				3B2D112B15B4803700DE7816 /* YouMiSpotDelegateProtocol.h */,
-				3B2D112C15B4803700DE7816 /* YouMiView.h */,
-			);
-			path = YouMi;
-			sourceTree = "<group>";
-		};
-		3B2D112315B4803700DE7816 /* AdsMoGoAdapter */ = {
-			isa = PBXGroup;
-			children = (
-				3B2D112415B4803700DE7816 /* AdMoGoAdapterYouMi.h */,
-				3B2D112515B4803700DE7816 /* AdMoGoAdapterYouMi.m */,
-				3B2D112615B4803700DE7816 /* AdMoGoAdapterYouMiFullAd.h */,
-				3B2D112715B4803700DE7816 /* AdMoGoAdapterYouMiFullAd.m */,
 			);
 			path = AdsMoGoAdapter;
 			sourceTree = "<group>";
@@ -863,6 +750,7 @@
 		3B713CA415A9F71200A63662 = {
 			isa = PBXGroup;
 			children = (
+				3BBEC06715C1AAB600047CDF /* EventKit.framework */,
 				3BA9FE9E15C05ACA00BECDF5 /* StoreKit.framework */,
 				3B2D119515B4831400DE7816 /* ImageIO.framework */,
 				3B2D10F715B4803700DE7816 /* AdsMoGoLib */,
@@ -1144,6 +1032,26 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		3BBEC05E15C1AA6E00047CDF /* Adermob */ = {
+			isa = PBXGroup;
+			children = (
+				3BBEC05F15C1AA6E00047CDF /* AderDelegateProtocal.h */,
+				3BBEC06015C1AA6E00047CDF /* AderSDK.h */,
+				3BBEC06115C1AA6E00047CDF /* AdsMoGoAdapter */,
+				3BBEC06415C1AA6E00047CDF /* libAderSDK.a */,
+			);
+			path = Adermob;
+			sourceTree = "<group>";
+		};
+		3BBEC06115C1AA6E00047CDF /* AdsMoGoAdapter */ = {
+			isa = PBXGroup;
+			children = (
+				3BBEC06215C1AA6E00047CDF /* AdMoGoAdapterAdermob.h */,
+				3BBEC06315C1AA6E00047CDF /* AdMoGoAdapterAdermob.m */,
+			);
+			path = AdsMoGoAdapter;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1254,18 +1162,6 @@
 				3BB3E54115B35496007B9657 /* icon_72.png in Resources */,
 				3BB3E55015B35C14007B9657 /* icon_57.png in Resources */,
 				3BB3E55115B35C14007B9657 /* icon_114.png in Resources */,
-				3B2D114B15B4803700DE7816 /* ad50.png in Resources */,
-				3B2D114C15B4803700DE7816 /* ad80.png in Resources */,
-				3B2D114D15B4803700DE7816 /* ad90.png in Resources */,
-				3B2D114E15B4803700DE7816 /* adwo_browser.png in Resources */,
-				3B2D114F15B4803700DE7816 /* adwo_download.png in Resources */,
-				3B2D115015B4803700DE7816 /* adwo_email.png in Resources */,
-				3B2D115115B4803700DE7816 /* adwo_ipod.png in Resources */,
-				3B2D115215B4803700DE7816 /* adwo_map.png in Resources */,
-				3B2D115315B4803700DE7816 /* adwo_search.png in Resources */,
-				3B2D115415B4803700DE7816 /* adwo_sms.png in Resources */,
-				3B2D115515B4803700DE7816 /* adwo_tel.png in Resources */,
-				3B2D115615B4803700DE7816 /* AWCloseButtonX.png in Resources */,
 				3B2D115815B4803700DE7816 /* DomobAdSDKBundle.bundle in Resources */,
 				3B2D116015B4803800DE7816 /* adsmogo_adclose@2x.png in Resources */,
 				3B2D116115B4803800DE7816 /* adsmogo_bannerbg@2x.png in Resources */,
@@ -1356,11 +1252,8 @@
 				3B713D8415A9F7D900A63662 /* video.c in Sources */,
 				3B713D8515A9F7D900A63662 /* yj1.c in Sources */,
 				3BB3E43515B32DA9007B9657 /* iOSUtil.m in Sources */,
-				3B2D114915B4803700DE7816 /* AdMoGoAdapterAdwo.m in Sources */,
 				3B2D115715B4803700DE7816 /* AdMoGoAdapterDoMob.m in Sources */,
 				3B2D115A15B4803800DE7816 /* AdMoGoAdapterMobWinAd.m in Sources */,
-				3B2D115D15B4803800DE7816 /* AdMoGoAdapterYouMi.m in Sources */,
-				3B2D115E15B4803800DE7816 /* AdMoGoAdapterYouMiFullAd.m in Sources */,
 				3B2D118915B4829500DE7816 /* CDataScanner.m in Sources */,
 				3B2D118A15B4829500DE7816 /* CDataScanner_Extensions.m in Sources */,
 				3B2D118B15B4829500DE7816 /* NSCharacterSet_Extensions.m in Sources */,
@@ -1387,6 +1280,7 @@
 				3BA9FE9715C0574400BECDF5 /* InAppPurchaseMgr.m in Sources */,
 				3BA9FE9C15C05AAE00BECDF5 /* NSString+MD5Addition.m in Sources */,
 				3BA9FE9D15C05AAE00BECDF5 /* UIDevice+Util.m in Sources */,
+				3BBEC06515C1AA6E00047CDF /* AdMoGoAdapterAdermob.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1494,6 +1388,7 @@
 					"\"$(SRCROOT)/AdsMoGoLib/AdNetworkLibs/YouMi\"",
 					"\"$(SRCROOT)/AdsMoGoLib/AdsMoGoSDK\"",
 					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/AdsMoGoLib/AdNetworkLibs/Adermob\"",
 				);
 				OTHER_LDFLAGS = (
 					"-all_load",
@@ -1540,6 +1435,7 @@
 					"\"$(SRCROOT)/AdsMoGoLib/AdNetworkLibs/YouMi\"",
 					"\"$(SRCROOT)/AdsMoGoLib/AdsMoGoSDK\"",
 					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/AdsMoGoLib/AdNetworkLibs/Adermob\"",
 				);
 				OTHER_LDFLAGS = (
 					"-all_load",
