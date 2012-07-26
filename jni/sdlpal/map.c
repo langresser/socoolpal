@@ -294,6 +294,12 @@ PAL_MapTileIsBlocked(
       return TRUE;
    }
 
+   // ugly hack code
+   // ¾©³ÇÍâÇÅ
+   if (lpMap->iMapNum == 102 && y == 57 && x == 26 && h == 1) {
+	   return TRUE;
+   }
+
    return (lpMap->Tiles[y][x][h] & 0x2000) >> 13;
 }
 

@@ -593,5 +593,10 @@ void showJoystick()
 void hideJoystick()
 {
 }
+
+void showBackButton(){};
+void hideBackButton() {};
+void hideSearchButton() {};
+
 #elif defined __ANDROID__
 #endif
