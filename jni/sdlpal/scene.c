@@ -899,6 +899,8 @@ int GetMouseMoveDirOffset(int nDir, int* pOffsetX, int* pOffsetY)
 	if (!PAL_CheckObstacle(PAL_XY(nTargetX, nTargetY), FALSE, 0)) {
 		return nDir1;
 	}
+    
+    return nDir1;
 
 	nOffsetX = nArrOffsetX[nDir2] * 16;
 	nOffsetY = nArrOffsetY[nDir2] * 8;
