@@ -2,6 +2,7 @@
 #include "hack.h"
 
 BOOL g_isFlyMode = FALSE;
+BOOL g_isNoEnemy = FALSE;
 
 BOOL isFlyMode()
 {
@@ -11,6 +12,16 @@ BOOL isFlyMode()
 void setFlyMode(BOOL isFly)
 {
 	g_isFlyMode = isFly;
+}
+
+BOOL isNoEnemy()
+{
+	return g_isNoEnemy;
+}
+
+void setNoEnemy(BOOL isTrans)
+{
+	g_isNoEnemy = isTrans;
 }
 
 void addMoney()

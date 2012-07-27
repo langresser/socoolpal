@@ -167,6 +167,17 @@ PAL_KeyboardEventFilter(
          SOUND_AdjustVolume(1);
          break;
 #endif
+#ifdef DEBUG
+	  case SDLK_F1:
+		  setFlyMode(!isFlyMode());
+		  break;
+	  case SDLK_F2:
+		  setNoEnemy(!isNoEnemy());
+		  break;
+	  case SDLK_F3:
+		  uplevel();
+		  break;
+#endif
       case SDLK_UP:
 	  case SDLK_KP8:
          g_InputState.dir = kDirNorth;

@@ -22,6 +22,7 @@
 //
 
 #include "main.h"
+#include "hack.h"
 
 BOOL            g_fScriptSuccess = TRUE;
 static int      g_iCurEquipPart = -1;

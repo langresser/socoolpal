@@ -472,11 +472,10 @@ SDL_main(
 
 --*/
 {
-    initDir();
-
    int wScreenWidth = 0, wScreenHeight = 0;
    BOOL fullScreen = TRUE;
 
+   initDir();
 #ifdef __WIN32__
    fullScreen = FALSE;
 #endif

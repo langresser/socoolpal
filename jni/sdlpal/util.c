@@ -579,6 +579,13 @@ UTIL_WriteLog(
 
 
 #ifdef __WIN32__
+void initDir()
+{
+}
+
+void getFileStatus(const char* pszName)
+{
+}
 void closeAds()
 {
 }

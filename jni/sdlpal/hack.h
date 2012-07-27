@@ -10,6 +10,9 @@ extern "C"
 void setFlyMode(BOOL isFly);
 BOOL isFlyMode();
 
+void setNoEnemy(BOOL isTrans);
+BOOL isNoEnemy();
+
 // Éý¼¶
 void uplevel();
 
