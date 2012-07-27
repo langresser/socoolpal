@@ -31,7 +31,7 @@ extern BOOL g_showSystemMenu;
 #define JOYSTICK_BATTLE 2
 
 int g_joystickType = JOYSTICK_NONE;
-BOOL g_useJoyStick = NO;
+BOOL g_useJoyStick = YES;
 
 #ifndef APP_FOR_APPSTORE
 @interface MyDelegate : NSObject<AdMoGoDelegate, DianJinOfferBannerDelegate>
@@ -313,7 +313,8 @@ MyDelegate* g_delegate = nil;
 
 - (void)appActivatedDidFinish:(NSDictionary *)resultDic
 {
-    NSLog(@"appActivatedDidFinish: %@", resultDic);
+//    NSLog(@"appActivatedDidFinish: %@", resultDic);
+    [[DianJinOfferPlatform defaultPlatform] getBalance:systemView];
 }
 
 -(void)onClickMenu
@@ -487,7 +488,7 @@ void initButton()
         g_isClassicMode = (mode == 0 || mode == 1);
         
         int joystick = [defaults integerForKey:@"JoystickMode"];
-        g_useJoyStick = (joystick == 1);
+        g_useJoyStick = (joystick == 0 || joystick == 1);
     }
 }
 

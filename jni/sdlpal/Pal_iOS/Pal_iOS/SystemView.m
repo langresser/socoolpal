@@ -123,6 +123,7 @@ int g_currentMB = 0;
         
 #ifdef APP_FOR_APPSTORE
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onPurchaseOk) name:kIAPSucceededNotification object:nil];
+        [[InAppPurchaseMgr sharedInstance]loadStore];
 #endif
     }
     return self;
@@ -169,7 +170,6 @@ int g_currentMB = 0;
 
 -(BOOL)isHackEnable
 {
-    return YES;
     NSString* flag = [[NSUserDefaults standardUserDefaults] stringForKey:kRemoveAdsFlag];
     if (flag && [flag isEqualToString:[[UIDevice currentDevice] uniqueDeviceIdentifier]]) {
         return YES;
@@ -198,6 +198,7 @@ int g_currentMB = 0;
         if (g_currentMB >= 350) {
             NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
             if (defaults) {
+                hackLabel.text = @"金手指功能:(已开启)";
                 [[NSUserDefaults standardUserDefaults] setObject:[[UIDevice currentDevice] uniqueDeviceIdentifier] forKey:kRemoveAdsFlag];
                 [[NSUserDefaults standardUserDefaults] synchronize];
             }

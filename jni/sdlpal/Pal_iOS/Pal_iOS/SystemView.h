@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-#define APP_FOR_APPSTORE 1
+//#define APP_FOR_APPSTORE 1
 
 @interface SystemView : UIView
 {
