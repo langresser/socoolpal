@@ -170,6 +170,8 @@ int g_currentMB = 0;
 
 -(BOOL)isHackEnable
 {
+//    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kRemoveAdsFlag];
+//    [[NSUserDefaults standardUserDefaults] synchronize];
     NSString* flag = [[NSUserDefaults standardUserDefaults] stringForKey:kRemoveAdsFlag];
     if (flag && [flag isEqualToString:[[UIDevice currentDevice] uniqueDeviceIdentifier]]) {
         return YES;
@@ -195,7 +197,7 @@ int g_currentMB = 0;
         NSNumber *balance = [dict objectForKey:@"balance"];
         g_currentMB = [balance floatValue];
         
-        if (g_currentMB >= 350) {
+        if (g_currentMB >= 100) {
             NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
             if (defaults) {
                 hackLabel.text = @"金手指功能:(已开启)";

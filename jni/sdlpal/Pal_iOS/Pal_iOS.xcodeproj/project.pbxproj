@@ -49,6 +49,7 @@
 		3B2D119115B4829500DE7816 /* CJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B2D118615B4829500DE7816 /* CJSONSerializer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		3B2D119215B4829500DE7816 /* CSerializedJSONData.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B2D118815B4829500DE7816 /* CSerializedJSONData.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		3B2D119615B4831400DE7816 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B2D119515B4831400DE7816 /* ImageIO.framework */; };
+		3B358F3815C2FB9800C88888 /* faq.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3B358F3715C2FB9800C88888 /* faq.txt */; };
 		3B37ECD615B300A80091E824 /* 0.rpg in Resources */ = {isa = PBXBuildFile; fileRef = 3B37ECB915B300A80091E824 /* 0.rpg */; };
 		3B37ECDC15B300A80091E824 /* abc.mkf in Resources */ = {isa = PBXBuildFile; fileRef = 3B37ECBF15B300A80091E824 /* abc.mkf */; };
 		3B37ECDD15B300A80091E824 /* ball.mkf in Resources */ = {isa = PBXBuildFile; fileRef = 3B37ECC015B300A80091E824 /* ball.mkf */; };
@@ -296,6 +297,7 @@
 		3B2D118715B4829500DE7816 /* CSerializedJSONData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSerializedJSONData.h; sourceTree = "<group>"; };
 		3B2D118815B4829500DE7816 /* CSerializedJSONData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSerializedJSONData.m; sourceTree = "<group>"; };
 		3B2D119515B4831400DE7816 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		3B358F3715C2FB9800C88888 /* faq.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = faq.txt; path = ../../res/faq.txt; sourceTree = "<group>"; };
 		3B37ECB915B300A80091E824 /* 0.rpg */ = {isa = PBXFileReference; lastKnownFileType = file; name = 0.rpg; path = ../../res/0.rpg; sourceTree = "<group>"; };
 		3B37ECBF15B300A80091E824 /* abc.mkf */ = {isa = PBXFileReference; lastKnownFileType = file; name = abc.mkf; path = ../../res/abc.mkf; sourceTree = "<group>"; };
 		3B37ECC015B300A80091E824 /* ball.mkf */ = {isa = PBXFileReference; lastKnownFileType = file; name = ball.mkf; path = ../../res/ball.mkf; sourceTree = "<group>"; };
@@ -999,6 +1001,7 @@
 		3B713D9F15A9FA1700A63662 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				3B358F3715C2FB9800C88888 /* faq.txt */,
 				3B89AC2B15BF02B400582E84 /* Resources */,
 				3B37ECB915B300A80091E824 /* 0.rpg */,
 				3B37ECBF15B300A80091E824 /* abc.mkf */,
@@ -1224,6 +1227,7 @@
 				3BF86B6A15C1C749000FAC45 /* more_app_click.png in Resources */,
 				3BF86B6B15C1C749000FAC45 /* more_app_normal.png in Resources */,
 				3BF86B6D15C1D995000FAC45 /* DianJinOfferPlatformResources in Resources */,
+				3B358F3815C2FB9800C88888 /* faq.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

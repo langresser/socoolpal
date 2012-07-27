@@ -46,11 +46,13 @@ BOOL g_useJoyStick = YES;
     UIButton* btnBack;  // in battle;
 
     UITextView* textView;
+    BOOL isFAQ;
     
 #ifndef APP_FOR_APPSTORE
     DianJinOfferBanner *_banner;
-    UIButton* moreApp;
 #endif
+    
+    UIButton* moreApp;
     
     AdMoGoView *adView;
     
@@ -61,6 +63,7 @@ BOOL g_useJoyStick = YES;
     CGJoystickButton* joystickButton;
 }
 @property(retain, nonatomic) UIButton* helpBtn;
+@property(nonatomic) BOOL isFAQ;
 
 +(MyDelegate*)sharedInstance;
 -(void)onClickHelp;
@@ -81,12 +84,14 @@ BOOL g_useJoyStick = YES;
 
 -(void)showJoystick;
 -(void)hideJoystick;
+
+-(void)beginAutoSave;
 @end
 
 MyDelegate* g_delegate = nil;
 
 @implementation MyDelegate
-@synthesize helpBtn;
+@synthesize helpBtn, isFAQ;
 -(void)showMenuBtn
 {
     if (btnMenu == nil) {
@@ -136,6 +141,19 @@ MyDelegate* g_delegate = nil;
     btnSearch.hidden = YES;
     
     hideJoystick();
+}
+
+-(void)beginAutoSave
+{
+    [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(autoSave) userInfo:nil repeats:YES];
+}
+
+-(void)autoSave
+{
+    extern BOOL g_hasInGame;
+    if (g_hasInGame) {
+        PAL_SaveGame("9.rpg", 0);
+    }
 }
 
 -(void)showSearchButton
@@ -248,7 +266,7 @@ MyDelegate* g_delegate = nil;
 
     if (textView == nil) {
         textView = [[UITextView alloc]initWithFrame:CGRectMake(180, 50, 300, 270)];
-        NSString* text = [NSString stringWithContentsOfFile:@"gl.txt" encoding:NSUTF8StringEncoding error:nil];
+        NSString* text = [NSString stringWithContentsOfFile:@"faq.txt" encoding:NSUTF8StringEncoding error:nil];
         if (text) {
             textView.text = text;
             textView.editable = NO;
@@ -268,13 +286,19 @@ MyDelegate* g_delegate = nil;
         [transitionParam release];
 //        [_banner startWithTimeInterval:20 delegate:self];
         [mainView addSubview:_banner];
+#endif
         
-        moreApp = [[UIButton alloc]initWithFrame:CGRectMake(380, 0, 100, 50)];
-        [moreApp setImage:[UIImage imageNamed:@"more_app_normal"] forState:UIControlStateNormal];
-        [moreApp setImage:[UIImage imageNamed:@"more_app_click"] forState:UIControlStateHighlighted];
+        moreApp = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        moreApp.frame = CGRectMake(420, 12, 60, 40);
+        moreApp.alpha = 0.8;
+        [moreApp setTitle:@"攻略" forState:UIControlStateNormal];
+        [moreApp setTitle:@"攻略" forState:UIControlStateHighlighted];
+        //        [moreApp setImage:[UIImage imageNamed:@"more_app_normal"] forState:UIControlStateNormal];
+        //        [moreApp setImage:[UIImage imageNamed:@"more_app_click"] forState:UIControlStateHighlighted];
         [moreApp addTarget:self action:@selector(onClickMoreApp) forControlEvents:UIControlEventTouchUpInside];
         [mainView addSubview:moreApp];
-#endif
+
+        self.isFAQ = YES;
         
     }
     
@@ -289,8 +313,8 @@ MyDelegate* g_delegate = nil;
     
 #ifndef APP_FOR_APPSTORE
     _banner.hidden = isHiden;
-    moreApp.hidden = isHiden;
 #endif
+    moreApp.hidden = isHiden;
     
     if (isHiden) {
 #ifndef APP_FOR_APPSTORE
@@ -307,8 +331,28 @@ MyDelegate* g_delegate = nil;
 -(void)onClickMoreApp
 {
 #ifndef APP_FOR_APPSTORE
-    [[DianJinOfferPlatform defaultPlatform] presentOfferWall:self];
+//    [[DianJinOfferPlatform defaultPlatform] presentOfferWall:self];
 #endif
+    isFAQ = !isFAQ;
+    if (isFAQ) {
+        NSString* text = [NSString stringWithContentsOfFile:@"faq.txt" encoding:NSUTF8StringEncoding error:nil];
+        if (text) {
+            textView.text = text;
+            [textView setContentOffset:CGPointMake(0, 0) animated:NO];
+        }
+        
+        [moreApp setTitle:@"攻略" forState:UIControlStateNormal];
+        [moreApp setTitle:@"攻略" forState:UIControlStateHighlighted];
+    } else {
+        NSString* text = [NSString stringWithContentsOfFile:@"gl.txt" encoding:NSUTF8StringEncoding error:nil];
+        if (text) {
+            textView.text = text;
+            [textView setContentOffset:CGPointMake(0, 0) animated:NO];
+        }
+        
+        [moreApp setTitle:@"帮助" forState:UIControlStateNormal];
+        [moreApp setTitle:@"帮助" forState:UIControlStateHighlighted];
+    }
 }
 
 - (void)appActivatedDidFinish:(NSDictionary *)resultDic
@@ -475,6 +519,8 @@ void initButton()
     
     showAds();
     
+    [[MyDelegate sharedInstance]beginAutoSave];
+
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     if (defaults) {
         if ([defaults boolForKey:@"Tip"] == NO) {
@@ -528,6 +574,11 @@ void showAds()
 void closeAds()
 {
     [[MyDelegate sharedInstance]closeAds];
+}
+
+void beginAutoSave()
+{
+    [[MyDelegate sharedInstance]beginAutoSave];
 }
 
 void getScreenSize(int* width, int* height)
