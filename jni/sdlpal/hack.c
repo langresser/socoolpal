@@ -29,6 +29,118 @@ void addMoney()
 	gpGlobals->dwCash += 5000;
 }
 
+#ifdef __ANDROID__
+void uplevel()
+{
+	const SDL_Rect   rect = {65, 60, 200, 100};
+	const SDL_Rect   rect1 = {80, 0, 180, 200};
+	BOOL fLevelUp;
+	int i, j, iTotalCount;
+	WORD w;
+	DWORD dwExp;
+	PLAYERROLES      OrigPlayerRoles;
+	OrigPlayerRoles = gpGlobals->g.PlayerRoles;
+
+	for (i = 0; i <= gpGlobals->wMaxPartyMemberIndex; i++)
+	{
+		fLevelUp = FALSE;
+
+		w = gpGlobals->rgParty[i].wPlayerRole;
+
+		if (gpGlobals->g.PlayerRoles.rgwLevel[w] > MAX_LEVELS)
+		{
+			gpGlobals->g.PlayerRoles.rgwLevel[w] = MAX_LEVELS;
+			continue;
+		}
+
+		fLevelUp = TRUE;
+		PAL_PlayerLevelUp(w, 1);
+
+		gpGlobals->g.PlayerRoles.rgwHP[w] = gpGlobals->g.PlayerRoles.rgwMaxHP[w];
+		gpGlobals->g.PlayerRoles.rgwMP[w] = gpGlobals->g.PlayerRoles.rgwMaxMP[w];
+
+		if (fLevelUp)
+		{
+			OrigPlayerRoles = gpGlobals->g.PlayerRoles;
+		}
+
+		//
+		// Increasing of other hidden levels
+		//
+		iTotalCount = 0;
+
+		iTotalCount += gpGlobals->Exp.rgAttackExp[w].wCount;
+		iTotalCount += gpGlobals->Exp.rgDefenseExp[w].wCount;
+		iTotalCount += gpGlobals->Exp.rgDexterityExp[w].wCount;
+		iTotalCount += gpGlobals->Exp.rgFleeExp[w].wCount;
+		iTotalCount += gpGlobals->Exp.rgHealthExp[w].wCount;
+		iTotalCount += gpGlobals->Exp.rgMagicExp[w].wCount;
+		iTotalCount += gpGlobals->Exp.rgMagicPowerExp[w].wCount;
+
+		if (iTotalCount > 0)
+		{
+#define CHECK_HIDDEN_EXP(expname, statname, label)          \
+			{                                                           \
+			dwExp = g_Battle.iExpGained;                             \
+			dwExp *= gpGlobals->Exp.expname[w].wCount;               \
+			dwExp /= iTotalCount;                                    \
+			dwExp *= 2;                                              \
+			\
+			dwExp += gpGlobals->Exp.expname[w].wExp;                 \
+			\
+			if (gpGlobals->Exp.expname[w].wLevel > MAX_LEVELS)       \
+			{                                                        \
+			gpGlobals->Exp.expname[w].wLevel = MAX_LEVELS;        \
+		}                                                        \
+		\
+		while (dwExp >= gpGlobals->g.rgLevelUpExp[gpGlobals->Exp.expname[w].wLevel]) \
+			{                                                        \
+			dwExp -= gpGlobals->g.rgLevelUpExp[gpGlobals->Exp.expname[w].wLevel]; \
+			gpGlobals->g.PlayerRoles.statname[w] += RandomLong(1, 2); \
+			if (gpGlobals->Exp.expname[w].wLevel < MAX_LEVELS)    \
+			{                                                     \
+			gpGlobals->Exp.expname[w].wLevel++;                \
+		}                                                     \
+		}                                                        \
+		\
+		gpGlobals->Exp.expname[w].wExp = (WORD)dwExp;            \
+		\
+		}
+
+			CHECK_HIDDEN_EXP(rgHealthExp, rgwMaxHP, STATUS_LABEL_HP);
+			CHECK_HIDDEN_EXP(rgMagicExp, rgwMaxMP, STATUS_LABEL_MP);
+			CHECK_HIDDEN_EXP(rgAttackExp, rgwAttackStrength, STATUS_LABEL_ATTACKPOWER);
+			CHECK_HIDDEN_EXP(rgMagicPowerExp, rgwMagicStrength, STATUS_LABEL_MAGICPOWER);
+			CHECK_HIDDEN_EXP(rgDefenseExp, rgwDefense, STATUS_LABEL_RESISTANCE);
+			CHECK_HIDDEN_EXP(rgDexterityExp, rgwDexterity, STATUS_LABEL_DEXTERITY);
+			CHECK_HIDDEN_EXP(rgFleeExp, rgwFleeRate, STATUS_LABEL_FLEERATE);
+
+#undef CHECK_HIDDEN_EXP
+		}
+
+		//
+		// Learn all magics at the current level
+		//
+		j = 0;
+
+		while (j < gpGlobals->g.nLevelUpMagic)
+		{
+			if (gpGlobals->g.lprgLevelUpMagic[j].m[w].wMagic == 0 ||
+				gpGlobals->g.lprgLevelUpMagic[j].m[w].wLevel > gpGlobals->g.PlayerRoles.rgwLevel[w])
+			{
+				j++;
+				continue;
+			}
+
+			if (PAL_AddMagic(w, gpGlobals->g.lprgLevelUpMagic[j].m[w].wMagic))
+			{
+			}
+
+			j++;
+		}
+	}
+}
+#else
 void uplevel()
 {
 	const SDL_Rect   rect = {65, 60, 200, 100};
@@ -270,3 +382,5 @@ void uplevel()
 		}
 	}
 }
+
+#endif

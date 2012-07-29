@@ -64,6 +64,7 @@
     </LinearLayout>
     
     <TextView android:layout_width="wrap_content" 
+        android:id="@+id/textEnableHack"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="10dip"
 		android:layout_gravity="center"
@@ -123,6 +124,12 @@
 
     <Button android:id="@+id/btnGongl"
         android:text="攻略"
+        android:layout_gravity="right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    
+    <Button android:id="@+id/btnMoreApp"
+        android:text="更多游戏"
         android:layout_gravity="right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

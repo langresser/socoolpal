@@ -152,23 +152,58 @@ public class SplashScreenActivity extends Activity {
 	
 	public boolean copyFile(String file)
 	{
+		boolean isPartFile = file.indexOf(".part") != -1;
 		try {
-			InputStream input = getAssets().open(file);
-			File outputFile = new File(getSDCardPath(file));
-			if (!outputFile.exists()) {
-				outputFile.createNewFile();
-			}
-			OutputStream output = new FileOutputStream(outputFile);
-			
-			byte bt[] = new byte[1024];
-			int c;
-			while ((c = input.read(bt)) > 0) {
-				output.write(bt, 0, c); 
-			}
-			
-			input.close();
-			output.close();
-			return true;
+			if (isPartFile) {
+				// 只处理头一个
+				if (file.endsWith(".part1") == false) {
+					return true;
+				}
+				
+				String destFile = file.substring(0, file.lastIndexOf('.'));
+				File outputFile = new File(getSDCardPath(destFile));
+				if (!outputFile.exists()) {
+					outputFile.createNewFile();
+				}
+				OutputStream output = new FileOutputStream(outputFile);
+				
+				for (int i = 1; i < 30; ++i) {
+					final String fileName = destFile + ".part" + i;
+					try {
+						InputStream input = getAssets().open(fileName);
+						
+						byte bt[] = new byte[1024];
+						int c;
+						while ((c = input.read(bt)) > 0) {
+							output.write(bt, 0, c); 
+						}
+						
+						input.close();
+					} catch (FileNotFoundException e){
+						break;
+					}
+				}
+				
+				output.close();
+				return true;
+			} else {
+				InputStream input = getAssets().open(file);
+				File outputFile = new File(getSDCardPath(file));
+				if (!outputFile.exists()) {
+					outputFile.createNewFile();
+				}
+				OutputStream output = new FileOutputStream(outputFile);
+				
+				byte bt[] = new byte[1024];
+				int c;
+				while ((c = input.read(bt)) > 0) {
+					output.write(bt, 0, c); 
+				}
+				
+				input.close();
+				output.close();
+				return true;
+			}	
 		}catch (IOException e) {
 			e.printStackTrace();
 			return false;

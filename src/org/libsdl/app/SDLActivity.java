@@ -11,6 +11,7 @@ import org.socool.pal.R;
 import com.admogo.AdMogoLayout;
 import com.admogo.AdMogoListener;
 import com.admogo.AdMogoManager;
+import com.umeng.analytics.MobclickAgent;
 
 import android.app.*;
 import android.content.*;
@@ -292,6 +293,8 @@ public class SDLActivity extends Activity  implements AdMogoListener{
     // Events
     protected void onPause() {
         Log.v("SDL", "onPause()");
+        
+        MobclickAgent.onPause(this);
         SDLActivity.nativePauseGame();
         
         if (mAudioTrack != null && mAudioTrack.getPlayState() == AudioTrack.PLAYSTATE_PLAYING) {
@@ -304,6 +307,8 @@ public class SDLActivity extends Activity  implements AdMogoListener{
 
     protected void onResume() {
         Log.v("SDL", "onResume()");
+        MobclickAgent.onResume(this);
+        
         SDLActivity.nativeResumeGame();
         
         if (mIsPausedMusic && mAudioTrack != null &&  mAudioTrack.getPlayState() == AudioTrack.PLAYSTATE_PAUSED) {

@@ -19,6 +19,7 @@
 //
 
 #include "main.h"
+DWORD g_lastSaveTime = 0;
 
 static VOID
 PAL_GameStart(
@@ -90,6 +91,7 @@ PAL_GameMain(
    //
    // Run the main game loop.
    //
+   g_lastSaveTime = SDL_GetTicks();
    dwTime = SDL_GetTicks();
   
    while (TRUE)
@@ -142,6 +144,14 @@ PAL_GameMain(
            showMenu();
            showJoystick();
            hideBackButton();
+
+#ifdef __ANDROID__
+           if (SDL_GetTicks() - g_lastSaveTime >= 60000)
+           {
+             PAL_SaveGame("9.rpg", 0);
+             g_lastSaveTime = SDL_GetTicks();
+           }
+#endif
        }
    }
 }
