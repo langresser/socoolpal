@@ -33,7 +33,7 @@ public class SplashScreenActivity extends Activity {
 	public static byte m_dataVersion = 1;
 	public void onCreate(Bundle savedInstanceState) {   
         super.onCreate(savedInstanceState);   
-        setTheme(R.style.Transparent);    
+  
         setContentView(R.layout.transparent);
         
         if (!isSdCardEnable()) {
@@ -59,10 +59,20 @@ public class SplashScreenActivity extends Activity {
         textView.setText("正在检测游戏数据...");
         if (isNeedUpdateData()) {
         	textView.setText("正在初始化游戏数据，请稍后...");
-        	updateData();
-        }
-        
-        startActivity(new Intent(this, SDLActivity.class));
+
+			Thread thread = new Thread(new Runnable() {
+				public void run() {
+					updateData();
+					startActivity(new Intent(SplashScreenActivity.this, SDLActivity.class));
+					finish();
+				}
+			});
+			thread.start();
+        	
+        } else {
+        	startActivity(new Intent(this, SDLActivity.class));
+        	finish();
+        }    
 	}
 	
 	public boolean isSdCardEnable()
@@ -76,10 +86,15 @@ public class SplashScreenActivity extends Activity {
          } 
 	}
 	
+	public String getSDCardPath(String file)
+	{
+		return Environment.getExternalStorageDirectory().getPath() + "/" + file;
+	}
+	
 	public boolean isNeedUpdateData()
 	{
 		try {
-			InputStream checkFile = new FileInputStream("/sdcard/sdlpal/dataflag.cfg");
+			InputStream checkFile = new FileInputStream(getSDCardPath("sdlpal/dataflag.cfg"));
 			int data = checkFile.read();
 			checkFile.close();
 			if (data < m_dataVersion) {
@@ -101,9 +116,15 @@ public class SplashScreenActivity extends Activity {
 		try {
 			String[] fileList = amgr.list("sdlpal");
 			int count = fileList.length;
+			
+			File dir = new File(getSDCardPath("sdlpal"));
+			if (!dir.exists()) {
+				dir.mkdir();
+			}
+
 			for (int i = 0; i < count; ++i) {
 				String file = fileList[i];
-				if (!copyFile(file)) {
+				if (!copyFile("sdlpal/" + file)) {
 					updateOk = false;
 				}
 			}
@@ -115,7 +136,7 @@ public class SplashScreenActivity extends Activity {
 		// 更新成功，写入新的版本号
 		if (updateOk) {
 			try {
-				File checkFile = new File("/sdcard/sdlpal/dataflag.cfg");
+				File checkFile = new File(getSDCardPath("sdlpal/dataflag.cfg"));
 				if (!checkFile.exists()) {
 					checkFile.createNewFile();
 				}
@@ -133,7 +154,11 @@ public class SplashScreenActivity extends Activity {
 	{
 		try {
 			InputStream input = getAssets().open(file);
-			OutputStream output = new FileOutputStream("/sdcard/sdlpal/" + file);
+			File outputFile = new File(getSDCardPath(file));
+			if (!outputFile.exists()) {
+				outputFile.createNewFile();
+			}
+			OutputStream output = new FileOutputStream(outputFile);
 			
 			byte bt[] = new byte[1024];
 			int c;

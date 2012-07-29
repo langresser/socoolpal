@@ -12,7 +12,6 @@ import com.admogo.AdMogoLayout;
 import com.admogo.AdMogoListener;
 import com.admogo.AdMogoManager;
 
-import android.annotation.SuppressLint;
 import android.app.*;
 import android.content.*;
 import android.view.*;
@@ -56,6 +55,11 @@ public class SDLActivity extends Activity  implements AdMogoListener{
     private static EGLDisplay  mEGLDisplay;
     private static EGLConfig   mEGLConfig;
     private static int mGLMajor, mGLMinor;
+    
+    public Joystick m_joystick;
+    public Button m_btnBack;
+    public Button m_btnSearch;
+    public boolean m_isJoystickShow = true;
 
     // Load the .so
     static {
@@ -80,22 +84,27 @@ public class SDLActivity extends Activity  implements AdMogoListener{
 
         // Keep track of the paused state
         mIsPaused = false;
-        
-        Button btnHelp = (Button)findViewById(R.id.btnHelp);
-        btnHelp.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				
-				
-			}
-		});
-
+ 
         // Set up the surface
         mSurface = new SDLSurface(getApplication());
         setContentView(mSurface);
         SurfaceHolder holder = mSurface.getHolder();
         
+        Button btnHelp = new Button(this);
+        btnHelp.setBackgroundResource(R.drawable.helpicon_selector);
+        btnHelp.getBackground().setAlpha(128);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+				60, 60);
+		params.topMargin = 0;
+		params.gravity = Gravity.TOP | Gravity.LEFT;
+		
+        addContentView(btnHelp, params);
+        btnHelp.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				startActivity(new Intent(SDLActivity.this, HelpActivity.class));
+			}
+		});
+
         createBanner();
     }
     
@@ -120,6 +129,123 @@ public class SDLActivity extends Activity  implements AdMogoListener{
     	AdMogoManager.clear();
     }
     
+
+	private static Runnable m_runableShowJS = new Runnable() {
+		public void run() {
+			if (mSingleton.m_joystick == null) {
+				mSingleton.m_joystick = new Joystick(mSingleton);
+		        FrameLayout.LayoutParams paramsJS = new FrameLayout.LayoutParams(
+		        		Joystick.JOYSTICK_WIDTH, Joystick.JOYSTICK_HEIGHT);
+		        paramsJS.bottomMargin = 20;
+		        paramsJS.leftMargin = 20;
+		        paramsJS.gravity = Gravity.BOTTOM | Gravity.LEFT;
+		        mSingleton.addContentView(mSingleton.m_joystick, paramsJS);
+			}
+			mSingleton.m_joystick.setVisibility(View.VISIBLE);
+		}
+	};
+    public static void showJoystick()
+    {
+    	if (!mSingleton.m_isJoystickShow) {
+    		return;
+    	}
+
+    	mSingleton.runOnUiThread(m_runableShowJS);
+    }
+    
+    private static Runnable m_runableHideJS = new Runnable() {
+		public void run() {
+			mSingleton.m_joystick.setVisibility(View.INVISIBLE);
+		}
+	};
+
+    public static void hideJoystick()
+    {
+    	if (mSingleton.m_joystick != null) {
+    		mSingleton.runOnUiThread(m_runableHideJS);
+    	}
+    }
+    
+    private static Runnable m_runableShowBack = new Runnable() {
+		public void run() {
+			if (mSingleton.m_btnBack == null) {
+				mSingleton.m_btnBack = new Button(mSingleton);
+				mSingleton.m_btnBack.setBackgroundResource(R.drawable.back_selector);
+				mSingleton.m_btnBack.getBackground().setAlpha(128);
+		        FrameLayout.LayoutParams paramsBack = new FrameLayout.LayoutParams(
+						60, 60);
+		        paramsBack.topMargin = 0;
+		        paramsBack.gravity = Gravity.TOP | Gravity.RIGHT;
+				
+		        mSingleton.addContentView(mSingleton.m_btnBack, paramsBack);
+		        mSingleton.m_btnBack.setOnClickListener(new View.OnClickListener() {
+					public void onClick(View v) {
+						SDLActivity.nativeBack();
+					}
+				});	
+			}
+
+			mSingleton.m_btnBack.setVisibility(View.VISIBLE);
+		}
+	};
+    public static void showBackButton()
+    {
+    	mSingleton.runOnUiThread(m_runableShowBack);
+    }
+    
+    
+    private static Runnable m_runableHideBack = new Runnable() {
+		public void run() {
+			mSingleton.m_btnBack.setVisibility(View.INVISIBLE);
+		}
+	};
+    public static void hideBackButton()
+    {
+    	if (mSingleton.m_btnBack != null) {
+    		mSingleton.runOnUiThread(m_runableHideBack);
+    	}
+    }
+    
+    private static Runnable m_runableShowSearch = new Runnable() {
+		public void run() {
+			if (mSingleton.m_btnSearch == null) {
+				mSingleton.m_btnSearch = new Button(mSingleton);
+				mSingleton.m_btnSearch.setBackgroundResource(R.drawable.search_selector);
+				mSingleton.m_btnSearch.getBackground().setAlpha(128);
+		        FrameLayout.LayoutParams paramsSearch = new FrameLayout.LayoutParams(
+						80, 80);
+		        paramsSearch.bottomMargin = 50;
+		        paramsSearch.rightMargin = 20;
+		        paramsSearch.gravity = Gravity.BOTTOM | Gravity.RIGHT;
+				
+		        mSingleton.addContentView(mSingleton.m_btnSearch, paramsSearch);
+		        mSingleton.m_btnSearch.setOnClickListener(new View.OnClickListener() {
+					public void onClick(View v) {
+						SDLActivity.nativeSearch();
+					}
+				});
+			}
+			mSingleton.m_btnSearch.setVisibility(View.VISIBLE);
+		}
+	};
+    public static void showSearchButton()
+    {
+    	mSingleton.runOnUiThread(m_runableShowSearch);
+    	
+    }
+    
+    private static Runnable m_runableHideSearch = new Runnable() {
+		public void run() {
+			mSingleton.m_btnSearch.setVisibility(View.INVISIBLE);
+		}
+	};
+    public static void hideSearchButton()
+    {
+    	if (mSingleton.m_btnSearch != null) {
+    		mSingleton.runOnUiThread(m_runableHideSearch);
+    	}
+    }
+   
     // 被jni调用，关掉广告
     public static void closeAds()
     {
@@ -131,8 +257,6 @@ public class SDLActivity extends Activity  implements AdMogoListener{
 				}
 			}
         });
- 
-    	
     }
     
 	public void onClickAd() {
@@ -185,6 +309,13 @@ public class SDLActivity extends Activity  implements AdMogoListener{
         if (mIsPausedMusic && mAudioTrack != null &&  mAudioTrack.getPlayState() == AudioTrack.PLAYSTATE_PAUSED) {
         	mAudioTrack.play();
         }
+        
+        SharedPreferences settings = getSharedPreferences("sdlpalsetting", 0);
+        m_isJoystickShow = settings.getBoolean("isjoystickshow", true);
+        SDLActivity.nativeChangeJoystick(m_isJoystickShow ? 1 : 0);
+        
+        boolean isClassic = settings.getBoolean("isclassic", true);
+        SDLActivity.nativeChangeBattleMode(isClassic ? 1 : 0);
         
         super.onResume();
         // Don't call SDLActivity.nativeResume(); here, it will be called via SDLSurface::surfaceChanged->SDLActivity::startApp
@@ -246,10 +377,18 @@ public class SDLActivity extends Activity  implements AdMogoListener{
                                             float y, float p);
     public static native void onNativeAccel(float x, float y, float z);
     public static native void nativeRunAudioThread();
+    
+    public static native void nativeDirChange(int dir);
+    public static native void nativeSearch();
+    public static native void nativeBack();
+    public static native void nativeHack(int type, int value);
+    public static native void nativeChangeBattleMode(int isClassic);
+    public static native void nativeChangeJoystick(int use);
+    
+    public static native int nativeGetFlyMode();
 
 
     // Java functions called from C
-
     public static boolean createGLContext(int majorVersion, int minorVersion) {
         return initEGL(majorVersion, minorVersion);
     }

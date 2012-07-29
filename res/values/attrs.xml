@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<declare-styleable name="offerBanner">
+		<!--
+			广告刷新间隔, 单位是秒, 如果不指定, 则默认一分钟. 
+		-->
+		<attr name="refresh_interval" format="integer" />
+		<!-- 
+			背景色, 如果没有设置, 则背景色根据广告实际内容改变, 如果
+			应用程序本身具有一个特定的色调, 可以通过指定背景色来使广告
+			条更加匹配应用界面风格
+		-->
+		<attr name="background_color" format="color" />
+		<!--
+			广告上的文字颜色, 对横幅和文字广告有效
+		-->
+		<attr name="name_color" format="color" />
+		<attr name="content_color" format="color" />
+		<attr name="tips_color" format="color" />
+		<attr name="overlay_color" format="color" />
+		<!--
+			设置transition来改变切换广告时的动画效果
+		-->
+		<attr name="transition" format="enum">
+			<enum name="pushup" value="0"/>
+			<enum name="pushleft" value="1"/>
+			<enum name="fade" value="2"/>
+			<enum name="hyperspace" value="3"/>
+		</attr>
+		
+		<!--  
+			设置banner背景图片颜色
+		-->
+		<attr name="background_drawable" format="enum">
+			<enum name="blue" value="0"/>
+			<enum name="brown" value="1"/>
+			<enum name="green" value="2"/>
+			<enum name="orange" value="3"/>
+			<enum name="rosy" value="4"/>
+			<enum name="black" value="5"/>
+		</attr>
+	</declare-styleable>  
+</resources>

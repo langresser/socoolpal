@@ -150,7 +150,7 @@ PAL_KeyboardEventFilter(
          }
       }
 
-	  LOGI("key down: %d", lpEvent->key.keysym.sym);
+//	  LOGI("key down: %d", lpEvent->key.keysym.sym);
       switch (lpEvent->key.keysym.sym)
       {
 #ifdef __SYMBIAN32__
@@ -220,9 +220,13 @@ PAL_KeyboardEventFilter(
       case SDLK_LALT:
       case SDLK_RALT:
       case SDLK_KP0:
-	  case SDLK_MENU:   // android menu键
          g_InputState.dwKeyPress |= kKeyMenu;
          break;
+#ifdef __ANDROID__
+      case SDLK_MENU:   // android
+         switchShowMenu();
+         break;
+#endif
 	  case SDLK_AC_HOME: // android home键(或许这里应该结束程序)
 		  break;
       case SDLK_RETURN:
@@ -292,7 +296,7 @@ PAL_KeyboardEventFilter(
       //
       // Released a key
       //
-	   LOGI("key up: %d", lpEvent->key.keysym.sym);
+//	   LOGI("key up: %d", lpEvent->key.keysym.sym);
       switch (lpEvent->key.keysym.sym)
       {
       case SDLK_UP:
@@ -509,7 +513,7 @@ PAL_MouseEventFilter(
 #else
    case SDL_MOUSEBUTTONDOWN:
 #endif
-   LOGI("SDL_FINGERDOWN: %d  %d  %d     %d  %d", eventType, mouseX,  mouseY, g_wInitialWidth, g_wInitialHeight);
+//   LOGI("SDL_FINGERDOWN: %d  %d  %d     %d  %d", eventType, mouseX,  mouseY, g_wInitialWidth, g_wInitialHeight);
       lastPressButtonTime = SDL_GetTicks();
 
       lastPressx = mouseX;
@@ -564,7 +568,7 @@ PAL_MouseEventFilter(
        if (mouseX == lastMotionX && mouseY == lastMotionY) {
            break;
        }
-  LOGI("SDL_MOUSEMOTION: %d  %d  %d     %d  %d", eventType, mouseX,  mouseY, g_wInitialWidth, g_wInitialHeight);
+//  LOGI("SDL_MOUSEMOTION: %d  %d  %d     %d  %d", eventType, mouseX,  mouseY, g_wInitialWidth, g_wInitialHeight);
     lastMotionX = mouseX;
        lastMotionY = mouseY;
 
@@ -606,7 +610,7 @@ PAL_MouseEventFilter(
 #else
    case SDL_MOUSEBUTTONUP:
 #endif
-      LOGI("SDL_FINGERUP: %d  %d  %d     %d  %d", eventType, mouseX,  mouseY, g_wInitialWidth, g_wInitialHeight);
+//     LOGI("SDL_FINGERUP: %d  %d  %d     %d  %d", eventType, mouseX,  mouseY, g_wInitialWidth, g_wInitialHeight);
        lastReleaseButtonTime = SDL_GetTicks();
       lastReleasex = mouseX;
       lastReleasey = mouseY;
@@ -1005,6 +1009,7 @@ PAL_ProcessEvent(
 			   } else if (evt.window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
 				   extern BOOL g_hasInGame;
 				   LOGI("in SDL_WINDOWEVENT_FOCUS_LOST");
+                   extern int g_isInBackground;
 				   g_isInBackground = SDL_TRUE;
 
 				   if (g_hasInGame) {
@@ -1012,6 +1017,7 @@ PAL_ProcessEvent(
 				   }
 			   } else if (evt.window.event == SDL_WINDOWEVENT_FOCUS_GAINED) {
 				   LOGI("in SDL_WINDOWEVENT_FOCUS_GAINED");
+                   extern int g_isInBackground;
 				   g_isInBackground = SDL_FALSE;
 				   VIDEO_Resize(g_wInitialWidth, g_wInitialHeight);
 			   }

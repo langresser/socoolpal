@@ -1,4 +1,4 @@
-//
+﻿//
 //  iOSUtil.m
 //  Pal_iOS
 //
@@ -23,8 +23,6 @@
 #import <DianJinOfferPlatform/DianJinBannerSubViewProperty.h>
 #import <DianJinOfferPlatform/DianJinTransitionParam.h>
 #endif
-
-extern BOOL g_showSystemMenu;
 
 #define JOYSTICK_NONE 0
 #define JOYSTICK_MOVE 1
@@ -375,8 +373,7 @@ MyDelegate* g_delegate = nil;
 
 -(void)onClickSearch
 {
-    extern BOOL PAL_Search(VOID);
-    PAL_Search();
+    g_InputState.dwKeyPress |= kKeySearch;
 }
 
 - (NSString *)adMoGoApplicationKey {

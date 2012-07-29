@@ -491,8 +491,10 @@ SDL_main(
     
     initButton();
 
-
 #ifdef __ANDROID__
+//    hideJoystick();
+//    hideSearchButton();
+//    hideBackButton();
     SDL_mainLoop();
 #endif
    return 255;

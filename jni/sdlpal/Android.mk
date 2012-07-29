@@ -29,7 +29,7 @@ LOCAL_SRC_FILES += battle.c \
 					main.c map.c palcommon.c palette.c \
 					play.c private.c res.c rixplay.cpp rngplay.c \
 					scene.c script.c sound.c text.c ui.c uibattle.c \
-					uigame.c util.c video.c yj1.c androidUtil.cpp
+					uigame.c util.c video.c yj1.c androidUtil.cpp hack.c
 
 LOCAL_SRC_FILES += libmad/bit.c \
 					libmad/decoder.c \
