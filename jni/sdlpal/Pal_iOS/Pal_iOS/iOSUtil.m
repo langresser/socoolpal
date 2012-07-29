@@ -356,7 +356,9 @@ MyDelegate* g_delegate = nil;
 - (void)appActivatedDidFinish:(NSDictionary *)resultDic
 {
 //    NSLog(@"appActivatedDidFinish: %@", resultDic);
+#ifndef APP_FOR_APPSTORE
     [[DianJinOfferPlatform defaultPlatform] getBalance:systemView];
+#endif
 }
 
 -(void)onClickMenu
