@@ -31,10 +31,10 @@ import android.view.MotionEvent;
 import android.view.View;
 
 public class Joystick extends View {
-    public final static int JOYSTICK_WIDTH = 250;
-    public final static int JOYSTICK_HEIGHT = 250;
-    public final static int STICK_WIDTH = 54;
-    public final static int STICK_HEIGHT = 114;
+    public final static int JOYSTICK_WIDTH = 166;
+    public final static int JOYSTICK_HEIGHT = 166;
+    public final static int STICK_WIDTH = 36;
+    public final static int STICK_HEIGHT = 76;
     
     public final static int DIR_UP = 1;
     public final static int DIR_DOWN = 2;
@@ -49,37 +49,34 @@ public class Joystick extends View {
     
     public Joystick(Context context) {
         super(context);
+        
+        int density = getResources().getDisplayMetrics().densityDpi;
 
 		Bitmap jsbg = BitmapFactory.decodeResource(getResources(), R.drawable.jsbg);
-		m_dock = Bitmap.createScaledBitmap(jsbg, JOYSTICK_WIDTH, JOYSTICK_HEIGHT, true);
-		m_up = BitmapFactory.decodeResource(getResources(), R.drawable.js4);
-		m_down = BitmapFactory.decodeResource(getResources(), R.drawable.js8);
-		m_left = BitmapFactory.decodeResource(getResources(), R.drawable.js2);
-		m_right = BitmapFactory.decodeResource(getResources(), R.drawable.js6);
+		m_dock = Bitmap.createScaledBitmap(jsbg, JOYSTICK_WIDTH * density / 160, JOYSTICK_HEIGHT * density / 160, true);
+		Bitmap jsup = BitmapFactory.decodeResource(getResources(), R.drawable.js4);
+		m_up = Bitmap.createScaledBitmap(jsup, STICK_WIDTH * density / 160, STICK_HEIGHT * density / 160, true);
+		Bitmap jsdown = BitmapFactory.decodeResource(getResources(), R.drawable.js8);
+		m_down = Bitmap.createScaledBitmap(jsdown, STICK_WIDTH * density / 160, STICK_HEIGHT * density / 160, true);
+		Bitmap jsleft = BitmapFactory.decodeResource(getResources(), R.drawable.js2);
+		m_left = Bitmap.createScaledBitmap(jsleft, STICK_HEIGHT * density / 160, STICK_WIDTH * density / 160, true);
+		Bitmap jsright = BitmapFactory.decodeResource(getResources(), R.drawable.js6);
+		m_right = Bitmap.createScaledBitmap(jsright, STICK_HEIGHT * density / 160, STICK_WIDTH * density / 160, true);
 		
 		matrixDock = new Matrix();
 		matUp = new Matrix();
-		matUp.setTranslate((JOYSTICK_WIDTH - STICK_WIDTH) / 2, 20);
+		matUp.setTranslate((JOYSTICK_WIDTH - STICK_WIDTH) / 2  * density / 160, 15  * density / 160);
 		matDown = new Matrix();
-		matDown.setTranslate((JOYSTICK_WIDTH - STICK_WIDTH) / 2, JOYSTICK_HEIGHT / 2 + 20);
+		matDown.setTranslate((JOYSTICK_WIDTH - STICK_WIDTH) / 2 * density / 160, (JOYSTICK_HEIGHT / 2 + 15) * density / 160);
 		matLeft = new Matrix();
-		matLeft.setTranslate(20, (JOYSTICK_HEIGHT - STICK_WIDTH) / 2);
+		matLeft.setTranslate(15 * density / 160, (JOYSTICK_HEIGHT - STICK_WIDTH) / 2 * density / 160);
 		matRight = new Matrix();
-		matRight.setTranslate(JOYSTICK_WIDTH / 2 + 20, (JOYSTICK_HEIGHT - STICK_WIDTH) / 2);
+		matRight.setTranslate((JOYSTICK_WIDTH / 2 + 10) * density / 160, (JOYSTICK_HEIGHT - STICK_WIDTH) / 2 * density / 160);
     }
 
-    private static boolean m_firstShow = true;
     @Override
     protected void onDraw(Canvas canvas) {
         //super.onDraw(canvas);
-//    	if (m_firstShow) {
-//    		m_firstShow = false;
-//    		SDLActivity.mSingleton.m_joystick.setVisibility(View.INVISIBLE);
-//    		SDLActivity.mSingleton.m_btnBack.setVisibility(View.INVISIBLE);
-//    		SDLActivity.mSingleton.m_btnSearch.setVisibility(View.INVISIBLE);
-//    		return;
-//    	}
-
 		canvas.drawBitmap(m_dock, matrixDock, painter);
 		
 		switch (m_dir) {
