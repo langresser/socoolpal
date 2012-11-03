@@ -80,6 +80,8 @@ PAL_Init(
    {
 		TerminateOnError("Could not initialize SDL: %s.\n", SDL_GetError());
    }
+    
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "liner");
 
    //
    // Initialize subsystems.

@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		002F3A3F09D088BA00EBEB88 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 002F3A3E09D088BA00EBEB88 /* main.c */; };
-		3B713C7D15A9F28A00A63662 /* libSDL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B713C6715A9F0E600A63662 /* libSDL.a */; };
+		3B713C7D15A9F28A00A63662 /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B713C6715A9F0E600A63662 /* libSDL2.a */; };
 		3B713C8115A9F2D600A63662 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B713C8015A9F2D600A63662 /* Foundation.framework */; };
 		3B713C8315A9F2DE00A63662 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B713C8215A9F2DE00A63662 /* UIKit.framework */; };
 		3B713C8515A9F2EC00A63662 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B713C8415A9F2EC00A63662 /* OpenGLES.framework */; };
@@ -280,7 +280,7 @@
 				3B713C8515A9F2EC00A63662 /* OpenGLES.framework in Frameworks */,
 				3B713C8315A9F2DE00A63662 /* UIKit.framework in Frameworks */,
 				3B713C8115A9F2D600A63662 /* Foundation.framework in Frameworks */,
-				3B713C7D15A9F28A00A63662 /* libSDL.a in Frameworks */,
+				3B713C7D15A9F28A00A63662 /* libSDL2.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -427,7 +427,7 @@
 		3B713C5D15A9F0E600A63662 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3B713C6715A9F0E600A63662 /* libSDL.a */,
+				3B713C6715A9F0E600A63662 /* libSDL2.a */,
 				3B713C6915A9F0E600A63662 /* testsdl.app */,
 			);
 			name = Products;
@@ -548,10 +548,10 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		3B713C6715A9F0E600A63662 /* libSDL.a */ = {
+		3B713C6715A9F0E600A63662 /* libSDL2.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = libSDL.a;
+			path = libSDL2.a;
 			remoteRef = 3B713C6615A9F0E600A63662 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};

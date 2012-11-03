@@ -32,6 +32,18 @@ extern BOOL g_showSystemMenu;
 
 int g_joystickType = JOYSTICK_NONE;
 BOOL g_useJoyStick = YES;
+extern int g_currentMB;
+
+int isPad()
+{
+	BOOL result = NO;
+	if ([[UIDevice currentDevice] respondsToSelector:@selector(userInterfaceIdiom)]) {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+		result = ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad);
+#endif
+	}
+	return result;
+}
 
 #ifndef APP_FOR_APPSTORE
 @interface MyDelegate : NSObject<AdMoGoDelegate, DianJinOfferBannerDelegate>
@@ -95,10 +107,16 @@ MyDelegate* g_delegate = nil;
 -(void)showMenuBtn
 {
     if (btnMenu == nil) {
-        btnMenu = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        btnMenu.frame = CGRectMake(430, 296, 60, 24);
-        [btnMenu setTitle:@"菜单" forState:UIControlStateNormal];
-        [btnMenu setTitle:@"菜单" forState:UIControlStateHighlighted];
+        btnMenu = [UIButton buttonWithType:UIButtonTypeCustom];
+
+        if (isPad()) {
+            btnMenu.frame = CGRectMake(920, 710, 50, 50);
+        } else {
+            btnMenu.frame = CGRectMake(400, 280, 40, 40);
+        }
+
+        [btnMenu setImage:[UIImage imageNamed:@"back1"] forState:UIControlStateNormal];
+        [btnMenu setImage:[UIImage imageNamed:@"back"] forState:UIControlStateHighlighted];
         btnMenu.alpha = 0.5;
         [btnMenu addTarget:self action:@selector(onClickMenu) forControlEvents:UIControlEventTouchUpInside];
         
@@ -111,9 +129,15 @@ MyDelegate* g_delegate = nil;
         UIView* mainView = windowData->viewcontroller.view;
         [mainView addSubview:btnMenu];
         
-        btnSearch = [[UIButton alloc]initWithFrame:CGRectMake(415, 220, 50, 50)];
+        if (isPad()) {
+            btnSearch = [[UIButton alloc]initWithFrame:CGRectMake(970, 640, 50, 50)];
+        } else {
+            btnSearch = [[UIButton alloc]initWithFrame:CGRectMake(440, 230, 40, 40)];
+        }
+
         [btnSearch setImage:[UIImage imageNamed:@"search"] forState:UIControlStateNormal];
         [btnSearch setImage:[UIImage imageNamed:@"search2"] forState:UIControlStateHighlighted];
+        btnSearch.alpha = 0.8;
         [btnSearch addTarget:self action:@selector(onClickSearch) forControlEvents:UIControlEventTouchUpInside];
         [mainView addSubview:btnSearch];
     }
@@ -211,6 +235,28 @@ MyDelegate* g_delegate = nil;
     }
 }
 
+-(void)onRecNewMsg:(NSNotification*)notification
+{
+    NSArray * newReplies = [notification.userInfo objectForKey:@"newReplies"];
+    if (!newReplies) {
+        return;
+    }
+    
+    UIAlertView *alertView;
+    NSString *title = [NSString stringWithFormat:@"有%d条新回复", [newReplies count]];
+    NSMutableString *content = [NSMutableString string];
+    for (int i = 0; i < [newReplies count]; i++) {
+        NSString * dateTime = [[newReplies objectAtIndex:i] objectForKey:@"datetime"];
+        NSString *_content = [[newReplies objectAtIndex:i] objectForKey:@"content"];
+        [content appendString:[NSString stringWithFormat:@"%d: %@---%@\n", i+1, _content, dateTime]];
+    }
+    
+    alertView = [[UIAlertView alloc] initWithTitle:title message:content delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil];
+    ((UILabel *) [[alertView subviews] objectAtIndex:1]).textAlignment = NSTextAlignmentLeft ;
+    [alertView show];
+    
+}
+
 -(void)onClickBack
 {
     g_InputState.dwKeyPress |= kKeyMenu;
@@ -223,7 +269,14 @@ MyDelegate* g_delegate = nil;
     }
 
     if (joystickBase == nil) {
-        joystickBase = [[CGJoystick alloc]initWithFrame:CGRectMake(10, 160, 150, 150)];
+        int width, height;
+        getScreenSize(&width, &height);
+        
+        if (isPad()) {
+            joystickBase = [[CGJoystick alloc]initWithFrame:CGRectMake(10, height - 200 - 5, 200, 200)];
+        } else {
+            joystickBase = [[CGJoystick alloc]initWithFrame:CGRectMake(5, 185, 130, 130)];
+        }
 
         SDL_Window* window = SDL_GetWindowFromID(g_windowId);
         if (!window) {
@@ -284,7 +337,6 @@ MyDelegate* g_delegate = nil;
         transitionParam.duration = 1.0;
         [_banner setupTransition:transitionParam];
         [transitionParam release];
-//        [_banner startWithTimeInterval:20 delegate:self];
         [mainView addSubview:_banner];
 #endif
         
@@ -293,8 +345,6 @@ MyDelegate* g_delegate = nil;
         moreApp.alpha = 0.8;
         [moreApp setTitle:@"攻略" forState:UIControlStateNormal];
         [moreApp setTitle:@"攻略" forState:UIControlStateHighlighted];
-        //        [moreApp setImage:[UIImage imageNamed:@"more_app_normal"] forState:UIControlStateNormal];
-        //        [moreApp setImage:[UIImage imageNamed:@"more_app_click"] forState:UIControlStateHighlighted];
         [moreApp addTarget:self action:@selector(onClickMoreApp) forControlEvents:UIControlEventTouchUpInside];
         [mainView addSubview:moreApp];
 
@@ -357,10 +407,15 @@ MyDelegate* g_delegate = nil;
 
 - (void)appActivatedDidFinish:(NSDictionary *)resultDic
 {
-//    NSLog(@"appActivatedDidFinish: %@", resultDic);
-#ifndef APP_FOR_APPSTORE
-    [[DianJinOfferPlatform defaultPlatform] getBalance:systemView];
-#endif
+    NSLog(@"%@", resultDic);
+    NSNumber *result = [resultDic objectForKey:@"result"];
+    if ([result boolValue]) {
+        NSNumber *awardAmount = [resultDic objectForKey:@"awardAmount"];
+        NSString *identifier = [resultDic objectForKey:@"identifier"];
+        NSLog(@"app identifier = %@", identifier);
+        g_currentMB += [awardAmount floatValue];
+        [systemView updateMBInfo];
+    }
 }
 
 -(void)onClickMenu
@@ -409,6 +464,8 @@ MyDelegate* g_delegate = nil;
     
     SDL_WindowData* windowData = (SDL_WindowData*)window->driverdata;
     [windowData->viewcontroller.view addSubview:adView];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onRecNewMsg:) name:UMFBCheckFinishedNotification object:nil];
 }
 
 -(void)showAds
@@ -512,6 +569,7 @@ void initButton()
 //    [MobClick setLogEnabled:YES];
     [MobClick startWithAppkey:@"50045626527015611900001a"];
     
+    [UMFeedback checkWithAppkey:@"50045626527015611900001a"];
 #ifndef APP_FOR_APPSTORE
     // Override point for customization after application launch.
 	[[DianJinOfferPlatform defaultPlatform] setAppId:7209 andSetAppKey:@"13891e5c79ce10b018d2d5a7c44dabd4"];

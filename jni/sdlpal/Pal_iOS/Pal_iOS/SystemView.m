@@ -120,6 +120,14 @@ int g_currentMB = 0;
         addMoneyBtn.alpha = 0.8;
         [addMoneyBtn addTarget:self  action:@selector(onClickAddMoney) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:addMoneyBtn];
+
+        g_currentMB = [[NSUserDefaults standardUserDefaults]integerForKey:@"MB"];
+        UILabel* label = [[UILabel alloc]initWithFrame:CGRectMake(10, 240, 100, 30)];
+        label.backgroundColor = [UIColor clearColor];
+        label.tag = 400;
+        label.font = [UIFont systemFontOfSize:15];
+        label.text = [NSString stringWithFormat:@"(当前元宝:%d)", g_currentMB];
+        [self addSubview:label];
         
 #ifdef APP_FOR_APPSTORE
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onPurchaseOk) name:kIAPSucceededNotification object:nil];
@@ -127,6 +135,24 @@ int g_currentMB = 0;
 #endif
     }
     return self;
+}
+
+-(void)updateMBInfo
+{
+    if (g_currentMB >= 100) {
+        NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+        if (defaults) {
+            hackLabel.text = @"金手指功能:(已开启)";
+            [[NSUserDefaults standardUserDefaults] setObject:[[UIDevice currentDevice] uniqueDeviceIdentifier] forKey:kRemoveAdsFlag];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+    }
+
+    UILabel* label = (UILabel*)[self viewWithTag:400];
+    label.text = [NSString stringWithFormat:@"(当前M币:%d)", g_currentMB];
+    
+    [[NSUserDefaults standardUserDefaults]setInteger:g_currentMB forKey:@"MB"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 -(void)onClickMove
@@ -176,36 +202,27 @@ int g_currentMB = 0;
     if (flag && [flag isEqualToString:[[UIDevice currentDevice] uniqueDeviceIdentifier]]) {
         return YES;
     }
+    
+    if (g_currentMB >= 100) {
+        NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+        if (defaults) {
+            hackLabel.text = @"金手指功能:(已开启)";
+            [[NSUserDefaults standardUserDefaults] setObject:[[UIDevice currentDevice] uniqueDeviceIdentifier] forKey:kRemoveAdsFlag];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+        return YES;
+    }
 
 #ifdef APP_FOR_APPSTORE
     [[InAppPurchaseMgr sharedInstance]purchaseProUpgrade];
 #else
     [[DianJinOfferPlatform defaultPlatform] getBalance:self];
 
-    UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"当您获得100元宝时将自动开启金手指功能。您可以通过安装精品推荐应用的方式免费获取元宝。" delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil, nil];
+    NSString* title = [NSString stringWithFormat:@"当您获得100元宝时将自动开启金手指功能。您可以通过点击广告条安装精品应用的方式免费获取元宝。 (当前元宝:%d)", g_currentMB];
+    UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@"提示" message:title delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil, nil];
     [alert show];
 #endif
     return NO;
-}
-
-- (void)getBalanceDidFinish:(NSDictionary *)dict
-{
-    NSNumber *result = [dict objectForKey: @"result"]; 
-    int ret = [result intValue];
-    
-    if (ret == 0) {
-        NSNumber *balance = [dict objectForKey:@"balance"];
-        g_currentMB = [balance floatValue];
-        
-        if (g_currentMB >= 100) {
-            NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-            if (defaults) {
-                hackLabel.text = @"金手指功能:(已开启)";
-                [[NSUserDefaults standardUserDefaults] setObject:[[UIDevice currentDevice] uniqueDeviceIdentifier] forKey:kRemoveAdsFlag];
-                [[NSUserDefaults standardUserDefaults] synchronize];
-            }
-        }
-    }
 }
 
 -(void)onClickMode

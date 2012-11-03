@@ -6,7 +6,7 @@
       content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<title>用户反馈</title>
+<title>Customer Feedback</title>
 
 <!--Twitter bootstrap css framework http://twitter.github.com/bootstrap/ -->
 <link rel="stylesheet" type="text/css" href="./css/bootstrap.css">
@@ -53,32 +53,32 @@
 
 </head>
 <body>
-<div id="header">用户反馈</div>
-<a class="button" id="backBtn"></a>
+<div id="header">Customer Feedback</div>
+<a class="button_en" id="backBtn"></a>
 
 <div class="info-body">
                 <div id="age_gender" style="float: left;
         padding-top: 6px;
-        padding-left: 9px;">性别/年龄:
+        padding-left: 9px;">Gender/Age:
                 </div>
                 <div class="select_group">
                     <select id="gender" style="width:100px">
-                        <option value>选择性别</option>
-                        <option value="1">男</option>
-                        <option value="2">女</option>
+                        <option value>Select Gender</option>
+                        <option value="1">Male</option>
+                        <option value="2">Female</option>
                     </select>
                 </div>
                 <div class="select_group">
                     <select id="age_group" style="width:100px">
-                        <option value>选择年龄</option>
-                        <option value="1">小于18岁</option>
-                        <option value="2">18～24岁</option>
-                        <option value="3">25～30岁</option>
-                        <option value="4">31～35岁</option>
-                        <option value="5">36～40岁</option>
-                        <option value="6">41～50岁</option>
-                        <option value="7">51～59岁</option>
-                        <option value="8">大于60岁</option>
+                        <option value>Select Age</option>
+                        <option value="1"> < 18 </option>
+                        <option value="2">18～24</option>
+                        <option value="3">25～30</option>
+                        <option value="4">31～35</option>
+                        <option value="5">36～40</option>
+                        <option value="6">41～50</option>
+                        <option value="7">51～59</option>
+                        <option value="8">> 60</option>
                     </select>
                 </div>
             </div>
@@ -87,7 +87,7 @@
         <div id="page">
          <div id="feedbacks_body">
              <div class="messageBody messageReceive clear">
-                 <div class="messageContent">您好，我是产品经理，欢迎您给我们提产品的使用感受和建议！</div>
+                 <div class="messageContent">Dear customer, I am the product manager. You are more than welcomed to provide your user experiences and suggestions to us. Your opinion is really important to us.</div>
                  <div class="arrow"></div>
              </div>
              <!-- 反馈列表将插入topics div里 -->
@@ -103,21 +103,21 @@
         <tr>
             <td style="width:34px;">
                 <select id="rate">
-                    <option value>请评价</option>
-                    <option value="5">非常好</option>
-                    <option value="4">好</option>
-                    <option value="3">一般</option>
-                    <option value="2">不好</option>
-                    <option value="1">非常差</option>
+                    <option value>Rating</option>
+                    <option value="5">Excellent</option>
+                    <option value="4">Good</option>
+                    <option value="3">Moderate</option>
+                    <option value="2">Not good</option>
+                    <option value="1">Poor</option>
                 </select>
             </td>
             <td style="vertical-align: top;">
                 <input class="textField" type="text" id="content" value=" " placeholder=""/>
             </td>
             <td style="width:66px;">
-                <input type="image" class="sendButton"
-                       onclick="submitForm('zh-Hans');"
-                       value="" src="img/send.png" style="width: 63px;height: 35px;padding: 1px;margin: 1px;" />
+                <input type="image" class="sendButton_en"
+                       onclick="submitForm('en');"
+                       value="" src="img/send_en.png" style="width: 63px;height: 35px;padding: 1px;margin: 1px;" />
             </td>
         </tr>
     </table>

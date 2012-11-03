@@ -17,4 +17,5 @@
     UILabel* hackLabel;
 }
 
+-(void)updateMBInfo;
 @end

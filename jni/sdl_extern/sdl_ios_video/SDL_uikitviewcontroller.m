@@ -43,7 +43,21 @@
         return nil;
     }
     self.window = _window;
+
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 6.0) {
+        ((SDL_WindowData*)(_window->driverdata))->uiwindow.rootViewController = self;
+    }
     return self;
+}
+
+- (BOOL)shouldAutorotate
+{
+    return YES;
+}
+
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskLandscape;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)orient

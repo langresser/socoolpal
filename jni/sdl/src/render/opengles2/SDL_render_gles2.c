@@ -407,8 +407,8 @@ GLES2_CreateTexture(SDL_Renderer *renderer, SDL_Texture *texture)
     rdata->glGenTextures(1, &tdata->texture);
     rdata->glActiveTexture(GL_TEXTURE0);
     rdata->glBindTexture(tdata->texture_type, tdata->texture);
-    rdata->glTexParameteri(tdata->texture_type, GL_TEXTURE_MIN_FILTER, scaleMode);
-    rdata->glTexParameteri(tdata->texture_type, GL_TEXTURE_MAG_FILTER, scaleMode);
+    rdata->glTexParameteri(tdata->texture_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    rdata->glTexParameteri(tdata->texture_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     rdata->glTexParameteri(tdata->texture_type, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     rdata->glTexParameteri(tdata->texture_type, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     rdata->glTexImage2D(tdata->texture_type, 0, format, texture->w, texture->h, 0, format, type, NULL);

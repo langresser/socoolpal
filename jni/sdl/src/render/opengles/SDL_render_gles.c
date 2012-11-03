@@ -480,8 +480,8 @@ GLES_CreateTexture(SDL_Renderer * renderer, SDL_Texture * texture)
     data->formattype = type;
     scaleMode = GetScaleQuality();
     renderdata->glBindTexture(data->type, data->texture);
-    renderdata->glTexParameteri(data->type, GL_TEXTURE_MIN_FILTER, scaleMode);
-    renderdata->glTexParameteri(data->type, GL_TEXTURE_MAG_FILTER, scaleMode);
+    renderdata->glTexParameteri(data->type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    renderdata->glTexParameteri(data->type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     renderdata->glTexParameteri(data->type, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     renderdata->glTexParameteri(data->type, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 

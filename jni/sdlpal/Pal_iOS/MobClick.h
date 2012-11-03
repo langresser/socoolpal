@@ -3,12 +3,14 @@
 //  MobClick
 //
 //  Created by Aladdin on 2010-03-25.
-//  Updated by Minghua on 2012-04-19.
+//  Updated by Minghua on 2012-09-11.
 //  Copyright 2010-2012 Umeng.com . All rights reserved.
-//  Version 2.0.0 , updated_at 2012-04-19.
+//  Version 2.1.0 , updated_at 2012-09-11.
 
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
+
+#define UMOnlineConfigDidFinishedNotification @"OnlineConfigDidFinishedNotification"
 
 typedef enum {
     REALTIME = 0,       //实时发送
@@ -18,6 +20,7 @@ typedef enum {
 } ReportPolicy;
 
 @protocol MobClickDelegate;
+@class CLLocation;
 
 @interface MobClick : NSObject <UIAlertViewDelegate> {
 @private
@@ -29,8 +32,14 @@ typedef enum {
 // channelId 为nil或@""时,默认会被被当作@"App Store"渠道
 + (void)startWithAppkey:(NSString *)appKey reportPolicy:(ReportPolicy)rp channelId:(NSString *)cid;
 
-+ (void)setAppVersion:(NSString *)appVersion;		//自定义app版本信息，如果不设置，默认从CFBundleVersion里取
-+ (NSString *)getAgentVersion;  //获取sdk 版本号
+/*
+    自定义app版本信息，如果不设置，默认从CFBundleVersion里取,取得的是build version,和xcode3工程兼容.
+    如果需要和xcode4版本保持一致，请使用下面的方法
+    NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+    [MobClick setAppVersion:version];
+ */
++ (void)setAppVersion:(NSString *)appVersion;
++ (NSString *)getAgentVersion;  //获取友盟sdk 版本号
 
 /*方法名:
  *		setCrashReportEnabled:(BOOL)value
@@ -230,6 +239,11 @@ typedef enum {
 + (NSString *)getConfigParams:(NSString *)key;
 + (NSDictionary *)getConfigParams;
 
+// 为了更精确的统计用户地理位置，可以调用此方法传入经纬度信息
+// 需要链接 CoreLocation.framework 并且 #import <CoreLocation/CoreLocation.h>
++ (void)setLatitude:(double)latitude longitude:(double)longitude;
++ (void)setLocation:(CLLocation *)location;
+
 
 #pragma mark helper
 /*方法名:
@@ -286,6 +300,14 @@ typedef enum {
  */
 + (void)appTerminated;
 
+/*
+    这两个方法是友盟SDK内部使用的监听方法，在App启动（或进入前台）和退出（或进入后台）时自动调用。
+    一般情况是不需要手动干预的。
+    [MobClick startWithAppkey:]通常在application:didFinishLaunchingWithOptions:里被调用监听
+    App启动和退出事件，如果你没法在application:didFinishLaunchingWithOptions:里添加友盟的[MobClick startWithAppkey:]
+    方法，App的启动事件可能会无法监听，此时你就可以手动调用[MobClick startSession:nil]来启动友盟的session。
+ */
++ (void)startSession:(NSNotification *)notification;
 @end
 
 //此协议的三个方法不再建议使用，建议用新方法代替

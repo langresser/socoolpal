@@ -70,7 +70,8 @@
 
 -(int)getDirByPoint:(CGPoint)point
 {
-    CGPoint centerPoint = CGPointMake(70, 70);
+    CGSize size = self.frame.size;
+    CGPoint centerPoint = CGPointMake(size.width / 2, size.height / 2);
     int diffX = point.x - centerPoint.x;
     int diffY = centerPoint.y - point.y;
     int absX = abs(diffX);
@@ -142,18 +143,20 @@
 //    CGContextRef context = UIGraphicsGetCurrentContext();
     [stickBase drawInRect:rect];
     
+    int width = self.bounds.size.width;
+    
     switch (stickDir) {
         case DIR_UP:
-            [stickUp drawInRect:CGRectMake(58, 15, 35, 90)];
+            [stickUp drawInRect:CGRectMake(58 * width / 150, 15 * width / 150, 35 * width / 150, 90 * width / 150)];
             break;
         case DIR_DOWN:
-            [stickDown drawInRect:CGRectMake(59, 68, 35, 90)];
+            [stickDown drawInRect:CGRectMake(59 * width / 150, 68 * width / 150, 35 * width / 150, 90 * width / 150)];
             break;
         case DIR_LEFT:
-            [stickLeft drawInRect:CGRectMake(13, 60, 90, 35)];
+            [stickLeft drawInRect:CGRectMake(13 * width / 150, 60 * width / 150, 90 * width / 150, 35 * width / 150)];
             break;
         case DIR_RIGHT:
-            [stickRight drawInRect:CGRectMake(65, 60, 90, 35)];
+            [stickRight drawInRect:CGRectMake(65 * width / 150, 60 * width / 150, 90 * width / 150, 35 * width / 150)];
             break;
         default:
             break;

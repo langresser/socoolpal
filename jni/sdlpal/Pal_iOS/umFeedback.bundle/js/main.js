@@ -5,12 +5,33 @@ var CONFIG = (function() {
         'NETWORK_ERROR': '网络问题，请稍后再试，本条已经缓存下次自动重发。'
     };
 
+    var EN_STRINGS = {
+        'FORM_BLANK_ALERT': 'Please make sure to provide your comment！',
+        'THANKS': 'We are grateful for your feedback!',
+        'NETWORK_ERROR': 'Internet connection problem occurring. Please try later. This message has been saved and will be resubmitted automatically later.'
+    };
+
+    var JA_STRINGS = {
+        'FORM_BLANK_ALERT': 'ご意見を入力してください。',
+        'THANKS': 'ご意見を頂き、ありがとうございました。',
+        'NETWORK_ERROR': '通信上の問題で、後ほどもう一度お試して下さい。このメッセージはすでにバッファーに保存しており、次回は自動送信されます。'
+    };
+
+    var I18N = {
+        'en': EN_STRINGS,
+        'zh-Hans': STRINGS,
+        'ja': JA_STRINGS
+    }
+
     return {
-        get: function(name) { return STRINGS[name]; }
+        get:function(name, language) {
+            return I18N[language][name];
+        }
     };
 })();
 
 var myScroll;
+FeedbackJSON = null;
 function loaded() {
 	myScroll = new iScroll('wrapper');
 }
@@ -70,7 +91,7 @@ function showAlert(title){
     location.href = 'umengjscall:CallAlert:' + decodeURIComponent(title);
 }
 
-function submitForm() {
+function submitForm(language) {
 // result 会作为json 数据发给objC端
     var result = {};
     var content = document.getElementById("content").value;
@@ -113,21 +134,16 @@ function submitForm() {
 //        showAlert(CONFIG.get('THANKS'));
     }
     else {
-        showAlert(CONFIG.get('FORM_BLANK_ALERT'));
+        showAlert(CONFIG.get('FORM_BLANK_ALERT',language));
     }
 
     return false;
 }
 
 function initFormValues(values_json){
-    var genderValue = values_json.gender;
-    $("#gender option[value=" + genderValue + "]")[0].selected = 'selected';
-
-    var ageValue = values_json.age_group;
-    $("#age_group option[value=" + ageValue + "]")[0].selected = 'selected';
-
-    var rateValue = values_json.rate;
-    $("#rate option[value=" + rateValue + "]")[0].selected = 'selected';
+    FeedbackJSON = values_json["FeedbackJSON"];
+//    alert()和console.log()方法都无法使用，只能用content来显示文本来调试
+//    $("#content").val(JSON.stringify(FeedbackJSON));
 }
 
 $(document).ready(function () {
@@ -137,6 +153,10 @@ $(document).ready(function () {
     $('#backBtn').click(function () {
         location.href = 'umengjscall:dismissumengjscall:';
     });
+    $('#wrapper').click(function () {
+        $('input:focus').blur();
+        return false;
+    })
 });
 
 
