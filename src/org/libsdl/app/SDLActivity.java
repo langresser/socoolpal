@@ -11,8 +11,8 @@ import org.socool.pal.R;
 import com.admogo.AdMogoLayout;
 import com.admogo.AdMogoListener;
 import com.admogo.AdMogoManager;
+import com.umeng.analytics.MobclickAgent;
 
-import android.annotation.SuppressLint;
 import android.app.*;
 import android.content.*;
 import android.view.*;
@@ -56,7 +56,14 @@ public class SDLActivity extends Activity  implements AdMogoListener{
     private static EGLDisplay  mEGLDisplay;
     private static EGLConfig   mEGLConfig;
     private static int mGLMajor, mGLMinor;
-
+    
+    public Joystick m_joystick;
+    public Button m_btnBack;
+    public Button m_btnSearch;
+    public boolean m_isJoystickShow = true;
+    
+    public int m_density;
+    
     // Load the .so
     static {
         System.loadLibrary("SDL2");
@@ -68,34 +75,41 @@ public class SDLActivity extends Activity  implements AdMogoListener{
 
     // Setup
     protected void onCreate(Bundle savedInstanceState) {
-        //Log.v("SDL", "onCreate()");
+ //       Log.v("SDL", "onCreate()");
         super.onCreate(savedInstanceState);
         
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,  
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        
+        m_density = getResources().getDisplayMetrics().densityDpi;
         // So we can call stuff from static callbacks
         mSingleton = this;
 
         // Keep track of the paused state
         mIsPaused = false;
         
-        Button btnHelp = (Button)findViewById(R.id.btnHelp);
-        btnHelp.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				
-				
-			}
-		});
-
         // Set up the surface
         mSurface = new SDLSurface(getApplication());
         setContentView(mSurface);
         SurfaceHolder holder = mSurface.getHolder();
         
+        Button btnHelp = new Button(this);
+        btnHelp.setBackgroundResource(R.drawable.helpicon_selector);
+        btnHelp.getBackground().setAlpha(128);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+				40 * m_density / 160, 40 * m_density / 160);
+		params.topMargin = 0;
+		params.gravity = Gravity.TOP | Gravity.LEFT;
+		
+        addContentView(btnHelp, params);
+        btnHelp.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				startActivity(new Intent(SDLActivity.this, HelpActivity.class));
+			}
+		});
+
         createBanner();
     }
     
@@ -120,6 +134,124 @@ public class SDLActivity extends Activity  implements AdMogoListener{
     	AdMogoManager.clear();
     }
     
+
+	private static Runnable m_runableShowJS = new Runnable() {
+		public void run() {
+			if (mSingleton.m_joystick == null) {
+				mSingleton.m_joystick = new Joystick(mSingleton);
+		        FrameLayout.LayoutParams paramsJS = new FrameLayout.LayoutParams(
+		        		Joystick.JOYSTICK_WIDTH * mSingleton.m_density / 160,
+		        		Joystick.JOYSTICK_HEIGHT * mSingleton.m_density / 160);
+		        paramsJS.bottomMargin = 20;
+		        paramsJS.leftMargin = 20;
+		        paramsJS.gravity = Gravity.BOTTOM | Gravity.LEFT;
+		        mSingleton.addContentView(mSingleton.m_joystick, paramsJS);
+			}
+			mSingleton.m_joystick.setVisibility(View.VISIBLE);
+		}
+	};
+    public static void showJoystick()
+    {
+    	if (!mSingleton.m_isJoystickShow) {
+    		return;
+    	}
+
+    	mSingleton.runOnUiThread(m_runableShowJS);
+    }
+    
+    private static Runnable m_runableHideJS = new Runnable() {
+		public void run() {
+			mSingleton.m_joystick.setVisibility(View.INVISIBLE);
+		}
+	};
+
+    public static void hideJoystick()
+    {
+    	if (mSingleton.m_joystick != null) {
+    		mSingleton.runOnUiThread(m_runableHideJS);
+    	}
+    }
+    
+    private static Runnable m_runableShowBack = new Runnable() {
+		public void run() {
+			if (mSingleton.m_btnBack == null) {
+				mSingleton.m_btnBack = new Button(mSingleton);
+				mSingleton.m_btnBack.setBackgroundResource(R.drawable.back_selector);
+				mSingleton.m_btnBack.getBackground().setAlpha(128);
+		        FrameLayout.LayoutParams paramsBack = new FrameLayout.LayoutParams(
+						40 * mSingleton.m_density / 160, 40 * mSingleton.m_density / 160);
+		        paramsBack.topMargin = 0;
+		        paramsBack.gravity = Gravity.TOP | Gravity.RIGHT;
+				
+		        mSingleton.addContentView(mSingleton.m_btnBack, paramsBack);
+		        mSingleton.m_btnBack.setOnClickListener(new View.OnClickListener() {
+					public void onClick(View v) {
+						SDLActivity.nativeBack();
+					}
+				});	
+			}
+
+			mSingleton.m_btnBack.setVisibility(View.VISIBLE);
+		}
+	};
+    public static void showBackButton()
+    {
+    	mSingleton.runOnUiThread(m_runableShowBack);
+    }
+    
+    
+    private static Runnable m_runableHideBack = new Runnable() {
+		public void run() {
+			mSingleton.m_btnBack.setVisibility(View.INVISIBLE);
+		}
+	};
+    public static void hideBackButton()
+    {
+    	if (mSingleton.m_btnBack != null) {
+    		mSingleton.runOnUiThread(m_runableHideBack);
+    	}
+    }
+    
+    private static Runnable m_runableShowSearch = new Runnable() {
+		public void run() {
+			if (mSingleton.m_btnSearch == null) {
+				mSingleton.m_btnSearch = new Button(mSingleton);
+				mSingleton.m_btnSearch.setBackgroundResource(R.drawable.search_selector);
+				mSingleton.m_btnSearch.getBackground().setAlpha(128);
+		        FrameLayout.LayoutParams paramsSearch = new FrameLayout.LayoutParams(
+						50 * mSingleton.m_density / 160, 50 * mSingleton.m_density / 160);
+		        paramsSearch.bottomMargin = 50;
+		        paramsSearch.rightMargin = 20;
+		        paramsSearch.gravity = Gravity.BOTTOM | Gravity.RIGHT;
+				
+		        mSingleton.addContentView(mSingleton.m_btnSearch, paramsSearch);
+		        mSingleton.m_btnSearch.setOnClickListener(new View.OnClickListener() {
+					public void onClick(View v) {
+						SDLActivity.nativeSearch();
+					}
+				});
+			}
+			mSingleton.m_btnSearch.setVisibility(View.VISIBLE);
+		}
+	};
+    public static void showSearchButton()
+    {
+    	mSingleton.runOnUiThread(m_runableShowSearch);
+    	
+    }
+    
+    private static Runnable m_runableHideSearch = new Runnable() {
+		public void run() {
+			mSingleton.m_btnSearch.setVisibility(View.INVISIBLE);
+		}
+	};
+    public static void hideSearchButton()
+    {
+    	if (mSingleton.m_btnSearch != null) {
+    		mSingleton.runOnUiThread(m_runableHideSearch);
+    	}
+    }
+   
     // 被jni调用，关掉广告
     public static void closeAds()
     {
@@ -128,46 +260,38 @@ public class SDLActivity extends Activity  implements AdMogoListener{
 				if (mSingleton.adMogoLayoutCode != null) {
 					 //   		AdMogoManager.clear();
 					 mSingleton.adMogoLayoutCode.setVisibility(View.GONE);
+					 AdMogoManager.clear();
 				}
 			}
         });
- 
-    	
     }
     
 	public void onClickAd() {
-		Log.v("=onClickAd=", "Click the buttom ad.");
 	}
 
 	public void onFailedReceiveAd() {
-		Log.v("=onFailedReceiveAd=", "Failed to receive the buttom ad.");
 	}
 
 	public void onReceiveAd() {
-		Log.v("=onReceiveAd=", "Receive the buttom ad.");
 	}
 
 	public void onCloseMogoDialog() {
-		Log.v("=onCloseMogoDialog=", "Close ad Dialog.");
 	}
 
 	public void onCloseAd() {
-		Log.v("=onCloseAd=", "Close ad.");
 	}
 
 	public void onRequestAd() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void onRealClickAd() {
-		// TODO Auto-generated method stub
-		
 	}
 
     // Events
     protected void onPause() {
-        Log.v("SDL", "onPause()");
+ //       Log.v("SDL", "onPause()");
+        
+        MobclickAgent.onPause(this);
         SDLActivity.nativePauseGame();
         
         if (mAudioTrack != null && mAudioTrack.getPlayState() == AudioTrack.PLAYSTATE_PLAYING) {
@@ -179,12 +303,21 @@ public class SDLActivity extends Activity  implements AdMogoListener{
     }
 
     protected void onResume() {
-        Log.v("SDL", "onResume()");
+ //       Log.v("SDL", "onResume()");
+        MobclickAgent.onResume(this);
+        
         SDLActivity.nativeResumeGame();
         
         if (mIsPausedMusic && mAudioTrack != null &&  mAudioTrack.getPlayState() == AudioTrack.PLAYSTATE_PAUSED) {
         	mAudioTrack.play();
         }
+        
+        SharedPreferences settings = getSharedPreferences("sdlpalsetting", 0);
+        m_isJoystickShow = settings.getBoolean("isjoystickshow", true);
+        SDLActivity.nativeChangeJoystick(m_isJoystickShow ? 1 : 0);
+        
+        boolean isClassic = settings.getBoolean("isclassic", true);
+        SDLActivity.nativeChangeBattleMode(isClassic ? 1 : 0);
         
         super.onResume();
         // Don't call SDLActivity.nativeResume(); here, it will be called via SDLSurface::surfaceChanged->SDLActivity::startApp
@@ -192,22 +325,10 @@ public class SDLActivity extends Activity  implements AdMogoListener{
 
     protected void onDestroy() {
         super.onDestroy();
-        cleanBanner();
-        Log.v("SDL", "onDestroy()");
         // Send a quit message to the application
         SDLActivity.nativeQuit();
 
-        // Now wait for the SDL thread to quit
-        if (mSDLThread != null) {
-            try {
-                mSDLThread.join();
-            } catch(Exception e) {
-                Log.v("SDL", "Problem stopping thread: " + e);
-            }
-            mSDLThread = null;
-
-            //Log.v("SDL", "Finished waiting for SDL thread");
-        }
+        System.exit(0);
     }
 
     // Messages from the SDLMain thread
@@ -246,10 +367,18 @@ public class SDLActivity extends Activity  implements AdMogoListener{
                                             float y, float p);
     public static native void onNativeAccel(float x, float y, float z);
     public static native void nativeRunAudioThread();
+    
+    public static native void nativeDirChange(int dir);
+    public static native void nativeSearch();
+    public static native void nativeBack();
+    public static native void nativeHack(int type, int value);
+    public static native void nativeChangeBattleMode(int isClassic);
+    public static native void nativeChangeJoystick(int use);
+    
+    public static native int nativeGetFlyMode();
 
 
     // Java functions called from C
-
     public static boolean createGLContext(int majorVersion, int minorVersion) {
         return initEGL(majorVersion, minorVersion);
     }
@@ -366,7 +495,7 @@ public class SDLActivity extends Activity  implements AdMogoListener{
             EGL10 egl = (EGL10)EGLContext.getEGL();
             if (SDLActivity.mEGLContext == null) createEGLContext();
 
-            Log.v("SDL", "Creating new EGL Surface");
+//            Log.v("SDL", "Creating new EGL Surface");
             EGLSurface surface = egl.eglCreateWindowSurface(SDLActivity.mEGLDisplay, SDLActivity.mEGLConfig, SDLActivity.mSurface, null);
             if (surface == EGL10.EGL_NO_SURFACE) {
                 Log.e("SDL", "Couldn't create surface");
@@ -420,7 +549,7 @@ public class SDLActivity extends Activity  implements AdMogoListener{
         int audioFormat = is16Bit ? AudioFormat.ENCODING_PCM_16BIT : AudioFormat.ENCODING_PCM_8BIT;
         int frameSize = (isStereo ? 2 : 1) * (is16Bit ? 2 : 1);
         
-        Log.v("SDL", "SDL audio: wanted " + (isStereo ? "stereo" : "mono") + " " + (is16Bit ? "16-bit" : "8-bit") + " " + ((float)sampleRate / 1000f) + "kHz, " + desiredFrames + " frames buffer");
+ //       Log.v("SDL", "SDL audio: wanted " + (isStereo ? "stereo" : "mono") + " " + (is16Bit ? "16-bit" : "8-bit") + " " + ((float)sampleRate / 1000f) + "kHz, " + desiredFrames + " frames buffer");
         
         // Let the user pick a larger buffer if they really want -- but ye
         // gods they probably shouldn't, the minimums are horrifyingly high
@@ -432,7 +561,7 @@ public class SDLActivity extends Activity  implements AdMogoListener{
         
         audioStartThread();
         
-        Log.v("SDL", "SDL audio: got " + ((mAudioTrack.getChannelCount() >= 2) ? "stereo" : "mono") + " " + ((mAudioTrack.getAudioFormat() == AudioFormat.ENCODING_PCM_16BIT) ? "16-bit" : "8-bit") + " " + ((float)mAudioTrack.getSampleRate() / 1000f) + "kHz, " + desiredFrames + " frames buffer");
+//        Log.v("SDL", "SDL audio: got " + ((mAudioTrack.getChannelCount() >= 2) ? "stereo" : "mono") + " " + ((mAudioTrack.getAudioFormat() == AudioFormat.ENCODING_PCM_16BIT) ? "16-bit" : "8-bit") + " " + ((float)mAudioTrack.getSampleRate() / 1000f) + "kHz, " + desiredFrames + " frames buffer");
         
         if (is16Bit) {
             buf = new short[desiredFrames * (isStereo ? 2 : 1)];
@@ -551,14 +680,14 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
     // Called when we have a valid drawing surface
     public void surfaceCreated(SurfaceHolder holder) {
-        Log.v("SDL", "surfaceCreated()");
+//        Log.v("SDL", "surfaceCreated()");
         holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
         enableSensor(Sensor.TYPE_ACCELEROMETER, true);
     }
 
     // Called when we lose the surface
     public void surfaceDestroyed(SurfaceHolder holder) {
-        Log.v("SDL", "surfaceDestroyed()");
+//        Log.v("SDL", "surfaceDestroyed()");
         if (!SDLActivity.mIsPaused) {
             SDLActivity.mIsPaused = true;
             SDLActivity.nativePause();
@@ -569,7 +698,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     // Called when the surface is resized
     public void surfaceChanged(SurfaceHolder holder,
                                int format, int width, int height) {
-        Log.v("SDL", "surfaceChanged()");
+ //       Log.v("SDL", "surfaceChanged()");
 
         int sdlFormat = 0x85151002; // SDL_PIXELFORMAT_RGB565 by default
         switch (format) {
@@ -617,7 +746,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         }
         SDLActivity.onNativeResize(width, height, sdlFormat);
         SDLActivity.nativeSetSize(width, height);
-        Log.v("SDL", "Window size:" + width + "x"+height);
+ //       Log.v("SDL", "Window size:" + width + "x"+height);
 
         SDLActivity.startApp();
     }

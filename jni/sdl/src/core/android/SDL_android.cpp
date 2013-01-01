@@ -213,6 +213,7 @@ extern "C" void Java_org_libsdl_app_SDLActivity_nativeResume(
 extern "C" void Java_org_libsdl_app_SDLActivity_nativePauseGame(
                                     JNIEnv* env, jclass cls)
 {
+    extern int g_isInBackground;
     g_isInBackground = SDL_TRUE;
 }
 
@@ -220,6 +221,7 @@ extern "C" void Java_org_libsdl_app_SDLActivity_nativePauseGame(
 extern "C" void Java_org_libsdl_app_SDLActivity_nativeResumeGame(
                                     JNIEnv* env, jclass cls)
 {
+    extern int g_isInBackground;
     g_isInBackground = SDL_FALSE;
 }
 
@@ -418,7 +420,7 @@ extern "C" void * Android_JNI_GetAudioBuffer()
 
 extern "C" void Android_JNI_WriteAudioBuffer()
 {
-    if (g_isInBackground) {
+    if (IsInBackground()) {
         SDL_Delay(50);
         return;
     }

@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="org.socool.pal"
       android:versionName="1.7" android:versionCode="7" android:installLocation="auto">
-      <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="9" />
+      <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="9" />
 
     <uses-permission android:name="android.permission.VIBRATE"></uses-permission>
     <uses-permission android:name="android.permission.INTERNET" />
@@ -24,11 +24,13 @@
                   android:configChanges="orientation|keyboardHidden|keyboard|screenLayout">
             
         </activity>
-        <activity android:name="org.libsdl.app.SplashScreenActivityy" android:theme="@style/Transparent">
+        <activity android:name="org.libsdl.app.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>  
+        <activity android:name="org.libsdl.app.HelpActivity">
         </activity>  
 		
 		
@@ -67,10 +69,23 @@
         <activity
             android:name="cn.domob.android.ads.DomobActivity"
             android:theme="@android:style/Theme.Translucent" />
-        
-        
+                
         <meta-data
             android:name="ADMOGO_KEY"
             android:value="cbae17c6e1434254ab2dd095e764ec3c" />
+        
+        <!-- dianjin                            start -->
+		<activity android:name="com.nd.dianjin.activity.OfferAppActivity"
+				  android:configChanges="keyboardHidden|orientation"
+				  android:launchMode="singleTask"
+				  android:screenOrientation="portrait"
+		/>
+		 
+		 <service android:name="com.nd.dianjin.service.PackageChangedService"></service>
+		<!-- dianjin                           end -->
+		
+		
+		<meta-data android:value="501525445270153b5800001e" android:name="UMENG_APPKEY"></meta-data>
+		<meta-data android:value="common" android:name="UMENG_CHANNEL"/>
     </application>
 </manifest> 

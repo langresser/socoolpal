@@ -1,11 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dianjin="http://schemas.android.com/apk/res/org.socool.pal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg2"
     android:orientation="vertical" >
     
+    <com.nd.dianjin.OfferBanner
+        android:id="@+id/banner_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        dianjin:background_color="#3366FF"
+        dianjin:name_color="#00FF00"
+        dianjin:content_color="#CC00CC"
+        dianjin:tips_color="#FFFF33"
+        dianjin:overlay_color="#CC9900"
+        dianjin:refresh_interval="20000"
+        dianjin:transition="pushleft" 
+        dianjin:background_drawable="blue"/>  
+     
+    <ScrollView 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        
+        <LinearLayout 
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:orientation="vertical" >
+
+        <LinearLayout android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_marginLeft="10dip"
+	    android:layout_marginTop="10dip"
+	    android:orientation="horizontal" >
+    <TextView android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:gravity="center"
+		android:textSize="15sp"
+		android:textColor="#ff000000"
+		android:text="战斗模式：" />
+    <Button android:id="@+id/btnBattle"
+        android:text="回合制"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+    
+    <LinearLayout android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_marginLeft="10dip"
+	    android:orientation="horizontal" >
+    <TextView android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:gravity="center"
+		android:textSize="15sp"
+		android:textColor="#ff000000"
+		android:text="显示摇杆：" />
+    <CheckBox android:id="@+id/chkJoystick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    </LinearLayout>
+    
+    <TextView android:layout_width="wrap_content" 
+        android:id="@+id/textEnableHack"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="10dip"
+		android:layout_gravity="center"
+		android:gravity="center"
+		android:textSize="15sp"
+		android:textColor="#ff000000"
+		android:text="金手指功能：(未开启)" />
+    
+    <LinearLayout android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_marginLeft="10dip"
+	    android:orientation="horizontal" >
+    <TextView android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:gravity="center"
+		android:textSize="15sp"
+		android:textColor="#ff000000"
+		android:text="移动模式：" />
+    <Button android:id="@+id/btnMove"
+        android:text="正常"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    </LinearLayout>
+    
+    <LinearLayout android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_marginLeft="10dip"
+	    android:orientation="horizontal" >
+    <Button android:id="@+id/btnUplev"
+        android:text="全角色升级"
+        android:layout_marginLeft="10dip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    
+    <Button android:id="@+id/btnAddmoney"
+        android:text="加5000金钱"
+        android:layout_marginLeft="10dip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    </LinearLayout>
+    
 <LinearLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="10dip"
+    android:layout_marginTop="10dip"
     android:orientation="horizontal" >
     <Button android:id="@+id/btnFeedback"
         android:text="Bug反馈"
@@ -17,10 +122,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
+    <Button android:id="@+id/btnGongl"
+        android:text="攻略"
+        android:layout_gravity="right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    
+    <Button android:id="@+id/btnMoreApp"
+        android:text="更多游戏"
+        android:layout_gravity="right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
     </LinearLayout>
     
 <TextView android:id="@+id/gongl"
+    android:layout_marginLeft="10dip"
+    android:layout_marginRight="10dip"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_height="wrap_content"
+	android:textSize="15sp"
+	android:textColor="#ff000000"
     />
+ </LinearLayout>
+</ScrollView>
+    
 </LinearLayout>

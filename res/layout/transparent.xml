@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout android:id="@+id/transparent" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
+<LinearLayout android:id="@+id/transparent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/splash"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 <TextView android:id="@+id/TextView01" 
 	android:layout_width="fill_parent" 
 	android:layout_height="wrap_content"
-	android:layout_gravity="center_horizontal"
-	android:textSize="20sp"
+	android:layout_gravity="center"
+	android:gravity="center"
+	android:textSize="24sp"
+	android:textColor="#ffffffff"
 	android:text="" />
 </LinearLayout>

@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.KeyEvent;
 import android.view.Window;
@@ -33,7 +34,7 @@ public class SplashScreenActivity extends Activity {
 	public static byte m_dataVersion = 1;
 	public void onCreate(Bundle savedInstanceState) {   
         super.onCreate(savedInstanceState);   
-        setTheme(R.style.Transparent);    
+  
         setContentView(R.layout.transparent);
         
         if (!isSdCardEnable()) {
@@ -59,10 +60,20 @@ public class SplashScreenActivity extends Activity {
         textView.setText("正在检测游戏数据...");
         if (isNeedUpdateData()) {
         	textView.setText("正在初始化游戏数据，请稍后...");
-        	updateData();
-        }
-        
-        startActivity(new Intent(this, SDLActivity.class));
+
+			Thread thread = new Thread(new Runnable() {
+				public void run() {
+					updateData();
+					startActivity(new Intent(SplashScreenActivity.this, SDLActivity.class));
+					finish();
+				}
+			});
+			thread.start();
+        	
+        } else {
+        	startActivity(new Intent(this, SDLActivity.class));
+        	finish();
+        }    
 	}
 	
 	public boolean isSdCardEnable()
@@ -76,10 +87,15 @@ public class SplashScreenActivity extends Activity {
          } 
 	}
 	
+	public String getSDCardPath(String file)
+	{
+		return Environment.getExternalStorageDirectory().getPath() + "/" + file;
+	}
+	
 	public boolean isNeedUpdateData()
 	{
 		try {
-			InputStream checkFile = new FileInputStream("/sdcard/sdlpal/dataflag.cfg");
+			InputStream checkFile = new FileInputStream(getSDCardPath("sdlpal/dataflag.cfg"));
 			int data = checkFile.read();
 			checkFile.close();
 			if (data < m_dataVersion) {
@@ -101,9 +117,15 @@ public class SplashScreenActivity extends Activity {
 		try {
 			String[] fileList = amgr.list("sdlpal");
 			int count = fileList.length;
+			
+			File dir = new File(getSDCardPath("sdlpal"));
+			if (!dir.exists()) {
+				dir.mkdir();
+			}
+
 			for (int i = 0; i < count; ++i) {
 				String file = fileList[i];
-				if (!copyFile(file)) {
+				if (!copyFile("sdlpal/" + file)) {
 					updateOk = false;
 				}
 			}
@@ -115,7 +137,7 @@ public class SplashScreenActivity extends Activity {
 		// 更新成功，写入新的版本号
 		if (updateOk) {
 			try {
-				File checkFile = new File("/sdcard/sdlpal/dataflag.cfg");
+				File checkFile = new File(getSDCardPath("sdlpal/dataflag.cfg"));
 				if (!checkFile.exists()) {
 					checkFile.createNewFile();
 				}
@@ -131,19 +153,58 @@ public class SplashScreenActivity extends Activity {
 	
 	public boolean copyFile(String file)
 	{
+		boolean isPartFile = file.indexOf(".part") != -1;
 		try {
-			InputStream input = getAssets().open(file);
-			OutputStream output = new FileOutputStream("/sdcard/sdlpal/" + file);
-			
-			byte bt[] = new byte[1024];
-			int c;
-			while ((c = input.read(bt)) > 0) {
-				output.write(bt, 0, c); 
-			}
-			
-			input.close();
-			output.close();
-			return true;
+			if (isPartFile) {
+				// 只处理头一个
+				if (file.endsWith(".part1") == false) {
+					return true;
+				}
+				
+				String destFile = file.substring(0, file.lastIndexOf('.'));
+				File outputFile = new File(getSDCardPath(destFile));
+				if (!outputFile.exists()) {
+					outputFile.createNewFile();
+				}
+				OutputStream output = new FileOutputStream(outputFile);
+				
+				for (int i = 1; i < 30; ++i) {
+					final String fileName = destFile + ".part" + i;
+					try {
+						InputStream input = getAssets().open(fileName);
+						
+						byte bt[] = new byte[1024];
+						int c;
+						while ((c = input.read(bt)) > 0) {
+							output.write(bt, 0, c); 
+						}
+						
+						input.close();
+					} catch (FileNotFoundException e){
+						break;
+					}
+				}
+				
+				output.close();
+				return true;
+			} else {
+				InputStream input = getAssets().open(file);
+				File outputFile = new File(getSDCardPath(file));
+				if (!outputFile.exists()) {
+					outputFile.createNewFile();
+				}
+				OutputStream output = new FileOutputStream(outputFile);
+				
+				byte bt[] = new byte[1024];
+				int c;
+				while ((c = input.read(bt)) > 0) {
+					output.write(bt, 0, c); 
+				}
+				
+				input.close();
+				output.close();
+				return true;
+			}	
 		}catch (IOException e) {
 			e.printStackTrace();
 			return false;

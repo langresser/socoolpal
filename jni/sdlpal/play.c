@@ -657,7 +657,9 @@ PAL_StartFrame(
       //
        g_showSystemMenu = TRUE;
        hideSearchButton();
+       hideJoystick();
       PAL_InGameMenu();
+      showJoystick();
        g_showSystemMenu = FALSE;
    }
    else if (g_InputState.dwKeyPress & kKeyUseItem)
