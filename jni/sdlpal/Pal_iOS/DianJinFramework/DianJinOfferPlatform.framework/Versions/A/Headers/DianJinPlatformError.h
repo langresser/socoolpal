@@ -34,6 +34,7 @@
 
 #define DIAN_JIN_ERROR_USER_NOT_AUTHORIZED				1004				/**< 该用户未授权接入（AppId,AppKey无效）>*/
 
+#define DIAN_JIN_ERROR_APP_OVERUDE                      4004                /**< 应用已下架 >*/
 #define DIAN_JIN_ERROR_GET_BALANCE_FAILED				5001				/**< 获取余额失败 >*/
 
 #define DIAN_JIN_ERROR_REQUES_CONSUNE					6001				/**< 支付请求失败 >*/

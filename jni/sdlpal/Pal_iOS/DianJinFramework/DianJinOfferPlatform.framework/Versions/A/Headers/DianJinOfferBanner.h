@@ -11,26 +11,12 @@ typedef enum _DJOfferBannerStyle{
     kDJBannerStyle480_50
 }DJOfferBannerStyle;
 
-@class DianJinBannerView;
 @class DianJinTransitionParam;
 @class DianJinBannerSubViewProperty;
-@class DianJinAppInfoList;
-@class DianJinAppInfo;
 
 @interface DianJinOfferBanner : UIView {
-	id _delegate;
-	DianJinBannerView *_bannerView;
 	DJOfferBannerStyle _style;
-	DianJinTransitionParam *_transitionParam;
-	NSTimer *_bannerRefreshTimer;
-	NSTimeInterval _timerInterval;
 	BOOL _isAutoRotate;
-	BOOL _listRequestRefreshWaitFlag;
-	BOOL _touchOperateRefreshWaitFlag;
-	int _currentBannerIndex;
-	DianJinAppInfo *_currentAppInfo;
-	DianJinAppInfoList *_appInfoList;
-	DianJinBannerSubViewProperty *_subViewColorProperty;
 }
 
 @property (nonatomic, assign) DJOfferBannerStyle style;
@@ -43,6 +29,7 @@ typedef enum _DJOfferBannerStyle{
 - (void)stop;
 
 @end
+
 
 @protocol DianJinOfferBannerDelegate<NSObject>
 

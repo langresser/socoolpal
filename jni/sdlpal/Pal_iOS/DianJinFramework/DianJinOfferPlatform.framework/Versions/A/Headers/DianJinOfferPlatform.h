@@ -7,12 +7,10 @@
 //
 
 typedef enum _DIAN_JIN_BACKGROUND_COLOR {
-	kDJBlueColor = 0,
-	kDJBlackColor,
-	kDJBrownColor,
-	kDJGreenColor,
-	kDJOrangeColor,
-	kDJRosyColor
+	kDJBrownColor = 0,
+	kDJPinkColor,
+	kDJBlueColor,
+    kDJOrangeColor
 }DIAN_JIN_BACKGROUND_COLOR;
 
 @interface DianJinOfferPlatform : NSObject {
@@ -29,7 +27,7 @@ typedef enum _DIAN_JIN_BACKGROUND_COLOR {
 /**
  @brief 获取DianJinOffer的版本号
  */
-+ (NSString *)version;
+- (NSString *)version;
 
 #pragma mark -
 #pragma mark set appId and appKey
@@ -62,9 +60,14 @@ typedef enum _DIAN_JIN_BACKGROUND_COLOR {
 - (void)setOfferViewAutoRotate:(BOOL)isAutoRotate;
 
 /**
- @brief 相关背景颜色，默认为kDJBlueColor
+ @brief 相关背景颜色，默认为kDJBrownColor
  */
 - (void)setOfferViewColor:(DIAN_JIN_BACKGROUND_COLOR)type;
+
+/**
+ @brief 自定义UINavigationBar的颜色
+ */
+- (void)setCustomOfferViewColor:(UIColor *)color;
 
 #pragma mark -
 #pragma mark show offer view

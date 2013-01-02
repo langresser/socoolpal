@@ -6,6 +6,8 @@
 //  Copyright 2012 NetDragon WebSoft Inc.. All rights reserved.
 //
 
+#define kDJAppActivateDidFinish @"kDJAppActivateDidFinish"
+
 @protocol DianJinOfferPlatformProtocol<NSObject>
 
 /**
@@ -29,8 +31,8 @@
 
 /**
  @brief 应用安装激活事件反馈
- @param dict 通过key:result可以获得返回的结果,当返回结果为YES时为激活成功，NO为激活失败。可以通过key:awardAmount获取当前激活应用的奖励金额.
+ @param 通过[notice object]获得dict,再通过key:result可以获得返回的结果,当返回结果为YES时为激活成功，NO为激活失败。可以通过key:awardAmount获取当前激活应用的奖励金额.
  */
-- (void)appActivatedDidFinish:(NSDictionary *)dict;
+- (void)appActivatedDidFinish:(NSNotification *)notice;
 
 @end
