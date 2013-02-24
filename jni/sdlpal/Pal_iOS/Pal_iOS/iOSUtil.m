@@ -14,6 +14,7 @@
 #import "CGJoystick.h"
 #import "CGJoystickButton.h"
 #import "SystemView.h"
+#import "AppDelegate.h"
 
 #ifndef APP_FOR_APPSTORE
 #import <DianJinOfferPlatform/DianJinOfferPlatform.h>
@@ -22,12 +23,7 @@
 #import <DianJinOfferPlatform/DianJinTransitionParam.h>
 #endif
 
-#define JOYSTICK_NONE 0
-#define JOYSTICK_MOVE 1
-#define JOYSTICK_BATTLE 2
-
-int g_joystickType = JOYSTICK_NONE;
-BOOL g_useJoyStick = YES;
+extern BOOL g_useJoyStick;
 extern int g_currentMB;
 
 int isPad()
@@ -66,41 +62,6 @@ void getFileStatus(const char* pszName)
     NSLog(@"file: %s    attr:%@ ", pszName, attr);
 }
 
-void showMenu()
-{
-    [[MyDelegate sharedInstance] showMenuBtn];
-}
-
-void hideMenu()
-{
-    [[MyDelegate sharedInstance] hideMenuBtn];
-}
-
-void showSearchButton()
-{
-    [[MyDelegate sharedInstance] showSearchButton];
-}
-
-void hideSearchButton()
-{
-    [[MyDelegate sharedInstance]hideSearchButton];
-}
-
-void showAds()
-{
-    [[MyDelegate sharedInstance]showAds];
-}
-
-void closeAds()
-{
-    [[MyDelegate sharedInstance]closeAds];
-}
-
-void beginAutoSave()
-{
-    [[MyDelegate sharedInstance]beginAutoSave];
-}
-
 void getScreenSize(int* width, int* height)
 {
     CGSize size = [UIScreen mainScreen].bounds.size;
@@ -119,26 +80,38 @@ void showJoystick()
         return;
     }
 
-    if (g_joystickType == JOYSTICK_NONE) {
-        [[MyDelegate sharedInstance]showJoystick];
-    }
+    GameViewController* vc = (GameViewController*)((SDLUIKitDelegate*)[SDLUIKitDelegate sharedAppDelegate]).viewController;
+    [vc showJoystick];
 }
 
 void hideJoystick()
 {
-    if (g_joystickType == JOYSTICK_NONE) {
-        return;
-    }
+    GameViewController* vc = (GameViewController*)((SDLUIKitDelegate*)[SDLUIKitDelegate sharedAppDelegate]).viewController;
+    [vc hideJoystick];
+}
 
-    [[MyDelegate sharedInstance]hideJoystick];
+void showMenu()
+{
+    GameViewController* vc = (GameViewController*)((SDLUIKitDelegate*)[SDLUIKitDelegate sharedAppDelegate]).viewController;
+    [vc showGameMenu];
+    [vc showSearchButton];
+}
+
+void hideMenu()
+{
+    GameViewController* vc = (GameViewController*)((SDLUIKitDelegate*)[SDLUIKitDelegate sharedAppDelegate]).viewController;
+    [vc hideGameMenu];
+    [vc hideSearchButton];
 }
 
 void showBackButton()
 {
-    [[MyDelegate sharedInstance]showBackButton];
+    GameViewController* vc = (GameViewController*)((SDLUIKitDelegate*)[SDLUIKitDelegate sharedAppDelegate]).viewController;
+    [vc showBackButton];
 }
 
 void hideBackButton()
 {
-    [[MyDelegate sharedInstance]hideBackButton];
+    GameViewController* vc = (GameViewController*)((SDLUIKitDelegate*)[SDLUIKitDelegate sharedAppDelegate]).viewController;
+    [vc hideBackButton];
 }

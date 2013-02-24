@@ -205,7 +205,8 @@ VIDEO_UpdateScreen(
    short           screenRealHeight = gpScreenReal->h;
    short           screenRealY = 0;
 
-   if (IsInBackground()) {
+    extern int g_isInBackground;
+   if (g_isInBackground) {
 		return;
 	}
    //

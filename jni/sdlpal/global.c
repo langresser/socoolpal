@@ -34,12 +34,6 @@ LPGLOBALVARS gpGlobals = NULL;
       DO_BYTESWAP(buf, size);                                    \
    }
 
-#ifdef PAL_CLASSIC
-BOOL g_isClassicMode = TRUE;
-#else
-BOOL g_isClassicMode = FALSE;
-#endif
-
 INT
 PAL_InitGlobals(
    VOID

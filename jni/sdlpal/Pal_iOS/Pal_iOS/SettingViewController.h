@@ -15,10 +15,6 @@
 #import <DianJinOfferPlatform/DianJinTransitionParam.h>
 #import <DianJinOfferPlatform/DianJinOfferPlatformProtocol.h>
 
-#define USER_DEFAULT_KEY_AUTOSAVE @"Autosave"
-#define USER_DEFAULT_KEY_SOUND      @"Sound"
-#define USER_DEFAULT_KEY_SMOOTH_SCALING @"SmoothScaling"
-
 @interface SettingViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, DianJinOfferPlatformProtocol, DianJinOfferBannerDelegate>
 {
     UIView* settingView;
@@ -33,7 +29,7 @@
     int costMB;
     NSString* m_purchaseKey;
     
-    
+    BOOL isFAQ;
     
     UIButton* switchMode;
     UIButton* moveButton;

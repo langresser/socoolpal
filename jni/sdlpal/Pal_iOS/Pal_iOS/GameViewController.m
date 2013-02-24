@@ -8,8 +8,17 @@
 
 #import "GameViewController.h"
 #import "util.h"
+#include "input.h"
+#include "global.h"
 
-extern int g_pressButton;
+extern BOOL g_isClassicMode;
+extern int g_joystickType;
+extern BOOL g_useJoyStick;
+extern int g_currentMB;
+
+#define JOYSTICK_NONE 0
+#define JOYSTICK_MOVE 1
+#define JOYSTICK_BATTLE 2
 
 @implementation GameViewController
 
@@ -28,7 +37,19 @@ extern int g_pressButton;
     
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     if (defaults) {
-        int joystick = [defaults integerForKey:@"JoystickMode"];
+        g_currentMB = [defaults integerForKey:@"MB"];
+        if ([defaults boolForKey:@"Tip"] == NO) {
+            [defaults setBool:YES forKey:@"Tip"];
+            
+            UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"点击左上角的按钮可以查看触屏操作方式和游戏攻略" delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil,nil];
+            [alert show];
+        }
+        
+        int mode = [defaults integerForKey:@"BattleMode"];
+        g_isClassicMode = (mode == 0 || mode == 1);
+        
+        int joystick1 = [defaults integerForKey:@"JoystickMode"];
+        g_useJoyStick = (joystick1 == 0 || joystick1 == 1);
     }
     
     int width, height;
@@ -49,115 +70,90 @@ extern int g_pressButton;
     btnMenu.frame = CGRectMake(width - 50, 0, 50, 50);
     [btnMenu setImage:[UIImage imageNamed:@"pause.png"] forState:UIControlStateNormal];
     [btnMenu addTarget:self action:@selector(onClickMenu) forControlEvents:UIControlEventTouchUpInside];
-    
-    btnA = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnA.frame = rectA;
-    [btnA setImage:[UIImage imageNamed:@"anormal.png"] forState:UIControlStateNormal];
-    [btnA setImage:[UIImage imageNamed:@"aclick.png"] forState:UIControlStateHighlighted];
-    [btnA addTarget:self action:@selector(onClickA) forControlEvents:UIControlEventTouchUpInside];
-    
-    btnB = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnB.frame = rectB;
-    [btnB setImage:[UIImage imageNamed:@"bnormal.png"] forState:UIControlStateNormal];
-    [btnB setImage:[UIImage imageNamed:@"bclick.png"] forState:UIControlStateHighlighted];
-    [btnB addTarget:self action:@selector(onClickB) forControlEvents:UIControlEventTouchUpInside];
 
     joystick.alpha = 0.3;
     btnMenu.alpha = 0.3;
-    btnA.alpha = 0.3;
-    btnB.alpha = 0.3;
 
     [self.view addSubview:btnMenu];
     [self.view addSubview:joystick];
-    [self.view addSubview:btnA];
-    [self.view addSubview:btnB];
     
+    btnGameMenu = [UIButton buttonWithType:UIButtonTypeCustom];
     
-    
-    SDL_WindowData* windowData = (SDL_WindowData*)window->driverdata;
-    UIView* mainView = windowData->viewcontroller.view;
-    
-    UIButton* button = [UIButton buttonWithType:UIButtonTypeInfoLight];
-    [button addTarget:[MyDelegate sharedInstance]  action:@selector(onClickHelp) forControlEvents:UIControlEventTouchUpInside];
-    button.alpha = 0.4;
-    
-    [mainView addSubview:button];
-    
-    [MyDelegate sharedInstance].helpBtn = button;
-    
-    //    [MobClick setLogEnabled:YES];
-    [MobClick startWithAppkey:@"50045626527015611900001a"];
-    
-    [UMFeedback checkWithAppkey:@"50045626527015611900001a"];
-#ifndef APP_FOR_APPSTORE
-    // Override point for customization after application launch.
-	[[DianJinOfferPlatform defaultPlatform] setAppId:7209 andSetAppKey:@"13891e5c79ce10b018d2d5a7c44dabd4"];
-	[[DianJinOfferPlatform defaultPlatform] setOfferViewColor:kDJBlueColor];
-    [[DianJinOfferPlatform defaultPlatform] setOfferViewAutoRotate:YES];
-#endif
-    
-    showAds();
-    
-    [[MyDelegate sharedInstance]beginAutoSave];
-    
-    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-    if (defaults) {
-        if ([defaults boolForKey:@"Tip"] == NO) {
-            [defaults setBool:YES forKey:@"Tip"];
-            
-            UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"点击左上角的按钮可以查看触屏操作方式和游戏攻略" delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil,nil];
-            [alert show];
-        }
-        
-        int mode = [defaults integerForKey:@"BattleMode"];
-        g_isClassicMode = (mode == 0 || mode == 1);
-        
-        int joystick = [defaults integerForKey:@"JoystickMode"];
-        g_useJoyStick = (joystick == 0 || joystick == 1);
+    if (isPad()) {
+        btnGameMenu.frame = CGRectMake(920, 710, 50, 50);
+    } else {
+        btnGameMenu.frame = CGRectMake(400, 280, 40, 40);
     }
     
-    if (btnMenu == nil) {
-        btnMenu = [UIButton buttonWithType:UIButtonTypeCustom];
-        
-        if (isPad()) {
-            btnMenu.frame = CGRectMake(920, 710, 50, 50);
-        } else {
-            btnMenu.frame = CGRectMake(400, 280, 40, 40);
-        }
-        
-        [btnMenu setImage:[UIImage imageNamed:@"back1"] forState:UIControlStateNormal];
-        [btnMenu setImage:[UIImage imageNamed:@"back"] forState:UIControlStateHighlighted];
-        btnMenu.alpha = 0.5;
-        [btnMenu addTarget:self action:@selector(onClickMenu) forControlEvents:UIControlEventTouchUpInside];
-        
-        SDL_Window* window = SDL_GetWindowFromID(g_windowId);
-        if (!window) {
-            return;
-        }
-        
-        SDL_WindowData* windowData = (SDL_WindowData*)window->driverdata;
-        UIView* mainView = windowData->viewcontroller.view;
-        [mainView addSubview:btnMenu];
-        
-        if (isPad()) {
-            btnSearch = [[UIButton alloc]initWithFrame:CGRectMake(970, 640, 50, 50)];
-        } else {
-            btnSearch = [[UIButton alloc]initWithFrame:CGRectMake(440, 230, 40, 40)];
-        }
-        
-        [btnSearch setImage:[UIImage imageNamed:@"search"] forState:UIControlStateNormal];
-        [btnSearch setImage:[UIImage imageNamed:@"search2"] forState:UIControlStateHighlighted];
-        btnSearch.alpha = 0.8;
-        [btnSearch addTarget:self action:@selector(onClickSearch) forControlEvents:UIControlEventTouchUpInside];
-        [mainView addSubview:btnSearch];
+    [btnGameMenu setImage:[UIImage imageNamed:@"back1"] forState:UIControlStateNormal];
+    [btnGameMenu setImage:[UIImage imageNamed:@"back"] forState:UIControlStateHighlighted];
+    btnGameMenu.alpha = 0.5;
+    [btnGameMenu addTarget:self action:@selector(onClickGameMenu) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:btnGameMenu];
+    
+    if (isPad()) {
+        btnSearch = [[UIButton alloc]initWithFrame:CGRectMake(970, 640, 50, 50)];
+    } else {
+        btnSearch = [[UIButton alloc]initWithFrame:CGRectMake(440, 230, 40, 40)];
     }
     
-    if (btnMenu.hidden == YES) {
-        btnMenu.hidden = NO;
-    }
+    [btnSearch setImage:[UIImage imageNamed:@"search"] forState:UIControlStateNormal];
+    [btnSearch setImage:[UIImage imageNamed:@"search2"] forState:UIControlStateHighlighted];
+    btnSearch.alpha = 0.8;
+    [btnSearch addTarget:self action:@selector(onClickSearch) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:btnSearch];
     
-    if (btnSearch.hidden == YES) {
-        btnSearch.hidden = NO;
+    if (isPad()) {
+        btnBack = [[UIButton alloc]initWithFrame:CGRectMake(970, 5, 50, 50)];
+    } else {
+        btnBack = [[UIButton alloc]initWithFrame:CGRectMake(425, 5, 50, 50)];
+    }
+    [btnBack setImage:[UIImage imageNamed:@"back1"] forState:UIControlStateNormal];
+    [btnBack setImage:[UIImage imageNamed:@"back"] forState:UIControlStateHighlighted];
+    [btnBack addTarget:self action:@selector(onClickBack) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:btnBack];
+    
+    joystick.hidden = YES;
+    btnBack.hidden = YES;
+    btnSearch.hidden = YES;
+    btnGameMenu.hidden = YES;
+    
+
+    [self beginAutoSave];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appActivatedDidFinish:) name:kDJAppActivateDidFinish object:nil];
+}
+
+
+-(void)onClickGameMenu
+{
+    extern BOOL g_showSystemMenu;
+    if (g_showSystemMenu) {
+        showJoystick();
+        g_InputState.dwKeyPress |= kKeyMenu;
+    } else {
+        hideJoystick();
+        g_InputState.dwKeyPress |= kKeyMainMenu;
+    }
+}
+
+-(void)onClickSearch
+{
+    g_InputState.dwKeyPress |= kKeySearch;
+}
+
+- (void)appActivatedDidFinish:(NSNotification *)notice;
+{
+    NSDictionary* resultDic = [notice object];
+    NSLog(@"%@", resultDic);
+    NSNumber *result = [resultDic objectForKey:@"result"];
+    if ([result boolValue]) {
+        NSNumber *awardAmount = [resultDic objectForKey:@"awardAmount"];
+        NSString *identifier = [resultDic objectForKey:@"identifier"];
+        NSLog(@"app identifier = %@", identifier);
+        g_currentMB += [awardAmount floatValue];
+        [[NSUserDefaults standardUserDefaults]setInteger:g_currentMB forKey:@"MB"];
+        [[NSUserDefaults standardUserDefaults]synchronize];
     }
 }
 
@@ -202,16 +198,6 @@ extern int g_pressButton;
     [self showSettingPopup:YES];
 }
 
--(void)onClickA
-{
-    g_pressButton = 1;
-}
-
--(void)onClickB
-{
-    g_pressButton = 2;
-}
-
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -233,9 +219,6 @@ extern int g_pressButton;
     return UIInterfaceOrientationIsLandscape(orient);
 }
 
-
-
-
 -(void)onClickBack
 {
     g_InputState.dwKeyPress |= kKeyMenu;
@@ -243,32 +226,12 @@ extern int g_pressButton;
 
 -(void)showJoystick
 {
-    if (textView.superview != nil) {
+    if (g_joystickType != JOYSTICK_NONE) {
         return;
     }
     
-    if (joystickBase == nil) {
-        int width, height;
-        getScreenSize(&width, &height);
-        
-        if (isPad()) {
-            joystickBase = [[CGJoystick alloc]initWithFrame:CGRectMake(10, height - 200 - 5, 200, 200)];
-        } else {
-            joystickBase = [[CGJoystick alloc]initWithFrame:CGRectMake(5, 185, 130, 130)];
-        }
-        
-        SDL_Window* window = SDL_GetWindowFromID(g_windowId);
-        if (!window) {
-            return;
-        }
-        
-        SDL_WindowData* windowData = (SDL_WindowData*)window->driverdata;
-        UIView* mainView = windowData->viewcontroller.view;
-        [mainView insertSubview:joystickBase aboveSubview:btnMenu];
-    }
-    
-    if (joystickBase.hidden == YES) {
-        joystickBase.hidden = NO;
+    if (joystick.hidden == YES) {
+        joystick.hidden = NO;
     }
     
     g_joystickType = JOYSTICK_MOVE;
@@ -276,14 +239,27 @@ extern int g_pressButton;
 
 -(void)hideJoystick
 {
-    if (joystickBase == nil) {
+    if (g_joystickType == JOYSTICK_NONE) {
+        return;
+    }
+
+    if (joystick == nil) {
         return;
     }
     
-    joystickBase.hidden = YES;
+    joystick.hidden = YES;
     g_joystickType = JOYSTICK_NONE;
 }
 
+-(void)showGameMenu
+{
+    btnGameMenu.hidden = NO;
+}
+
+-(void)hideGameMenu
+{
+    btnGameMenu.hidden = YES;
+}
 
 -(void)beginAutoSave
 {
@@ -321,22 +297,10 @@ extern int g_pressButton;
 
 -(void)showBackButton
 {
-    if (btnBack == nil) {
-        SDL_Window* window = SDL_GetWindowFromID(g_windowId);
-        if (!window) {
-            return;
-        }
-        
-        SDL_WindowData* windowData = (SDL_WindowData*)window->driverdata;
-        UIView* mainView = windowData->viewcontroller.view;
-        
-        btnBack = [[UIButton alloc]initWithFrame:CGRectMake(425, 5, 50, 50)];
-        [btnBack setImage:[UIImage imageNamed:@"back1"] forState:UIControlStateNormal];
-        [btnBack setImage:[UIImage imageNamed:@"back"] forState:UIControlStateHighlighted];
-        [btnBack addTarget:self action:@selector(onClickBack) forControlEvents:UIControlEventTouchUpInside];
-        [mainView addSubview:btnBack];
+    if (!btnBack) {
+        return;
     }
-    
+
     if (btnBack.hidden == YES) {
         btnBack.hidden = NO;
     }

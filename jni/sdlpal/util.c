@@ -586,13 +586,6 @@ void initDir()
 void getFileStatus(const char* pszName)
 {
 }
-void closeAds()
-{
-}
-
-void initButton()
-{
-}
 
 void hideMenu()
 {

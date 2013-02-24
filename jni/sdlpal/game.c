@@ -81,8 +81,6 @@ PAL_GameMain(
    //
    gpGlobals->bCurrentSaveSlot = (BYTE)PAL_OpeningMenu();
 
-    closeAds();
-
    //
    // Initialize game data and set the flags to load the game resources.
    //
@@ -96,7 +94,8 @@ PAL_GameMain(
   
    while (TRUE)
    {
-	   if (IsInBackground()) {
+       extern int g_isInBackground;
+	   if (g_isInBackground) {
 		   UTIL_DelayEx(200, 50);
            continue;
 	   }

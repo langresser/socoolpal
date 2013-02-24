@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "SDL_uikitappdelegate.h"
+#import "GameViewController.h"
 
 #define kUMengAppKey @"50045626527015611900001a"
 #define kDianjinAppKey 7209

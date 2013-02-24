@@ -60,7 +60,7 @@ typedef enum _DIAN_JIN_BACKGROUND_COLOR {
 - (void)setOfferViewAutoRotate:(BOOL)isAutoRotate;
 
 /**
- @brief 相关背景颜色，默认为kDJBrownColor
+ @brief 相关背景颜色，默认为kDJBlueColor
  */
 - (void)setOfferViewColor:(DIAN_JIN_BACKGROUND_COLOR)type;
 

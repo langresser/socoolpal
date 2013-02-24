@@ -93,14 +93,8 @@ char*   my_strlwr(char*   str);
 extern void initDir();
 extern void getFileStatus(const char* pszName);
 
-extern void showAds();
-extern void closeAds();
-
 extern void showMenu();
 extern void hideMenu();
-    
-extern void showSearchButton();
-extern void hideSearchButton();
     
 extern void showJoystick();
 extern void hideJoystick();

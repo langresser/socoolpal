@@ -1,5 +1,4 @@
 #import "AppDelegate.h"
-#import "GameViewController.h"
 #import "MobClick.h"
 #import "UMFeedback.h"
 
@@ -11,7 +10,20 @@
 #endif
 
 extern int g_app_type;
-extern int g_isInBackground;
+int g_isInBackground;
+
+@interface SDLUIKitDelegate (Custom)
++ (NSString *)getAppDelegateClassName;
+@end
+
+@implementation SDLUIKitDelegate (Custom)
++ (NSString *)getAppDelegateClassName
+{
+    /* subclassing notice: when you subclass this appdelegate, make sure to add a category to override
+     this method and return the actual name of the delegate */
+    return @"AppDelegate";
+}
+@end
 
 @implementation AppDelegate
 // iOS 4.x
@@ -40,6 +52,22 @@ extern int g_isInBackground;
 {
 }
 
++ (NSString *)getAppDelegateClassName
+{
+    /* subclassing notice: when you subclass this appdelegate, make sure to add a category to override
+     this method and return the actual name of the delegate */
+    return @"AppDelegate";
+}
+
+- (void)postFinishLaunch
+{
+    extern int SDL_mainLoop();
+    /* run the user's application, passing argc and argv */
+    SDL_iPhoneSetEventPump(SDL_TRUE);
+    SDL_mainLoop();
+    SDL_iPhoneSetEventPump(SDL_FALSE);
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
 {
     //    [MobClick setLogEnabled:YES];
@@ -56,6 +84,9 @@ extern int g_isInBackground;
     g_app_type = [[NSUserDefaults standardUserDefaults]integerForKey:@"mod"];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onRecNewMsg:) name:UMFBCheckFinishedNotification object:nil];
+    
+    /* Set working directory to resource path */
+    [[NSFileManager defaultManager] changeCurrentDirectoryPath: [[NSBundle mainBundle] resourcePath]];
 
 //    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 //    NSString  *plistPath = [paths objectAtIndex:0];
@@ -67,24 +98,13 @@ extern int g_isInBackground;
     /* Keep the launch image up until we set a video mode */
     self.uiwindow = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.viewController = [[GameViewController alloc]init];
-    uiwindow.rootViewController = viewController;
-
-    /* Set working directory to resource path */
-    [[NSFileManager defaultManager] changeCurrentDirectoryPath: [[NSBundle mainBundle] resourcePath]];
-
-    [super application:application didFinishLaunchingWithOptions:launchOptions];
-
-    [uiwindow makeKeyAndVisible];
+    self.uiwindow.rootViewController = viewController;
+    
+    SDL_main(0, NULL);
+    [self.uiwindow makeKeyAndVisible];
+    
+    [self performSelector:@selector(postFinishLaunch) withObject:nil afterDelay:0.0];
     return TRUE;
-}
-
--(void)beginAutoSave
-{
-    [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(autoSave) userInfo:nil repeats:YES];
-}
-
--(void)autoSave
-{
 }
 
 -(void)onRecNewMsg:(NSNotification*)notification

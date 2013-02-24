@@ -14,14 +14,24 @@
 @interface GameViewController : SDL_uikitviewcontroller<UIPopoverControllerDelegate>
 {
     CGJoystick* joystick;
-    UIButton* btnA;
-    UIButton* btnB;
     
     UIButton* btnMenu;
+    UIButton* btnBack;
+    UIButton* btnSearch;
+    UIButton* btnGameMenu;
     
     SettingViewController* settingVC;
     UIPopoverController * popoverVC;
 }
 
 -(void)showSettingPopup:(BOOL)show;
+-(void)showJoystick;
+-(void)hideJoystick;
+
+-(void)showSearchButton;
+-(void)hideSearchButton;
+-(void)showBackButton;
+-(void)hideBackButton;
+-(void)showGameMenu;
+-(void)hideGameMenu;
 @end

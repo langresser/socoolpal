@@ -490,8 +490,6 @@ SDL_main(
    sdlpal_psp_init();
 #endif
    PAL_Init(wScreenWidth, wScreenHeight, fullScreen);
-    
-    initButton();
 
 #ifdef __ANDROID__
 //    hideJoystick();
