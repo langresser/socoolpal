@@ -12,19 +12,6 @@
 extern int g_app_type;
 int g_isInBackground;
 
-@interface SDLUIKitDelegate (Custom)
-+ (NSString *)getAppDelegateClassName;
-@end
-
-@implementation SDLUIKitDelegate (Custom)
-+ (NSString *)getAppDelegateClassName
-{
-    /* subclassing notice: when you subclass this appdelegate, make sure to add a category to override
-     this method and return the actual name of the delegate */
-    return @"AppDelegate";
-}
-@end
-
 @implementation AppDelegate
 // iOS 4.x
 - (void)applicationWillEnterForeground:(UIApplication *)application

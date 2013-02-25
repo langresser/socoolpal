@@ -136,7 +136,7 @@ int g_app_type;
 
 -(void)updateMB
 {
-    labelMB.text = [NSString stringWithFormat:@"当前M币: %d", g_currentMB];
+    labelMB.text = [NSString stringWithFormat:@"(当前元宝: %d)", g_currentMB];
 }
 
 -(void)onClickMB
@@ -178,7 +178,9 @@ int g_app_type;
     if (section == 0) {
         return 2;
     } else if (section == 1) {
-        return 4;
+        return 3;
+    } else if (section == 2) {
+        return 6;
     }
     return 0;
 }
@@ -215,12 +217,13 @@ int g_app_type;
             imageLock.hidden = YES;
             cell.textLabel.text = @"即时战斗模式";
             cell.detailTextLabel.text = @"";
+            cell.accessoryType = g_isClassicMode ? UITableViewCellAccessoryNone : UITableViewCellAccessoryCheckmark;
         } else if (indexPath.row == 1) {
-            imageLock.hidden = [self isPurchase:kPurchaseCanglong alert:NO];
+            imageLock.hidden = YES;
             cell.textLabel.text = @"显示摇杆";
             cell.detailTextLabel.text = @"";
+            cell.accessoryType = g_useJoyStick ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
         }
-//        cell.accessoryType = (indexPath.row == g_app_type) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
     } else if (indexPath.section == 1) {
         static NSString* cellIdent = @"MyCellHack";
         cell = [tableView dequeueReusableCellWithIdentifier:cellIdent];
@@ -237,17 +240,20 @@ int g_app_type;
         
         UIImageView* imageLock = (UIImageView*)[cell.contentView viewWithTag:101];
         if (indexPath.row == 0) {
-            imageLock.hidden = YES;
+            imageLock.hidden = [self isHackEnable:FALSE];
             cell.textLabel.text = @"开启穿墙模式";
             cell.detailTextLabel.text = @"自由的飞翔";
+            cell.accessoryType = isFlyMode() ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
         } else if (indexPath.row == 1) {
-            imageLock.hidden = [self isPurchase:kPurchaseCanglong alert:NO];
+            imageLock.hidden = [self isHackEnable:FALSE];
             cell.textLabel.text = @"全角色升级";
             cell.detailTextLabel.text = @"一秒变成高富帅";
+            cell.accessoryType = UITableViewCellAccessoryNone;
         } else if (indexPath.row == 2) {
-            imageLock.hidden = [self isPurchase:kPurchaseCanglong alert:NO];
+            imageLock.hidden = [self isHackEnable:FALSE];
             cell.textLabel.text = @"加5000金钱";
             cell.detailTextLabel.text = @"手头紧了吗";
+            cell.accessoryType = UITableViewCellAccessoryNone;
         }
   //      cell.accessoryType = (indexPath.row == g_app_type) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
     } else if (indexPath.section == 2) {
@@ -336,8 +342,7 @@ int g_app_type;
                     [defaults setInteger:(g_isClassicMode ? 1 : 2) forKey:@"BattleMode"];
                 }
                 
-                [switchMode setTitle:(g_isClassicMode ? @"回合制" : @"即时制") forState:UIControlStateNormal];
-                [switchMode setTitle:(g_isClassicMode ? @"回合制" : @"即时制") forState:UIControlStateHighlighted];
+                [tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
             }
                 break;
             case 1:
@@ -354,6 +359,8 @@ int g_app_type;
                 } else {
                     hideJoystick();
                 }
+                
+                [tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
             }
                 break;
             default:
@@ -362,21 +369,21 @@ int g_app_type;
     } else if (indexPath.section == 1) {
         switch (indexPath.row) {
             case 0:
-                if ([self isHackEnable]) {
+                if ([self isHackEnable:YES]) {
                     setFlyMode(!isFlyMode());
-                    
-                    [moveButton setTitle:(isFlyMode() ? @"穿墙" : @"正常") forState:UIControlStateNormal];
-                    [moveButton setTitle:(isFlyMode() ? @"穿墙" : @"正常") forState:UIControlStateHighlighted];
+                    [tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
                 }
                 break;
             case 1:
-                if ([self isHackEnable]) {
+                if ([self isHackEnable:YES]) {
                     uplevel();
+                    [tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
                 }
                 break;
             case 2:
-                if ([self isHackEnable]) {
+                if ([self isHackEnable:YES]) {
                     addMoney();
+                    [tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
                 }
                 break;
             default:
@@ -423,17 +430,15 @@ int g_app_type;
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex;
 {
-    if (alertView.tag == 999) {
-        exit(0);
-    } else {
+    if (alertView.tag == 100) {
         if (buttonIndex == 1) {
             if (g_currentMB < costMB) {
-                UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@"错误" message:[NSString stringWithFormat:@"M币不足，当前M币:%d",g_currentMB] delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil];
+                UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@"错误" message:[NSString stringWithFormat:@"元宝不足，当前元宝:%d",g_currentMB] delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil];
                 [alert show];
             } else {
-                g_currentMB -= costMB;
+                g_currentMB -= 100;
                 [[NSUserDefaults standardUserDefaults]setInteger:g_currentMB forKey:@"MB"];
-                [[NSUserDefaults standardUserDefaults] setBool:YES forKey:m_purchaseKey];
+                [[NSUserDefaults standardUserDefaults]setObject:[[UIDevice currentDevice] uniqueDeviceIdentifier] forKey:kRemoveAdsFlag];
                 [[NSUserDefaults standardUserDefaults]synchronize];
                 [self updateMB];
                 costMB = 0;
@@ -444,22 +449,7 @@ int g_app_type;
     }
 }
 
--(BOOL)testHackEnable
-{
-    NSString* flag = [[NSUserDefaults standardUserDefaults] stringForKey:kRemoveAdsFlag];
-    if (flag && [flag isEqualToString:[[UIDevice currentDevice] uniqueDeviceIdentifier]]) {
-        return YES;
-    }
-    
-    return NO;
-}
-
--(void)onPurchaseOk
-{
-    hackLabel.text = @"金手指功能:(已开启)";
-}
-
--(BOOL)isHackEnable
+-(BOOL)isHackEnable : (BOOL) testFlag
 {
     NSString* flag = [[NSUserDefaults standardUserDefaults] stringForKey:kRemoveAdsFlag];
     if (flag && [flag isEqualToString:[[UIDevice currentDevice] uniqueDeviceIdentifier]]) {
@@ -469,22 +459,19 @@ int g_app_type;
     if (g_currentMB >= 100) {
         NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
         if (defaults) {
-            hackLabel.text = @"金手指功能:(已开启)";
             [[NSUserDefaults standardUserDefaults] setObject:[[UIDevice currentDevice] uniqueDeviceIdentifier] forKey:kRemoveAdsFlag];
             [[NSUserDefaults standardUserDefaults] synchronize];
         }
         return YES;
     }
     
-#ifdef APP_FOR_APPSTORE
-    [[InAppPurchaseMgr sharedInstance]purchaseProUpgrade];
-#else
-    [[DianJinOfferPlatform defaultPlatform] getBalance:self];
-    
-    NSString* title = [NSString stringWithFormat:@"当您获得100元宝时将自动开启金手指功能。您可以通过点击广告条安装精品应用的方式免费获取元宝。 (当前元宝:%d)", g_currentMB];
-    UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@"提示" message:title delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil, nil];
-    [alert show];
-#endif
+    if (testFlag) {
+        NSString* title = [NSString stringWithFormat:@"消耗100元宝解锁金手指功能。您可以通过点击广告条安装精品应用的方式免费获取元宝。 (当前元宝:%d)", g_currentMB];
+        UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@"提示" message:title delegate:self cancelButtonTitle:@"知道了" otherButtonTitles:@"解锁", @"获取元宝", nil];
+        alert.tag = 100;
+        [alert show];
+    }
+
     return NO;
 }
 @end

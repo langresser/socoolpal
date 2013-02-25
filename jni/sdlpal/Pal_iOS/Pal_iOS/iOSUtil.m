@@ -110,6 +110,12 @@ void showBackButton()
     [vc showBackButton];
 }
 
+void hideSearchButton()
+{
+    GameViewController* vc = (GameViewController*)((SDLUIKitDelegate*)[SDLUIKitDelegate sharedAppDelegate]).viewController;
+    [vc hideSearchButton];
+}
+
 void hideBackButton()
 {
     GameViewController* vc = (GameViewController*)((SDLUIKitDelegate*)[SDLUIKitDelegate sharedAppDelegate]).viewController;

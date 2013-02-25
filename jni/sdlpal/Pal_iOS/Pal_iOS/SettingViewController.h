@@ -30,10 +30,7 @@
     NSString* m_purchaseKey;
     
     BOOL isFAQ;
-    
-    UIButton* switchMode;
-    UIButton* moveButton;
-    UILabel* hackLabel;
 }
 
+-(BOOL)isHackEnable:(BOOL)testFlag;
 @end
