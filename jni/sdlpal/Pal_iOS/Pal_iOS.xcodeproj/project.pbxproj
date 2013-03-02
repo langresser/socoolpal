@@ -480,6 +480,7 @@
 		3BBEC06715C1AAB600047CDF /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 		3BF86B6815C1C749000FAC45 /* more_app_click.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = more_app_click.png; sourceTree = "<group>"; };
 		3BF86B6915C1C749000FAC45 /* more_app_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = more_app_normal.png; sourceTree = "<group>"; };
+		854E080616DE640E003A3147 /* Pal_iOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Pal_iOS.entitlements; sourceTree = "<group>"; };
 		8579781616DA1E9E0086F475 /* TextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextViewController.h; sourceTree = "<group>"; };
 		8579781716DA1E9E0086F475 /* TextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextViewController.m; sourceTree = "<group>"; };
 		8579781B16DA20E20086F475 /* aclick.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = aclick.png; sourceTree = "<group>"; };
@@ -708,6 +709,7 @@
 		3B713CB915A9F71200A63662 /* Pal_iOS */ = {
 			isa = PBXGroup;
 			children = (
+				854E080616DE640E003A3147 /* Pal_iOS.entitlements */,
 				3B3C904B15AE006C00976B55 /* Classes */,
 				3B713CD915A9F79600A63662 /* adplug */,
 				3B713D1415A9F7D900A63662 /* libmad */,
@@ -1448,6 +1450,7 @@
 				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_OBJCPP_ARC_ABI = NO;
+				CODE_SIGN_ENTITLEMENTS = DianJinOfferPlatformResources/DianJinConfigResource/DianJin.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: ADAM GEISS (8SJU4ZD534)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1461,7 +1464,7 @@
 					../../../../3rdframework/sdl/src,
 				);
 				INFOPLIST_FILE = "Pal_iOS/Pal_iOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -1486,7 +1489,8 @@
 				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_OBJCPP_ARC_ABI = NO;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Wang Jia";
+				CODE_SIGN_ENTITLEMENTS = DianJinOfferPlatformResources/DianJinConfigResource/DianJin.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: NetDragon Websoft Inc.";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/DianJinFramework\"",
@@ -1499,7 +1503,7 @@
 					../../../../3rdframework/sdl/src,
 				);
 				INFOPLIST_FILE = "Pal_iOS/Pal_iOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -1509,7 +1513,7 @@
 					"-Objc",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "5DE369D0-1E1B-4D86-92BF-83F092B61308";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = app;

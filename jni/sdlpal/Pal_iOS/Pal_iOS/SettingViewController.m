@@ -42,7 +42,16 @@ int g_app_type;
 
 -(void)loadView
 {
-    settingView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 480)];
+    int height = 320;
+    if (isPad()) {
+        height = 600;
+    }
+    
+    if (isPad()) {
+        settingView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 800, height)];
+    } else {
+        settingView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 480, height)];
+    }
     settingView.backgroundColor = [UIColor colorWithRed:240.0 / 255 green:248.0 / 255 blue:1.0 alpha:1.0];
     
     float offsetY = 0;
@@ -53,12 +62,20 @@ int g_app_type;
     transitionParam.animationSubType = kDJTransitionFromTop;
     transitionParam.duration = 1.0;
     [_banner setupTransition:transitionParam];
+    
+    if (isPad()) {
+        _banner.frame = CGRectMake(0, 0, 240, 50);
+    } else {
+        _banner.center = CGPointMake(240, 25);
+    }
+    
     [settingView addSubview:_banner];
+    [_banner startWithTimeInterval:30 delegate:self];
     offsetY = 50;
 #endif
 
     if (!isPad()) {
-        UIGlossyButton* btnBack = [[UIGlossyButton alloc]initWithFrame:CGRectMake(220, offsetY, 80, 30)];
+        UIGlossyButton* btnBack = [[UIGlossyButton alloc]initWithFrame:CGRectMake(380, offsetY, 80, 30)];
         [btnBack setTitle:@"返回游戏" forState:UIControlStateNormal];
         [btnBack addTarget:self action:@selector(onClickBack) forControlEvents:UIControlEventTouchUpInside];
         
@@ -80,12 +97,16 @@ int g_app_type;
     
     labelMB = [[UILabel alloc]initWithFrame:CGRectMake(100, offsetY, 100, 30)];
     labelMB.backgroundColor = [UIColor clearColor];
-    labelMB.text = [NSString stringWithFormat:@"(当前元宝:%d)", g_currentMB];
+    labelMB.text = [NSString stringWithFormat:@"(当前:%d)", g_currentMB];
     [settingView addSubview:labelMB];
     
     offsetY += 30;
     
-    m_tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, offsetY, 320, 430) style:UITableViewStyleGrouped];
+    if (isPad()) {
+        m_tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, offsetY, 700, height - 50) style:UITableViewStyleGrouped];
+    } else {
+        m_tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, offsetY, 480, height - 50) style:UITableViewStyleGrouped];
+    }
     m_tableView.delegate = self;
     m_tableView.dataSource = self;
     m_tableView.backgroundColor = [UIColor colorWithRed:240.0 / 255 green:248.0 / 255 blue:1.0 alpha:1.0];
@@ -105,7 +126,7 @@ int g_app_type;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.contentSizeForViewInPopover = CGSizeMake(320, 480);
+    self.contentSizeForViewInPopover = CGSizeMake(800, 600);
 }
 
 - (void)viewDidUnload
@@ -114,14 +135,19 @@ int g_app_type;
     // Release any retained subviews of the main view.
 }
 
+- (BOOL)shouldAutorotate
+{
+    return YES;
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    return (interfaceOrientation == UIInterfaceOrientationLandscapeLeft || interfaceOrientation == UIInterfaceOrientationLandscapeRight);
 }
 
 - (NSUInteger)supportedInterfaceOrientations
 {
-    return UIInterfaceOrientationMaskPortrait;
+    return UIInterfaceOrientationMaskLandscape;
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -136,7 +162,7 @@ int g_app_type;
 
 -(void)updateMB
 {
-    labelMB.text = [NSString stringWithFormat:@"(当前元宝: %d)", g_currentMB];
+    labelMB.text = [NSString stringWithFormat:@"(当前:%d)", g_currentMB];
 }
 
 -(void)onClickMB
@@ -207,7 +233,7 @@ int g_app_type;
             cell.selectionStyle = UITableViewCellSelectionStyleGray;
             
             UIImageView* imageLock = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"gui_lock.png"]];
-            imageLock.frame = CGRectMake(280, 5, 15, 15);
+            imageLock.frame = CGRectMake(430, 5, 15, 15);
             imageLock.tag = 101;
             [cell.contentView addSubview:imageLock];
         }
@@ -217,12 +243,12 @@ int g_app_type;
             imageLock.hidden = YES;
             cell.textLabel.text = @"即时战斗模式";
             cell.detailTextLabel.text = @"";
-            cell.accessoryType = g_isClassicMode ? UITableViewCellAccessoryNone : UITableViewCellAccessoryCheckmark;
+            cell.accessoryType = g_isClassicMode == 1 ? UITableViewCellAccessoryNone : UITableViewCellAccessoryCheckmark;
         } else if (indexPath.row == 1) {
             imageLock.hidden = YES;
             cell.textLabel.text = @"显示摇杆";
             cell.detailTextLabel.text = @"";
-            cell.accessoryType = g_useJoyStick ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
+            cell.accessoryType = g_useJoyStick == 1 ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
         }
     } else if (indexPath.section == 1) {
         static NSString* cellIdent = @"MyCellHack";
@@ -233,7 +259,7 @@ int g_app_type;
             cell.selectionStyle = UITableViewCellSelectionStyleGray;
             
             UIImageView* imageLock = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"gui_lock.png"]];
-            imageLock.frame = CGRectMake(280, 5, 15, 15);
+            imageLock.frame = CGRectMake(430, 5, 15, 15);
             imageLock.tag = 101;
             [cell.contentView addSubview:imageLock];
         }
@@ -340,6 +366,7 @@ int g_app_type;
                 NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
                 if (defaults) {
                     [defaults setInteger:(g_isClassicMode ? 1 : 2) forKey:@"BattleMode"];
+                    [defaults synchronize];
                 }
                 
                 [tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -352,6 +379,7 @@ int g_app_type;
                 NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
                 if (defaults) {
                     [defaults setInteger:(g_useJoyStick ? 1 : 2) forKey:@"JoystickMode"];
+                    [defaults synchronize];
                 }
                 
                 if (g_useJoyStick) {
@@ -432,7 +460,7 @@ int g_app_type;
 {
     if (alertView.tag == 100) {
         if (buttonIndex == 1) {
-            if (g_currentMB < costMB) {
+            if (g_currentMB < 100) {
                 UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@"错误" message:[NSString stringWithFormat:@"元宝不足，当前元宝:%d",g_currentMB] delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil];
                 [alert show];
             } else {
@@ -459,6 +487,8 @@ int g_app_type;
     if (g_currentMB >= 100) {
         NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
         if (defaults) {
+            g_currentMB-=100;
+            [[NSUserDefaults standardUserDefaults] setInteger:g_currentMB forKey:@"MB"];
             [[NSUserDefaults standardUserDefaults] setObject:[[UIDevice currentDevice] uniqueDeviceIdentifier] forKey:kRemoveAdsFlag];
             [[NSUserDefaults standardUserDefaults] synchronize];
         }

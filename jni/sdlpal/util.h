@@ -102,6 +102,7 @@ extern void hideJoystick();
     extern void showBackButton();
     extern void hideBackButton();
     extern void switchShowMenu();
+    extern void hideSearchButton();
     
 
 extern void getScreenSize(int* width, int* height);
