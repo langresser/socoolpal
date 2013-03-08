@@ -166,9 +166,9 @@ extern int g_currentMB;
                 popoverVC = [[UIPopoverController alloc] initWithContentViewController:settingVC];
                 popoverVC.delegate = self;
             }
-
-            CGRect rect = CGRectMake(800, 60, 10, 10);
-            [popoverVC presentPopoverFromRect:rect inView:self.view permittedArrowDirections:UIPopoverArrowDirectionRight animated:YES];
+            
+            CGRect rect = CGRectMake(100, 60, 10, 10);
+            [popoverVC presentPopoverFromRect:rect inView:self.view permittedArrowDirections:UIPopoverArrowDirectionLeft animated:YES];
         } else {
             if (settingVC == nil) {
                 settingVC = [[SettingViewController alloc]initWithNibName:nil bundle:nil];
