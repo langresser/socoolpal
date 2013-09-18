@@ -316,6 +316,7 @@ PAL_BattleMain(
 
 --*/
 {
+    hideJoystick();
    int         i;
    DWORD       dwTime;
     extern BOOL g_hasInGame;

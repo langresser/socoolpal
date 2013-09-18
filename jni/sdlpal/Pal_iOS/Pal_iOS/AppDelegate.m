@@ -66,6 +66,7 @@ int g_isInBackground;
 	[[DianJinOfferPlatform defaultPlatform] setAppId:kDianjinAppKey andSetAppKey:kDianjinAppSecrect];
 	[[DianJinOfferPlatform defaultPlatform] setOfferViewColor:kDJBlueColor];
     [[DianJinOfferPlatform defaultPlatform] setOfferViewAutoRotate:YES];
+    //[[DianJinOfferPlatform defaultPlatform]floatLogoEnable:YES];
 #endif
     
     g_app_type = [[NSUserDefaults standardUserDefaults]integerForKey:@"mod"];
@@ -107,6 +108,9 @@ int g_isInBackground;
     for (int i = 0; i < [newReplies count]; i++) {
         NSString * dateTime = [[newReplies objectAtIndex:i] objectForKey:@"datetime"];
         NSString *_content = [[newReplies objectAtIndex:i] objectForKey:@"content"];
+        if (_content == nil) {
+            continue;
+        }
         [content appendString:[NSString stringWithFormat:@"%d: %@---%@\n", i+1, _content, dateTime]];
     }
     

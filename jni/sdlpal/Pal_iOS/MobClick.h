@@ -3,9 +3,9 @@
 //  MobClick
 //
 //  Created by Aladdin on 2010-03-25.
-//  Updated by Minghua on 2012-12-19.
-//  Copyright (C) 2010-2013 Umeng.com . All rights reserved.
-//  Version 2.1.3 , updated_at 2012-12-28.
+//  Updated by Minghua on 2013-04-01.
+//  Copyright 2010-2012 Umeng.com . All rights reserved.
+//  Version 2.2.0.OpenUDID, updated_at 2013-04-01.
 
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
@@ -156,7 +156,8 @@ typedef enum {
  
  
  @warning 每个event的attributes不能超过10个
-    eventId、attributes中key和value都不能使用空格和特殊字符，且长度不能超过255个字符（否则将截取前255个字符）
+    eventId、attributes中key和value都不能使用空格和特殊字符，eventId、attributes的key最大为128个bytes(128个英文及数字或42个左右汉字)。label、attributes的value最大为256个bytes(256个英文及数字或84个左右汉字),
+       超过后将被截短。其中eventId超过的将抛弃不再发送。
     id， ts， du是保留字段，不能作为eventId及key的名称
 
 */

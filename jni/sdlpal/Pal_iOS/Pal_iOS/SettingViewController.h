@@ -10,17 +10,21 @@
 
 #import "util.h"
 #import <DianJinOfferPlatform/DianJinOfferPlatform.h>
-#import <DianJinOfferPlatform/DianJinOfferBanner.h>
 #import <DianJinOfferPlatform/DianJinBannerSubViewProperty.h>
 #import <DianJinOfferPlatform/DianJinTransitionParam.h>
 #import <DianJinOfferPlatform/DianJinOfferPlatformProtocol.h>
+#import <DianJinOfferPlatform/DianJinAdBanner.h>
+#import <DianJinOfferPlatform/DianJinOfferBanner.h>
 
-@interface SettingViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, DianJinOfferPlatformProtocol, DianJinOfferBannerDelegate>
+#define kUseCPC 0
+
+@interface SettingViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, DianJinOfferPlatformProtocol, DianJinAdBannerDelegate>
 {
     UIView* settingView;
 
 #ifndef APP_FOR_APPSTORE
-    DianJinOfferBanner *_banner;
+    DianJinOfferBanner *_bannerOffer;
+    DianJinAdBanner *_banner;
 #endif
     UITableView* m_tableView;
     

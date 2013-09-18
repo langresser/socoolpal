@@ -42,35 +42,41 @@ int g_app_type;
 
 -(void)loadView
 {
+    int width = 480;
     int height = 320;
     if (isPad()) {
+        width = 800;
         height = 600;
     }
     
-    if (isPad()) {
-        settingView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 800, height)];
-    } else {
-        settingView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 480, height)];
-    }
+    settingView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, width, height)];
     settingView.backgroundColor = [UIColor colorWithRed:240.0 / 255 green:248.0 / 255 blue:1.0 alpha:1.0];
     
     float offsetY = 0;
 #ifndef APP_FOR_APPSTORE
-    _banner = [[DianJinOfferBanner alloc] initWithOfferBanner:CGPointMake(0, 0) style:kDJBannerStyle320_50];
     DianJinTransitionParam *transitionParam = [[DianJinTransitionParam alloc] init];
     transitionParam.animationType = kDJTransitionCube;
     transitionParam.animationSubType = kDJTransitionFromTop;
     transitionParam.duration = 1.0;
-    [_banner setupTransition:transitionParam];
     
-    if (isPad()) {
-        _banner.frame = CGRectMake(0, 0, 240, 50);
-    } else {
-        _banner.center = CGPointMake(240, 25);
-    }
+#if kUseCPC
+    DJCPCBannerStyle bannerType = kDJCPCBannerStyle320_50;
+    _banner = [[DianJinAdBanner alloc] initAdBannerWithOrigin:CGPointMake(0,0) size:bannerType];
+    [_banner setBrowserOrientation:UIInterfaceOrientationLandscapeLeft];
+    [_banner setupTransitionParam:transitionParam];
+    _banner.delegate = self;
+    _banner.center = CGPointMake(width / 2, 25);
     
     [settingView addSubview:_banner];
-    [_banner startWithTimeInterval:30 delegate:self];
+#endif
+    
+    DJOfferBannerStyle bannerType2 = kDJBannerStyle320_50;
+    _bannerOffer = [[DianJinOfferBanner alloc] initWithOfferBanner:CGPointMake(0,0) style:bannerType2];
+    [_bannerOffer setupTransition:transitionParam];
+    _bannerOffer.center = CGPointMake(width / 2, 25);
+    
+    [settingView addSubview:_bannerOffer];
+    [_bannerOffer startWithTimeInterval:30 delegate:self];
     offsetY = 50;
 #endif
 
@@ -310,10 +316,6 @@ int g_app_type;
                 cell.detailTextLabel.text = @"关注我们，了解最新游戏发布及版本更新";
                 break;
             case 4:
-                cell.textLabel.text = @"腾讯微博(@BananaStudio)";
-                cell.detailTextLabel.text = @"关注我们，了解最新游戏发布及版本更新";
-                break;
-            case 5:
                 cell.textLabel.text = @"精品推荐";
                 cell.detailTextLabel.text = @"";
                 break;
@@ -440,9 +442,6 @@ int g_app_type;
                 [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://weibo.com/bananastudi0"]];
                 break;
             case 4:
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://t.qq.com/BananaStudio"]];
-                break;
-            case 5:
                 [[DianJinOfferPlatform defaultPlatform]showOfferWall: self delegate:self];
                 break;
             default:
@@ -471,7 +470,7 @@ int g_app_type;
                 [self updateMB];
                 costMB = 0;
             }
-        } else if (buttonIndex == 2) {
+        } else if (buttonIndex == 0) {
             [[DianJinOfferPlatform defaultPlatform]showOfferWall: self delegate:self];
         }
     }
@@ -497,11 +496,36 @@ int g_app_type;
     
     if (testFlag) {
         NSString* title = [NSString stringWithFormat:@"消耗100元宝解锁金手指功能。您可以通过点击广告条安装精品应用的方式免费获取元宝。 (当前元宝:%d)", g_currentMB];
-        UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@"提示" message:title delegate:self cancelButtonTitle:@"知道了" otherButtonTitles:@"解锁", @"获取元宝", nil];
+        UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@"提示" message:title delegate:self cancelButtonTitle:@"获取元宝" otherButtonTitles:@"解锁", nil];
         alert.tag = 100;
         [alert show];
     }
 
     return NO;
 }
+
+
+
+
+#pragma mark - DianJinAdBannerDelegate
+
+- (void)adLoadSuccess {
+    if (_bannerOffer.hidden == NO) {
+        _bannerOffer.hidden = YES;
+        [_bannerOffer stop];
+    }
+}
+
+- (void)adLoadFail {
+    NSLog(@"adLoadFail");
+}
+
+- (void)adBrowserDidShow {
+    NSLog(@"adBrowserDidShow");
+}
+
+- (void)adBrowserDidHide {
+    NSLog(@"adBrowserDidHide");
+}
+
 @end

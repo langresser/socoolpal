@@ -16,13 +16,6 @@
 #import "SystemView.h"
 #import "AppDelegate.h"
 
-#ifndef APP_FOR_APPSTORE
-#import <DianJinOfferPlatform/DianJinOfferPlatform.h>
-#import <DianJinOfferPlatform/DianJinOfferBanner.h>
-#import <DianJinOfferPlatform/DianJinBannerSubViewProperty.h>
-#import <DianJinOfferPlatform/DianJinTransitionParam.h>
-#endif
-
 extern BOOL g_useJoyStick;
 extern int g_currentMB;
 

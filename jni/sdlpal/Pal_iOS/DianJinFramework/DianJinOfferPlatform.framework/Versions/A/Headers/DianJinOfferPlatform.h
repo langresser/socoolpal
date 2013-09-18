@@ -121,4 +121,26 @@ typedef enum _DIAN_JIN_BACKGROUND_COLOR {
  */
 - (void)cancelConsume:(id)delegate;
 
+#pragma mark -
+#pragma mark FloatButton Setting
+
+/**
+ @brief  是否启用点金浮动Logo (可选)
+ @param  enable 默认是YES
+ */
+- (void)floatLogoEnable:(BOOL)enable;
+
+/**
+ @brief  设置点金浮动Logo的初始化坐标 (可选)
+ @param  origin 初始化位置的坐标
+ */
+- (void)floatLogoInitializeOrigin:(CGPoint)origin;
+
+/**
+ @brief  设置delegate 获取推广墙关闭事件 (可选)
+ @param  delegate 获取推广墙关闭事件。详细请查看DianJinOfferPlatformProtocol.h文件
+ @result 错误码 错误码详细说明请查看DianJinPlatformError.h文件
+ */
+- (void)floatLogoDelegate:(id)delegate;
+
 @end
